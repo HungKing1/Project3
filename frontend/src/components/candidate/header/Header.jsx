@@ -9,7 +9,7 @@ import s from "./style.module.css";
 
 // Thay đổi `mockCheckLogin` thành `true` để xem giao diện "Đã đăng nhập"
 // Thay đổi `mockCheckLogin` thành `false` để xem giao diện "Chưa đăng nhập"
-const mockCheckLogin = true;
+const mockCheckLogin = false;
 
 // `true` = Ứng viên (UV), `false` = Nhà tuyển dụng (NTD)
 // (Chỉ có tác dụng khi mockCheckLogin = true)

@@ -7,7 +7,8 @@ import LoginEmployer from './pages/employer/LoginEmployer'
 import SignInSignUp from './pages/auth/SignInSignUp'
 import JobListing from './components/JobListing'
 import CandidateHome from './pages/candidate/CandidateHome'
-import SearchJobCandidate from './pages/candidate/SearchJobCandidate'
+import SearchJobCandidate from './pages/candidate/search_job_candidate/SearchJobCandidate'
+import JobDetail from './pages/candidate/job_detail/JobDetail'
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path='/' element={<CandidateHome />}/>
         <Route path='/job' element={<JobListing />}/>
         <Route path='/tim-viec-lam' element={<SearchJobCandidate />}/>
+        <Route path='/nhan-vien-kinh-doanh-viec-lam-mau-12345' element={<JobDetail />}/>
       </Routes> 
     </>
   )

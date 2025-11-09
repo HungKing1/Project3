@@ -1,6 +1,7 @@
 import { ConfigProvider, Select } from "antd";
 import s from "./style.module.scss";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // --- Dữ liệu mẫu (Mock Data) ---
 const mockCities = [
@@ -63,6 +64,8 @@ const SearchBar = ({ typeSearch = 1 }) => {
 
   // Tất cả useEffect đã bị loại bỏ
 
+
+  const navigate = useNavigate()
   return (
     <>
       <ConfigProvider
@@ -157,7 +160,7 @@ const SearchBar = ({ typeSearch = 1 }) => {
                   </div>
                 </div>
               </div>
-              <div className={s.search_button} onClick={handleSearch}>
+              <div className={s.search_button} onClick={() => navigate('/tim-viec-lam')}>
                 <div className={s.search_btn_txt}>Tìm kiếm</div>
               </div>
             </div>

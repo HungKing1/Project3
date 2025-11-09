@@ -843,7 +843,7 @@ a.avata_com_onl img {
 }
 
 .list_company {
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
 }
 

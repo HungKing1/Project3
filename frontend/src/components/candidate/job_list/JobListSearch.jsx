@@ -1,7 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Modal, Spin } from "antd";
-import s from "./styles.module.scss";
+import JobDetail from "./job_detail/JobDetail";
+import SearchJobBar from "./search_job_bar/SearchJobBar";
+import Jobs from "./jobs/Jobs";
+import s from "./styles.module.scss"
 
 // --- GIẢ LẬP CÁC COMPONENT CON ---
 const Login = ({ isOpenSignIn, handleCancelSignIn }) => {
@@ -17,34 +20,9 @@ const Login = ({ isOpenSignIn, handleCancelSignIn }) => {
 };
 const Footer = () => <div style={{ background: '#f0f0f0', padding: 20, textAlign: 'center', marginTop: 20 }}>Đây là Footer (Mẫu)</div>;
 const Header = () => <div style={{ background: '#f0f0f0', padding: 20, textAlign: 'center', fontWeight: 'bold' }}>Đây là Header (Mẫu)</div>;
-const ChiTietTinTuyenDung = ({ newsDetail, handleCloseSeeNow, handleLuuTin, handleUngTuyenNgay }) => (
-  <div style={{ padding: 20, border: '1px solid #ccc', borderRadius: 5 }}>
-    <button onClick={() => handleCloseSeeNow(false, 0)}>Đóng Chi Tiết</button>
-    <h3>{newsDetail.new_title} (Chi tiết)</h3>
-    <p>{newsDetail.usc_company}</p>
-    <div dangerouslySetInnerHTML={{ __html: newsDetail.infoDetail[0].content }} />
-    <button onClick={() => handleUngTuyenNgay(newsDetail.new_id)}>Ứng tuyển</button>
-    <button onClick={() => handleLuuTin(newsDetail.new_id)}>Lưu tin</button>
-  </div>
-);
-const Search = ({ total, listCity, listJob, listExp, listSalary, listLevel, listWorkForm, onClickSearch }) => (
-  <div style={{ background: '#e9e9e9', padding: 15, margin: '20px 0', borderRadius: 8 }}>
-    <p>Đây là thanh Search (Mẫu). Tổng: {total} tin.</p>
-    <button onClick={() => onClickSearch('Keyword mẫu', 1, 0, 0, 0, 0, 0, 0)}>Tìm kiếm Mẫu</button>
-  </div>
-);
-const TinTuyenDung = ({ workInfo, handleSeeNow, handleUngTuyenNgay }) => (
-  <div>
-    {workInfo.map(item => (
-      <div key={item.new_id} data-id={item.new_id} style={{ border: '1px solid #eee', padding: 10, margin: '10px 0', borderRadius: 5 }}>
-        <h4>{item.new_title}</h4>
-        <p>{item.usc_company}</p>
-        <button onClick={() => handleSeeNow(true, item.new_id)}>Xem ngay</button>
-        <button onClick={() => handleUngTuyenNgay(item.new_id)}>Ứng tuyển</button>
-      </div>
-    ))}
-  </div>
-);
+// Import các component thật (vì chúng đã được chuyển đổi)
+
+
 const TuKhoaLienQuan = () => <div style={{ padding: 20, background: '#f9f9f9', margin: '20px 0' }}>Đây là Từ khóa liên quan (Mẫu)</div>;
 const ModalLock = () => null;
 // --- KẾT THÚC GIẢ LẬP COMPONENT ---
@@ -153,13 +131,13 @@ const createLinkTilte2 = (title) => title ? title.toLowerCase().replace(/ /g, '-
 // --- KẾT THÚC Mock Data & Stubs ---
 
 
-export default function JobList() {
+export default function JobListSearch() {
   
   // Sử dụng mock data thay vì props
   const data = mockData;
   const seo = mockSeo;
   
-  const totalItem = Math.ceil(data?.data?.length / 20);
+  const totalItem = data?.data ? Math.ceil(data.data.length / 20) : 1;
 
   // (useContext và useRouter đã bị loại bỏ)
 
@@ -178,7 +156,7 @@ export default function JobList() {
     ...getJob()
   ]);
   const [isOpenLetter, setIsOpenLetter] = useState(false);
-  const [workInfo, setWorkInfo] = useState(data?.data);
+  const [workInfo, setWorkInfo] = useState(data?.data || []);
   const [totalPage, setTotalPage] = useState(totalItem);
   const [idNews, setIdNews] = useState(0);
   const [newsDetail, setNewsDetail] = useState(null); // Khởi tạo là null
@@ -228,17 +206,17 @@ export default function JobList() {
     if (value == 1) {
       setWorkInfo(data?.data);
     } else if (value == 2) {
-      const dataFlowDate = [...data?.data].sort( // Clone mảng trước khi sort
+      const dataFlowDate = [...(data?.data || [])].sort( // Clone mảng trước khi sort
         (a, b) => b.new_create_time - a.new_create_time
       );
       setWorkInfo(dataFlowDate);
     } else if (value == 3) {
-      const dataFlowDate = [...data?.data].sort( // Clone mảng
+      const dataFlowDate = [...(data?.data || [])].sort( // Clone mảng
         (a, b) => b.new_update_time - a.new_update_time
       );
       setWorkInfo(dataFlowDate);
     } else if (value == 4) {
-      const dataFlowDate = [...data?.data].sort( // Clone mảng
+      const dataFlowDate = [...(data?.data || [])].sort( // Clone mảng
         (a, b) => b.new_money - a.new_money
       );
       setWorkInfo(dataFlowDate);
@@ -283,7 +261,11 @@ export default function JobList() {
   const handleGuiThuUngTuyen = async () => {
     // const response = await POST('candidate/ApplyJob', ... ) // Bị loại bỏ
     alert('Ứng tuyển thành công! (Mock)');
-    setNewsDetail({ ...newsDetail, checkUngTuyen: true });
+    
+    if (newsDetail) {
+      setNewsDetail({ ...newsDetail, checkUngTuyen: true });
+    }
+    
     setIsOpenLetter(false);
     setWorkInfo(workInfo.map((item) => {
       if (item?.new_id === idNew) {
@@ -314,7 +296,9 @@ export default function JobList() {
     }
 
     // Giả lập đã đăng nhập
-    setNewsDetail({ ...newsDetail, checkLuuTin: true });
+    if (newsDetail) {
+      setNewsDetail({ ...newsDetail, checkLuuTin: true });
+    }
     setWorkInfo(workInfo.map((item) => { // Cập nhật cả danh sách
       if (item?.new_id === id) {
         return { ...item, checkLuuTin: true };
@@ -406,10 +390,13 @@ export default function JobList() {
         block: "center",
       });
     }
-  }, [newsDetail, idNews, lastId]); // Đã thêm idNews và lastId vào dependencies
+  }, [newsDetail, idNews, lastId]);
 
   // useEffect chính (Đơn giản hóa, loại bỏ URL parsing)
   useEffect(() => {
+    // Logic URL parsing (router.asPath, findCityFromLink...) đã bị loại bỏ
+    
+    // Đặt tên mẫu
     convertCityName(1); // Hà Nội
     setNameJob("Việc Làm Mẫu");
 
@@ -422,15 +409,25 @@ export default function JobList() {
   }, [data]); // Chỉ phụ thuộc vào data (mock)
 
 
+  // useEffect cho SEO (loại bỏ router)
+  useEffect(() => {
+    if (seo) {
+      // (Logic router.asPath đã bị loại bỏ)
+      setSeo_canonical(seo?.seo_canonical); // Dùng mock
+      setSeo_tt(seo?.seo_tt);
+      setSeo_des(seo?.seo_des);
+    }
+  }, [seo]);
+
   return (
     <>
       {/* <Head> đã bị loại bỏ */}
       <ModalLock />
       <Spin size="large" spinning={loading}>
-        <Header />
+        {/* <Header /> */}
 
         {address && (
-          <Search
+          <SearchJobBar
             changeCity={handleChangeCity}
             keySearch={keySearch}
             address={address}
@@ -495,7 +492,7 @@ export default function JobList() {
                 }
               >
                 {data?.total > 0 && (
-                  <TinTuyenDung
+                  <Jobs
                     pageSize={pageSize}
                     total={data?.total}
                     workInfo={workInfo}
@@ -512,7 +509,7 @@ export default function JobList() {
 
                 <div className={s.grid_item_detail}>
                   {newsDetail && (
-                    <ChiTietTinTuyenDung
+                    <JobDetail
                       newsDetail={newsDetail}
                       handleCloseSeeNow={handleSeeNow}
                       handleLuuTin={handleLuuTin}
@@ -529,9 +526,9 @@ export default function JobList() {
             </div>
           </div>
 
-          <div>
+          {/* <div>
             <TuKhoaLienQuan keyTag={keyTag} />
-          </div>
+          </div> */}
 
           <div className={s.box_news_2}>
             <div className={s.grid_item_2} style={{
@@ -613,7 +610,7 @@ export default function JobList() {
                 </div>
 
                 <div className={s.textThank}>Thanks for watching!</div>
-                <img
+                <img // <Image> đã được thay bằng <img>
                   src={
                     "/images/nha-tuyen-dung/chi-tiet-tin-tuyen-dung/letter.png"
                   }
@@ -662,7 +659,9 @@ export default function JobList() {
                   <div className={s.info}>
                     <div className={s.item_info}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                         {/* ... (path SVG) ... */}
+                         <path d="M5.78125 9.98803C5.78125 10.848 6.44125 11.5414 7.26125 11.5414H8.93458C9.64792 11.5414 10.2279 10.9347 10.2279 10.188C10.2279 9.3747 9.87458 9.08803 9.34792 8.90137L6.66125 7.96803C6.13458 7.78137 5.78125 7.4947 5.78125 6.68137C5.78125 5.9347 6.36125 5.32803 7.07458 5.32803H8.74792C9.56792 5.32803 10.2279 6.02137 10.2279 6.88137" stroke="#474747" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M8 4.43481V12.4348" stroke="#474747" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M7.9987 15.1014C11.6806 15.1014 14.6654 12.1166 14.6654 8.43473C14.6654 4.75283 11.6806 1.76807 7.9987 1.76807C4.3168 1.76807 1.33203 4.75283 1.33203 8.43473C1.33203 12.1166 4.3168 15.1014 7.9987 15.1014Z" stroke="#474747" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                       {getMucLuong(
                         newsDetail?.new_money_type,
@@ -673,13 +672,16 @@ export default function JobList() {
                     </div>
                     <div className={s.item_info}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                         {/* ... (path SVG) ... */}
+                         <path d="M7.99992 9.38827C9.14867 9.38827 10.0799 8.45702 10.0799 7.30827C10.0799 6.15952 9.14867 5.22827 7.99992 5.22827C6.85117 5.22827 5.91992 6.15952 5.91992 7.30827C5.91992 8.45702 6.85117 9.38827 7.99992 9.38827Z" stroke="#474747" />
+                         <path d="M2.41379 6.09473C3.72712 0.321401 12.2805 0.328068 13.5871 6.1014C14.3538 9.48807 12.2471 12.3547 10.4005 14.1281C9.06046 15.4214 6.94046 15.4214 5.59379 14.1281C3.75379 12.3547 1.64712 9.4814 2.41379 6.09473Z" stroke="#474747" />
                       </svg>
                       {newsDetail?.new_city && listCityText(newsDetail?.new_city.split(',').map(Number))}
                     </div>
                     <div className={s.item_info}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
-                         {/* ... (path SVG) ... */}
+                         <path d="M14 9.16666C14 12.4804 11.3137 15.1667 8 15.1667C4.68629 15.1667 2 12.4804 2 9.16666C2 5.85295 4.68629 3.16666 8 3.16666C11.3137 3.16666 14 5.85295 14 9.16666Z" stroke="#474747" />
+                         <path d="M8 9.16667V6.5" stroke="#474747" strokeLinecap="round" strokeLinejoin="round" />
+                         <path d="M6.66675 1.83334H9.33341" stroke="#474747" strokeLinecap="round" />
                       </svg>
                       {getDate(newsDetail?.new_update_time)}
                     </div>
@@ -726,7 +728,7 @@ export default function JobList() {
                     return (
                       <div key={index} className={s.item_info_text}>
                         <div className={s.title}>{item.title}</div>
-                        {/* Thay <pre> bằng <div> để CSS xử lý xuống dòng */}
+                        {/* Sửa <pre> thành <div> để render HTML */}
                         <div className={s.content} dangerouslySetInnerHTML={{ __html: item.content }} />
                       </div>
                     );
@@ -808,7 +810,7 @@ export default function JobList() {
           </div>
         </Modal>
 
-        <Footer />
+        {/* <Footer /> */}
       </Spin>
     </>
   );
