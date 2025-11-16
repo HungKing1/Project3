@@ -1,10 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Modal, Spin } from "antd";
-import JobDetail from "./job_detail/JobDetail";
+import JobPreviewCard from "./job_detail/JobPreviewCard";
 import SearchJobBar from "./search_job_bar/SearchJobBar";
 import Jobs from "./jobs/Jobs";
 import s from "./styles.module.scss"
+import axios from "axios";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // --- GIẢ LẬP CÁC COMPONENT CON ---
 const Login = ({ isOpenSignIn, handleCancelSignIn }) => {
@@ -18,15 +21,8 @@ const Login = ({ isOpenSignIn, handleCancelSignIn }) => {
     </div>
   ) : null;
 };
-const Footer = () => <div style={{ background: '#f0f0f0', padding: 20, textAlign: 'center', marginTop: 20 }}>Đây là Footer (Mẫu)</div>;
-const Header = () => <div style={{ background: '#f0f0f0', padding: 20, textAlign: 'center', fontWeight: 'bold' }}>Đây là Header (Mẫu)</div>;
-// Import các component thật (vì chúng đã được chuyển đổi)
 
-
-const TuKhoaLienQuan = () => <div style={{ padding: 20, background: '#f9f9f9', margin: '20px 0' }}>Đây là Từ khóa liên quan (Mẫu)</div>;
 const ModalLock = () => null;
-// --- KẾT THÚC GIẢ LẬP COMPONENT ---
-
 
 // --- DỮ LIỆU MẪU (Mock Data) & HÀM GIẢ LẬP (Stubs) ---
 const mockData = {
@@ -131,7 +127,17 @@ const createLinkTilte2 = (title) => title ? title.toLowerCase().replace(/ /g, '-
 // --- KẾT THÚC Mock Data & Stubs ---
 
 
-export default function JobListSearch() {
+export default function JobListSearch({jobCardList, setPage, page, totalPage, totalJob}) {
+
+  // State cho search
+  const [city, setCity] = useState(); // Giá trị tỉnh thành đã chọn
+  const [exp, setExp] = useState();
+  const [salary, setSalary] = useState();
+  const [edu, setEdu] = useState();
+  const [workType, setWorkType] = useState();
+  const [district, setDistrict] = useState();
+  const [pageSize, setPageSize] = useState(10);
+  const [districtList, setDistritList] = useState();
   
   // Sử dụng mock data thay vì props
   const data = mockData;
@@ -150,14 +156,12 @@ export default function JobListSearch() {
   const [nameCity, setNameCity] = useState("Hà Nội"); // Mock
   const [nameJob, setNameJob] = useState('Việc Làm Mẫu'); // Mock
   const [listDistrict, setListDistrict] = useState(data?.listDistrict);
-  const [pageSize, setPageSize] = useState(20);
   const [listJob, setListJob] = useState([
     { value: 0, label: "Tất cả ngành nghề" },
     ...getJob()
   ]);
   const [isOpenLetter, setIsOpenLetter] = useState(false);
   const [workInfo, setWorkInfo] = useState(data?.data || []);
-  const [totalPage, setTotalPage] = useState(totalItem);
   const [idNews, setIdNews] = useState(0);
   const [newsDetail, setNewsDetail] = useState(null); // Khởi tạo là null
   const [keyTag, setKeyTag] = useState(getKeyTag());
@@ -402,7 +406,6 @@ export default function JobListSearch() {
 
     setWorkInfo(data?.data);
     setTotal(data?.total);
-    setTotalPage(Math.round(data?.total / 20));
     // setTotalHuyHieu(mockTotalHuyHieu); // Dùng mock
     
     handleRadioChange(choice);
@@ -419,6 +422,15 @@ export default function JobListSearch() {
     }
   }, [seo]);
 
+
+  useEffect(() => {
+    try {
+      
+    } catch (error) {
+      
+    }
+  }, [])
+
   return (
     <>
       {/* <Head> đã bị loại bỏ */}
@@ -428,6 +440,30 @@ export default function JobListSearch() {
 
         {address && (
           <SearchJobBar
+            totalJob={totalJob}
+            // Truyền giá trị
+            city={city}
+            exp={exp}
+            salary={salary}
+            edu={edu}
+            workType={workType}
+            district={district}
+            page={page}
+            pageSize={pageSize}
+            districtList={districtList}
+
+            // Truyền hàm set
+            setCity={setCity}
+            setExp={setExp}
+            setSalary={setSalary}
+            setEdu={setEdu}
+            setWorkType={setWorkType}
+            setDistrict={setDistrict}
+            setPage={setPage}
+            setPageSize={setPageSize}
+            setDistritList={setDistritList}
+          
+            //
             changeCity={handleChangeCity}
             keySearch={keySearch}
             address={address}
@@ -446,7 +482,7 @@ export default function JobListSearch() {
         )}
 
         <div className={s.body}>
-          <div className={s.router} style={{ marginTop: "15px" }}>
+          {/* <div className={s.router} style={{ marginTop: "15px" }}>
             <div className={s.textBlue} onClick={() => navigateToAbout("/")}>
               Trang chủ
             </div>
@@ -461,7 +497,7 @@ export default function JobListSearch() {
           </div>
           <div className={s.header} style={{ marginTop: "unset" }}>
             <h1>Tuyển Dụng, Tìm Việc Làm{nameJob && ` ${nameJob}`}{nameCity && ` Tại ${nameCity}`}{!nameJob && !nameCity && ` Hấp Dẫn Nhất`}</h1>
-          </div>
+          </div> */}
 
           <div className={s.box_news_1}>
             <h2 style={{
@@ -493,10 +529,14 @@ export default function JobListSearch() {
               >
                 {data?.total > 0 && (
                   <Jobs
+                    jobCardList={jobCardList}
+
+                    setPage={setPage}
                     pageSize={pageSize}
+                    totalPage={totalPage}
+
                     total={data?.total}
                     workInfo={workInfo}
-                    totalPage={totalPage}
                     seeNow={seeNow}
                     newId={idNews}
                     handleChatNgay={handleChatNgay}
@@ -509,7 +549,7 @@ export default function JobListSearch() {
 
                 <div className={s.grid_item_detail}>
                   {newsDetail && (
-                    <JobDetail
+                    <JobPreviewCard
                       newsDetail={newsDetail}
                       handleCloseSeeNow={handleSeeNow}
                       handleLuuTin={handleLuuTin}

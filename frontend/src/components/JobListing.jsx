@@ -1,8 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { use, useEffect, useRef, useState } from 'react';
 import DetailCompany from './DetailCompany';
 import Pagination from './Pagination';
 import { Carousel } from 'antd';
+import axios from 'axios';
 // import dataJson from '../data.json'; // Đã thay thế bằng mockDataJson
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // --- Dữ liệu mẫu (Mock Data) ---
 
@@ -44,6 +47,11 @@ const JobListing = () => {
   // Logic UI (tính toán số trang)
   const totalItem = Math.ceil(data?.ViecLamHapDan.length / 18);
   const divArray = Array.from({ length: totalItem }, (_, index) => index);
+
+  const [viecLamHapDan, setVietLamHapDan] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(18);
+  const [totalPage, setTotalPage] = useState();
   
   // Dữ liệu mẫu cho tags (đang bị comment)
   const tags = [
@@ -71,6 +79,25 @@ const JobListing = () => {
   };
 
   // Logic nghiệp vụ (handleSearchFollowAdress) đã bị loại bỏ
+
+  const getViecLamHapDan = async () => {
+    try {
+      const {data} = await axios.get(`${API_BASE_URL}/public/get-jobs`, {
+        params: { page, pageSize},
+        withCredentials: true
+      })  
+      if(data.success) {
+        setVietLamHapDan(data.data.content)
+        setTotalPage(data.data.page.totalPages)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getViecLamHapDan();
+  }, [page])
 
   return (
     <div className="box_wrap">
@@ -129,24 +156,19 @@ const JobListing = () => {
         </div> */}
         
         <div>
-          <Carousel ref={ref} dots={false}>
-            {divArray?.map((item, index) => (
-              <div className="list_company" key={index}>
-                {data?.ViecLamHapDan?.slice(
-                  index * 18,
-                  (index + 1) * 18
-                ).map((item, index) => {
-                  return <DetailCompany data={item} key={index} />;
-                })}
-              </div>
-            ))}
-          </Carousel>
+          <div className="list_company">
+            {viecLamHapDan?.map((item, index) => {
+              return <DetailCompany data={item} key={index} />;
+            })}
+          </div>
         </div>
         {data?.ViecLamHapDan.length > 0 && (
           <Pagination
             handleNextClick={handleNextClick}
             handlePrevClick={handlePrevClick}
-            totalItem={totalItem}
+            totalPage={totalPage}
+            page={page}
+            setPage={setPage}
             handleGoToSlide={handleGoToSlide}
           />
         )}

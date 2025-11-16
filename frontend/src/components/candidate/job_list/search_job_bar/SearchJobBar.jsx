@@ -1,85 +1,42 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, use } from 'react';
 import { Select } from 'antd';
 import s from './styles.module.scss';
+import * as selectData from "../../../../assets/selectData.js"
+import * as callData from "../../../../assets/function.js"
+import { set } from 'react-hook-form';
+import axios from 'axios';
+import { param } from 'jquery';
+import { createSearchParams, useNavigate } from 'react-router-dom';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // --- Dữ liệu mẫu (Mock Data) ---
-const mockTotal = 1234;
 const mockTotalHuyHieu = 50;
-
-const mockListCity = [
-  { cit_id: 0, cit_name: 'Tất cả tỉnh thành' },
-  { cit_id: 1, cit_name: 'Hà Nội' },
-  { cit_id: 45, cit_name: 'Hồ Chí Minh' },
-  { cit_id: 26, cit_name: 'Đà Nẵng' },
-];
-
-const mockListDistrict = [
-  { value: 10, label: 'Quận Cầu Giấy' },
-  { value: 11, label: 'Quận Ba Đình' },
-  { value: 12, label: 'Quận Hoàn Kiếm' },
-  { value: 13, label: 'Quận Hai Bà Trưng' },
-  { value: 14, label: 'Quận Đống Đa' },
-  { value: 15, label: 'Quận Tây Hồ' },
-];
-
-const mockListJob = [
-  { value: 0, label: 'Tất cả ngành nghề' },
-  { value: 1, label: 'Kế toán' },
-  { value: 2, label: 'IT Phần mềm' },
-  { value: 3, label: 'Marketing' },
-];
-
-const mockListExp = [
-  { value: 0, label: 'Tất cả kinh nghiệm' },
-  { value: 1, label: 'Chưa có kinh nghiệm' },
-  { value: 2, label: '1 năm' },
-  { value: 3, label: '2 năm' },
-];
-
-const mockListSalary = [
-  { value: 0, label: 'Tất cả mức lương' },
-  { value: 1, label: 'Dưới 10 triệu' },
-  { value: 2, label: '10 - 15 triệu' },
-  { value: 3, label: '15 - 20 triệu' },
-];
-
-const mockListLevel = [
-  { value: 0, label: 'Tất cả trình độ' },
-  { value: 1, label: 'Đại học' },
-  { value: 2, label: 'Cao đẳng' },
-  { value: 3, label: 'Trung cấp' },
-];
-
-const mockListWorkForm = [
-  { value: 0, label: 'Tất cả hình thức' },
-  { value: 1, label: 'Full-time' },
-  { value: 2, label: 'Part-time' },
-  { value: 3, label: 'Remote' },
-];
-// --- Kết thúc Dữ liệu mẫu ---
 
 // Hàm giả lập (stub) cho filter của AntD
 const filterOption = (input, option) =>
   (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
-const SearchJobBar = () => {
+const SearchJobBar = (props) => {
   const tagContainerRef = useRef(null);
+
+  const navigate = useNavigate()
 
   // --- State cho UI ---
   const [keyword, setKeyword] = useState(""); // từ khóa thanh tìm kiếm
   const [filter, setFilter] = useState(false); // Bật tắt tìm kiếm nâng cao
   const [showDistrict, setShowDistrict] = useState(false); // Hiện nút chọn quận huyện
-  
-  // State cho các giá trị được chọn
-  const [selectCity, setSelectCity] = useState(0); // Giá trị tỉnh thành đã chọn
-  const [selectDistrict, setSelectDistrict] = useState(0); // Giá trị quận huyện đã chọn
-  const [selectJob, setSelectJob] = useState(0); // Giá trị ngành nghề đã chọn
-  const [selectExp, setSelectExp] = useState(0); // Giá trị kinh nghiệm đã chọn
-  const [selectSalary, setSelectSalary] = useState(0); // Giá trị mức lương đã chọn
-  const [selectLevel, setSelectLevel] = useState(0); // Giá trị học vấn đã chọn
-  const [selectWorkForm, setSelectWorkForm] = useState(0); // Giá trị hình thức làm việc đã chọn
 
+  const {
+        // Giá trị
+        city, exp, salary, edu, workType, district, page, pageSize, districtList,
+        // Hàm set
+        setCity, setExp, setSalary, setEdu, setWorkType, setDistrict, setPage, setPageSize, setDistritList,
+        //
+        totalJob
+    } = props;
+  
   // (Logic `useSearchVariables`, `useContext`, `useRouter` đã bị loại bỏ)
   // (Logic `useEffect` để đồng bộ URL và fetch data đã bị loại bỏ)
   
@@ -92,28 +49,22 @@ const SearchJobBar = () => {
   const handleFilter = () => {
     setFilter(!filter);
     // Logic kiểm tra URL params đã bị loại bỏ
-    if (selectCity !== 0) {
+    if (city !== 0) {
       setShowDistrict(true);
     }
   };
 
-  // Hàm stub cho tìm kiếm
-  const handleSearch = () => {
-    alert('Bắt đầu tìm kiếm! (Logic đã bị loại bỏ)');
-    // (onClickSearch prop đã bị loại bỏ)
-  };
-
   const apply = () => {
     setFilter(false);
-    handleSearch();
+    handleSearchJob();
   };
 
   const onChangeDistrict = (value) => {
-    setSelectDistrict(value);
+    setDistrict(value);
   };
 
   const onChangeCity = (value) => {
-    setSelectCity(value);
+    setCity(value);
     if (value === 0) {
       setShowDistrict(false);
       setSelectDistrict(0);
@@ -122,34 +73,30 @@ const SearchJobBar = () => {
     }
   };
 
-  const onChangeJob = (value) => {
-    setSelectJob(value);
-  };
-
   const onSelectExp = (value) => {
-    setSelectExp(value);
+    setExp(value);
   };
 
   const onSelectSalary = (value) => {
-    setSelectSalary(value);
+    setSalary(value);
   };
 
   const onSelectLevel = (value) => {
-    setSelectLevel(value);
+    setEdu(value);
   };
 
   const onSelectWorkForm = (value) => {
-    setSelectWorkForm(value);
+    setWorkType(value);
   };
 
   const resetFilter = () => {
-    setSelectCity(0);
-    setSelectDistrict(0);
-    setSelectJob(0);
-    setSelectExp(0);
-    setSelectSalary(0);
-    setSelectLevel(0);
-    setSelectWorkForm(0);
+    setCity();
+    setExp();
+    setSalary();
+    setEdu();
+    setWorkType();
+    setDistrict();  
+    setDistritList();
     setShowDistrict(false);
   };
 
@@ -175,6 +122,29 @@ const SearchJobBar = () => {
         behavior: 'smooth',
       });
     }
+  };
+    // Hàm cho tìm kiếm job theo cac truong
+  const handleSearchJob = async () => {
+    const params = {
+      city, 
+      exp,
+      salary,
+      job_level: edu,
+      work_type: workType,
+      district
+    }
+
+    Object.keys(params).forEach(key => {
+            const value = params[key];
+            if (value === null || value === undefined || value === "") {
+                delete params[key];
+            }
+        });
+
+    navigate({
+          pathname: '/tim-viec-lam',
+          search: createSearchParams(params).toString()
+      });
   };
 
   return (
@@ -208,15 +178,20 @@ const SearchJobBar = () => {
               </svg>
               <Select
                 showSearch
-                value={selectCity}
+                value={city}
                 style={{ width: '100%' }}
-                onChange={onChangeCity}
+                onChange={async (value) => {
+                  setCity(value)
+                  const data = await callData.getDistrictsByCityId(value)
+                  if(data) {
+                    setDistritList(data)
+                  }
+                }}
                 filterOption={filterOption}
                 className={`${s.select} select-location city`}
-                options={mockListCity.map(item => ({
-                  value: item.cit_id,
-                  label: item.cit_name
-                }))}
+                options={selectData.cities}
+                fieldNames={{label: 'name', value: 'id'}}
+                placeholder="Tất cả tỉnh thành"
               />
             </div>
             
@@ -228,12 +203,12 @@ const SearchJobBar = () => {
                 resetFilter();
               }}
             >Xóa lọc</div>
-            <div className={s.button_search} onClick={handleSearch}>Tìm kiếm</div>
+            <div className={s.button_search} onClick={handleSearchJob}>Tìm kiếm</div>
           </div>
 
           <div className={s.item_2}>
             <div className={s.total}>
-              <span className={s.text}>Tổng <span>{mockTotal}</span> kết quả</span>
+              <span className={s.text}>Tổng <span>{totalJob}</span> kết quả</span>
               {/* (Logic huy hiệu tia sét đã bị stub) */}
             </div>
 
@@ -251,24 +226,28 @@ const SearchJobBar = () => {
                 <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/dollar_circle.png"} alt={"Logo kinh nghiem"} width={24} height={24} style={{ height: "24px", width: "24px" }} />
                 <Select
                   showSearch
-                  value={selectExp}
+                  value={exp}
                   optionFilterProp="children"
-                  onChange={onSelectExp}
+                  onChange={value => setExp(value)}
                   filterOption={filterOption}
-                  options={mockListExp} // Dùng mock data
                   className={"select_search_1"}
+                  options={selectData.experienceYears}
+                  fieldNames={{label: 'name', value: 'id'}}
+                  placeholder="Tất cả kinh nghiệm"
                 />
               </div>
               <div className={s.box_search_2}>
                 <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/select_salary.png"} alt={"Logo luong"} width={24} height={24} style={{ height: "24px", width: "24px" }} />
                 <Select
                   showSearch
-                  value={selectSalary}
+                  value={salary}
                   optionFilterProp="children"
-                  onChange={onSelectSalary}
+                  onChange={value => setSalary(value)}
                   filterOption={filterOption}
-                  options={mockListSalary} // Dùng mock data
                   className={"select_search_1"}
+                  options={selectData.salaries}
+                  fieldNames={{label: 'name', value: 'id'}}
+                  placeholder="Tất cả mức lương"
                 />
               </div>
               <div className={s.box_search_3}>
@@ -277,38 +256,42 @@ const SearchJobBar = () => {
                 </svg>
                 <Select
                   showSearch
-                  value={selectLevel}
+                  value={edu}
                   optionFilterProp="children"
-                  onChange={onSelectLevel}
+                  onChange={value => setEdu(value)}
                   filterOption={filterOption}
-                  options={mockListLevel} // Dùng mock data
                   className={"select_search_1"}
+                  options={selectData.jobLevels}
+                  fieldNames={{label: 'name', value: 'id'}}
+                  placeholder="Tất cả trình độ"
                 />
               </div>
               <div className={s.box_search_4}>
                 <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/select_wf.png"} alt={"Logo hinh thuc"} width={24} height={24} style={{ height: "24px", width: "24px" }} />
                 <Select
                   showSearch
-                  value={selectWorkForm}
+                  value={workType}
                   optionFilterProp="children"
-                  onChange={onSelectWorkForm}
+                  onChange={value => setWorkType(value)}
                   filterOption={filterOption}
-                  options={mockListWorkForm} // Dùng mock data
                   className={"select_search_1"}
-                />
+                  options={selectData.workTypes}
+                  fieldNames={{label: 'name', value: 'id'}}
+                  placeholder="Tất cả hình thức làm việc"                
+                  />
               </div>
               <div className={s.box_search_5} style={{
                 display: showDistrict ? 'flex' : 'none' // Dùng mock data
               }}>
-                <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/left_icon.svg"} alt={"Logo trai"} width={28} height={28} style={{ height: "28px", width: "28px" }} onClick={scrollLeft} />
+                {districtList && <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/left_icon.svg"} alt={"Logo trai"} width={28} height={28} style={{ height: "28px", width: "28px" }} onClick={scrollLeft} />}
                 <div className={s.district_wrap} ref={tagContainerRef}>
-                  {mockListDistrict?.map((item) => { // Dùng mock data
+                  {districtList?.map((item) => { // Dùng mock data
                     return (
-                      <div key={item.value} className={selectDistrict == item.value ? s.tag_exp_select : s.tag_exp} onClick={() => onChangeDistrict(item.value)}>{item.label}</div>
+                      <div key={item.id} style={{cursor: "pointer"}} className={district == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onChangeDistrict(item.id)}>{item.name}</div>
                     )
                   })}
                 </div>
-                <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/right_icon.svg"} alt={"Logo phai"} width={28} height={28} style={{ height: "28px", width: "28px" }} onClick={scrollRight} />
+                {districtList && <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/right_icon.svg"} alt={"Logo phai"} width={28} height={28} style={{ height: "28px", width: "28px" }} onClick={scrollRight} /> }
               </div>
             </div>
           ) : null}
@@ -337,14 +320,23 @@ const SearchJobBar = () => {
                   </svg>
                   <Select
                     showSearch
-                    value={selectCity}
+                    value={city}
                     optionFilterProp="children"
-                    onChange={onChangeCity}
+                    onChange={async (value) => {
+                      setCity(value)
+                      try {
+                        const data = await callData.getDistrictsByCityId(value)
+                        if(data) {
+                          setDistritList(data)
+                        }
+                      } catch (error) {
+                        console.log(error)
+                      }
+                    }}                    
                     filterOption={filterOption}
-                    options={mockListCity?.map((city) => ({ // Dùng mock data
-                      label: city.cit_name,
-                      value: Number(city.cit_id)
-                    }))}
+                    options={selectData.cities}
+                    fieldNames={{label: 'name', value: 'id'}}
+                    placeholder="Tất cả tỉnh thành"
                     className={"select_search_1"}
                   />
                 </div>
@@ -353,9 +345,9 @@ const SearchJobBar = () => {
               <div className={s.box_2}>
                 <span className={s.text_exp}>Kinh nghiệm</span>
                 <div className={s.select_exp}>
-                  {mockListExp?.map((item) => { // Dùng mock data
+                  {selectData.experienceYears?.map((item) => { // Dùng mock data
                     return (
-                      <div key={item.value} className={selectExp == item.value ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectExp(item.value)}>{item.label}</div>
+                      <div key={item.id} className={exp == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectExp(item.id)}>{item.name}</div>
                     )
                   })}
                 </div>
@@ -364,9 +356,9 @@ const SearchJobBar = () => {
               <div className={s.box_2}>
                 <span className={s.text_exp}>Mức lương</span>
                 <div className={s.select_exp}>
-                  {mockListSalary?.map((item) => { // Dùng mock data
+                  {selectData.salaries?.map((item) => { // Dùng mock data
                     return (
-                      <div key={item.value} className={selectSalary == item.value ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectSalary(item.value)}>{item.label}</div>
+                      <div key={item.id} className={salary == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectSalary(item.id)}>{item.name}</div>
                     )
                   })}
                 </div>
@@ -375,9 +367,9 @@ const SearchJobBar = () => {
               <div className={s.box_2}>
                 <span className={s.text_exp}>Trình độ</span>
                 <div className={s.select_exp}>
-                  {mockListLevel?.map((item) => { // Dùng mock data
+                  {selectData.jobLevels?.map((item) => { // Dùng mock data
                     return (
-                      <div key={item.value} className={selectLevel == item.value ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectLevel(item.value)}>{item.label}</div>
+                      <div key={item.id} className={edu == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectLevel(item.id)}>{item.name}</div>
                     )
                   })}
                 </div>
@@ -386,9 +378,9 @@ const SearchJobBar = () => {
               <div className={s.box_2}>
                 <span className={s.text_exp}>Hình thức làm việc</span>
                 <div className={s.select_exp}>
-                  {mockListWorkForm?.map((item) => { // Dùng mock data
+                  {selectData.workTypes?.map((item) => { // Dùng mock data
                     return (
-                      <div key={item.value} className={selectWorkForm == item.value ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectWorkForm(item.value)}>{item.label}</div>
+                      <div key={item.id} className={workType == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectWorkForm(item.id)}>{item.name}</div>
                     )
                   })}
                 </div>

@@ -37,11 +37,11 @@ public class CandidateService implements ICandidateService {
     @Override
     public ApiResponse updatePersonalInfo(PersonalInfoRequest request) {
         String token = jwtUtil.extractToken();
-        Long candidateId = jwtUtil.extractId(token);
+        String email = jwtUtil.extractEmail(token);
         try {
-            Optional<Candidate> optionalCandidate = candidateRepository.findById(candidateId);
+            Optional<Candidate> optionalCandidate = candidateRepository.findByEmail(email);
             if (optionalCandidate.isEmpty()) {
-                return new ApiResponse(false, "Ứng viên không tồn tại");
+                return new ApiResponse(false, "Ứng viên không tồn tại", null);
             }
             Candidate candidate = optionalCandidate.get();
 
@@ -60,17 +60,17 @@ public class CandidateService implements ICandidateService {
             candidateRepository.save(candidate);
 
             Map<String, String> successData = Map.of("message", "Cập nhật thông tin cá nhân thành công");
-            return new ApiResponse(true, successData);
+            return new ApiResponse(true, "Cập nhật thông tin cá nhân thành công" ,successData);
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" , errorData);
         }
     }
 
     @Override
     public ApiResponse updateDesiredJob(DesiredJobRequest request) {
         String token = jwtUtil.extractToken();
-        Long candidateId = jwtUtil.extractId(token);
+        String email = jwtUtil.extractEmail(token);
         try {
             DesiredJob desiredJob;
             if (request.getId() != null) {
@@ -98,9 +98,9 @@ public class CandidateService implements ICandidateService {
 
             desiredJobRepository.save(desiredJob);
 
-            Optional<Candidate> optionalCandidate = candidateRepository.findById(candidateId);
+            Optional<Candidate> optionalCandidate = candidateRepository.findByEmail(email);
             if (optionalCandidate.isEmpty()) {
-                return new ApiResponse(false, "Ứng viên không tồn tại");
+                return new ApiResponse(false, "Ứng viên không tồn tại", null);
             }
             Candidate candidate = optionalCandidate.get();
 
@@ -111,10 +111,10 @@ public class CandidateService implements ICandidateService {
             candidateRepository.save(candidate);
 
             Map<String, String> successData = Map.of("message", "Cập nhật công việc mong muốn thành công");
-            return new ApiResponse(true, successData);
+            return new ApiResponse(true, "Cập nhật công việc mong muốn thành công", successData);
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" , errorData);
         }
     }
 
@@ -124,7 +124,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" , errorData);
         }
     }
 
@@ -134,7 +134,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" , errorData);
         }
     }
 
@@ -144,7 +144,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại", errorData);
         }
     }
 
@@ -154,7 +154,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" , errorData);
         }
     }
 
@@ -164,7 +164,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" ,errorData);
         }
     }
 
@@ -174,7 +174,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" , errorData);
         }
     }
 
@@ -184,7 +184,7 @@ public class CandidateService implements ICandidateService {
             return null;
         } catch (Exception e) {
             Map<String, String> errorData = Map.of("message", "Cập nhật thất bại: " + e.getMessage());
-            return new ApiResponse(false, errorData);
+            return new ApiResponse(false, "Cập nhật thất bại" ,errorData);
         }
     }
 }

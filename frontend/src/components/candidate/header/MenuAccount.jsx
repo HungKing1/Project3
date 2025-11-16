@@ -1,6 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import s from './menu-account.module.css';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // --- Dữ liệu mẫu (Mock Data) & Hàm giả lập (Stubs) ---
 
@@ -305,6 +309,24 @@ const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
         }
     }, [setIsOutside]) // Phụ thuộc vào prop
 
+
+    const logoutCandidate = async(e) => {
+    e.preventDefault();
+        try {
+            const {data} = await axios.post(`${API_BASE_URL}/auth/candidate/logout`, {}, {withCredentials: true})
+            if(data.success) {
+                localStorage.removeItem('access_token')
+                toast.success("Đăng xuất thành công")
+                setTimeout(() => {
+                window.location.reload();
+                }, 1000);
+            } else {
+                toast.error("Đăng xuất thất bại")
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     return (
         <div id="content_menu" className={s['menu-wrapper']} ref={menuRef}>
             <div className={s["box-account"]}>
@@ -384,12 +406,7 @@ const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
             {checkAccount ? renderMenuItems(listMenuPerson) : renderMenuItems(listMenuCompany)}
             
             <div className={s["logout"]}>
-                <div className={s["content-value"]} onClick={() => {
-                    // Logic (logOut()) đã bị loại bỏ
-                    if(setCheckLogin) setCheckLogin(false);
-                    alert('Đăng xuất! (Cần tải lại trang)');
-                    // window.location.reload();
-                }}>
+                <div className={s["content-value"]} onClick={(e) => logoutCandidate(e)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <g clipPath="url(#clip0_1738_25132)">
                             <path d="M1.66653 6.66667L1.66653 13.3333C1.66653 15.6904 1.66653 16.8689 2.39876 17.6011C3.13099 18.3333 4.3095 18.3333 6.66653 18.3333L7.49986 18.3333C9.85688 18.3333 11.0354 18.3333 11.7676 17.6011C12.4079 16.9608 12.4883 15.9792 12.4984 14.1667M12.4984 5.83334C12.4883 4.02082 12.4079 3.03922 11.7676 2.3989C11.0354 1.66667 9.85688 1.66667 7.49986 1.66667L6.66653 1.66667C4.30951 1.66667 3.13099 1.66667 2.39876 2.3989C2.14893 2.64874 1.98434 2.95052 1.8759 3.33334" stroke="#FF0000" strokeWidth="1.5" strokeLinecap="round" />

@@ -25,7 +25,7 @@ const createLinkTilte2 = (title) => title ? title.toLowerCase().replace(/ /g, '-
 const checkLoginServerSide = () => false; // Giả lập chưa đăng nhập
 // ---
 
-const JobDetail = ({
+const JobPreviewCard = ({
   newsDetail,
   handleCloseSeeNow,
   handleLuuTin,
@@ -179,4 +179,4 @@ const JobDetail = ({
   );
 };
 
-export default JobDetail;
+export default JobPreviewCard;

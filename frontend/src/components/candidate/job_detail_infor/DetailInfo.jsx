@@ -9,7 +9,7 @@ const getGioiTinh = (id) => "Không yêu cầu";
 const getKinhNghiem = (id) => "1 năm";
 const getHocVan = (id) => "Đại học";
 const getMucLuong = (type, from, to, money) => "20 - 30 triệu";
-const getHanNop = (timestamp) => "Còn 10 ngày";
+const getHanNop = (timestamp) => "Chưa cập nhật";
 const getDate = (timestamp) => new Date(timestamp * 1000).toLocaleDateString('vi-VN');
 const checkNtd = () => true; // Giả lập là UV để hiển thị nút
 // ---
@@ -35,7 +35,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                     </div>
                     <div className={s.job_info_detail}>
                         <div className={s.job_info_field}>Cấp bậc</div>
-                        <div className={s.job_info_value}>{detailInfo?.cap_bac ? getCapBac(detailInfo.cap_bac) : 'Xem chi tiết tin'}</div>
+                        <div className={s.job_info_value}>{detailInfo?.jobLevelName || 'Xem chi tiết tin'}</div>
                     </div>
                 </div>
                 <div className={s.job_info_item}>
@@ -47,7 +47,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                     </div>
                     <div className={s.job_info_detail}>
                         <div className={s.job_info_field}>Hình thức làm việc</div>
-                        <div className={s.job_info_value}>{detailInfo?.hinh_thuc_lam_viec ? getHinhThuc(detailInfo?.hinh_thuc_lam_viec) : 'Xem chi tiết tin'}</div>
+                        <div className={s.job_info_value}>{detailInfo?.workTypeName || 'Xem chi tiết tin'}</div>
                     </div>
                 </div>
                 <div className={s.job_info_item}>
@@ -59,7 +59,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                     </div>
                     <div className={s.job_info_detail}>
                         <div className={s.job_info_field}>Giới tính</div>
-                        <div className={s.job_info_value}>{detailInfo?.gioi_tinh ? getGioiTinh(detailInfo?.gioi_tinh) : getGioiTinh(0)}</div>
+                        <div className={s.job_info_value}>{detailInfo?.gender === 1 ? 'Nam' : 'Nữ' || 'Không yêu cầu'}</div>
                     </div>
                 </div>
                 <div className={s.job_info_item}>
@@ -71,7 +71,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                     </div>
                     <div className={s.job_info_detail}>
                         <div className={s.job_info_field}>Kinh nghiệm</div>
-                        <div className={s.job_info_value}>{detailInfo?.kinh_nghiem ? getKinhNghiem(detailInfo.kinh_nghiem) : 'Xem chi tiết tin'}</div>
+                        <div className={s.job_info_value}>{detailInfo?.experienceYearName || 'Xem chi tiết tin'}</div>
                     </div>
                 </div>
                 <div className={s.job_info_item}>
@@ -95,7 +95,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                     </div>
                     <div className={s.job_info_detail}>
                         <div className={s.job_info_field}>Mức lương</div>
-                        <div className={s.job_info_value}>{detailInfo?.new_money != 0 ? getMucLuong(detailInfo.new_money_type, detailInfo.new_money_from, detailInfo.new_money_to, detailInfo.new_money) : 'Thỏa thuận'}</div>
+                        <div className={s.job_info_value}>{detailInfo?.salaryName || 'Thỏa thuận'}</div>
                     </div>
                 </div>
                 <div className={s.job_info_item}>

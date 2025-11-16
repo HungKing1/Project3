@@ -2,22 +2,10 @@ import { ConfigProvider, Select } from "antd";
 import s from "./style.module.scss";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as selectData from "../../assets/selectData.js"
+import axios from "axios";
 
-// --- Dữ liệu mẫu (Mock Data) ---
-const mockCities = [
-  { value: 1, label: 'Hà Nội' },
-  { value: 2, label: 'Hồ Chí Minh' },
-  { value: 45, label: 'Đà Nẵng' },
-  { value: 13, label: 'Bắc Ninh' },
-];
-
-const mockJobs = [
-  { value: 10, label: 'Kế toán', alias: 'ke-toan' },
-  { value: 12, label: 'Lập trình viên', alias: 'lap-trinh-vien' },
-  { value: 15, label: 'Nhân viên kinh doanh', alias: 'nhan-vien-kinh-doanh' },
-  { value: 21, label: 'Marketing', alias: 'marketing' },
-  { value: 22, label: 'Tài xế', alias: 'tai-xe' },
-];
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const mockHistory = [
   { value: 10, label: 'Kế toán', alias: 'ke-toan' },
@@ -25,19 +13,16 @@ const mockHistory = [
 ];
 // --- Kết thúc Dữ liệu mẫu ---
 
-// Hàm filterOption mẫu (vì logic đã bị loại bỏ)
-const filterOption = (input, option) =>
-  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+const filterOption = (input, option) =>option?.label?.toLowerCase()?.includes(input?.toLowerCase())
 
 const SearchBar = ({ typeSearch = 1 }) => {
   // --- State cho giao diện ---
   const [inputText, setInputText] = useState("");
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [city, setCity] = useState();
+  const [industry, setIndustry] = useState();
   const [showlist, setShowlist] = useState(false);
-
+  const [viTriUngTuyen, setViTriUngTuyen] = useState();
   // --- State sử dụng dữ liệu mẫu ---
-  const [cityOption, setCityOption] = useState(mockCities);
-  const [listJob, setListJob] = useState(mockJobs); // Dùng cho "Từ khóa phổ biến"
   const [historyList, setHistoryList] = useState(mockHistory); // Dùng cho "Từ khóa gần đây"
 
   // Dữ liệu cho kết quả tìm kiếm (để trống vì logic lọc đã bị xóa)
@@ -58,14 +43,22 @@ const SearchBar = ({ typeSearch = 1 }) => {
   // Xử lý khi nhấp nút tìm kiếm
   const handleSearch = () => {
     alert("Bắt đầu tìm kiếm! (Logic đã bị loại bỏ)");
-    console.log("Tìm kiếm với:", { inputText, selectedCity });
+    console.log("Tìm kiếm với:", { inputText, city });
     // Logic (tạo link, điều hướng...) đã bị loại bỏ
   };
 
   // Tất cả useEffect đã bị loại bỏ
 
-
   const navigate = useNavigate()
+  const searchJob = async () => {
+    try {
+      const {data} = await axios.get(`${API_BASE_URL}/job/search`, {
+        withCredentials: true
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
       <ConfigProvider
@@ -115,11 +108,11 @@ const SearchBar = ({ typeSearch = 1 }) => {
                     name="nganhnghe_desktop"
                     id="nganhnghe_desktop"
                     placeholder="Vị trí ứng tuyển"
-                    value={inputText}
-                    onChange={(e) => {
-                      setInputText(e.target.value);
-                      // Logic (setSelectedAlias...) đã bị loại bỏ
-                    }}
+                    value={viTriUngTuyen}
+                    // onChange={(e) => {
+                    //   setInputText(e.target.value);
+                    //   // Logic (setSelectedAlias...) đã bị loại bỏ
+                    // }}
                     onFocus={(e) => {
                       setShowlist(true);
                     }}
@@ -148,19 +141,22 @@ const SearchBar = ({ typeSearch = 1 }) => {
                       style={{
                         width: "100%",
                       }}
-                      options={cityOption} // Dùng dữ liệu mẫu
+                      options={selectData.cities} 
+                      fieldNames={{label: 'name', value: 'id'}}
                       showSearch
                       filterOption={filterOption} // Dùng hàm mẫu
                       placeholder="Chọn địa điểm"
-                      value={selectedCity}
+                      value={city}
                       onChange={(value) => {
-                        setSelectedCity(value);
+                        setCity(value);
                       }}
                     />
                   </div>
                 </div>
               </div>
-              <div className={s.search_button} onClick={() => navigate('/tim-viec-lam')}>
+              <div className={s.search_button} onClick={() => {
+                navigate(`/tim-viec-lam?${city ? "city="+ city : ""}${city && industry ? "&" : ""}${industry ? "industry="+industry : ""}`)
+              }}>
                 <div className={s.search_btn_txt}>Tìm kiếm</div>
               </div>
             </div>
@@ -198,10 +194,10 @@ const SearchBar = ({ typeSearch = 1 }) => {
                 name="nganhnghe_mobile"
                 id="nganhnghe_mobile"
                 placeholder="Vị trí ứng tuyển"
-                value={inputText}
-                onChange={(e) => {
-                  setInputText(e.target.value);
-                }}
+                value={viTriUngTuyen}
+                // onChange={(e) => {
+                //   setInputText(e.target.value);
+                // }}
                 onFocus={(e) => {
                   setShowlist(true);
                 }}
@@ -266,14 +262,16 @@ const SearchBar = ({ typeSearch = 1 }) => {
             <div className={s.popular_search_container}>
               <div className={s.title}>Từ khóa phổ biến</div>
               <ul>
-                {listJob.map((item, index) => (
+                {selectData.industries.map((item, index) => (
                   <li
                     onClick={() => {
-                      handleItemClick(item?.label, item?.value, item?.alias);
+                      setViTriUngTuyen(item?.name)
+                      setIndustry(item?.id)
+                      // handleItemClick(item?.label, item?.value, item?.alias);
                     }}
-                    key={index}
+                    key={item?.id}
                   >
-                    {item?.label}
+                    {item?.name}
                   </li>
                 ))}
               </ul>
@@ -305,13 +303,14 @@ const SearchBar = ({ typeSearch = 1 }) => {
                   style={{
                     width: "100%",
                   }}
-                  options={cityOption}
+                  options={selectData.cities}
                   showSearch
+                  fieldNames={{label: 'name', value: 'id'}}
                   filterOption={filterOption}
                   placeholder="Chọn địa điểm"
-                  value={selectedCity}
+                  value={city}
                   onChange={(value) => {
-                    setSelectedCity(value);
+                    setCity(value);
                   }}
                 />
               </div>

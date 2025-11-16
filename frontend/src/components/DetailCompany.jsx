@@ -20,15 +20,14 @@ const mockHanNop = "Còn 10 ngày";
 const mockImageSrc = "/images/candidate/ava_default.jpg"; // Ảnh mặc định
 // --- Kết thúc Dữ liệu mẫu ---
 
-const DetailCompany = () => {
+const DetailCompany = ({data}) => {
   // Dùng dữ liệu mẫu (mockData) thay vì props
-  const data = mockData;
 
   return (
     <div className="detail_company">
       <div className="company_info">
         {/* <Link> đã được thay bằng <a> với href mẫu */}
-        <a href={`/${data?.usc_alias}`} className="avata_com">
+        <a href={`/cong-ty-tnhh-mau-a`} className="avata_com">
           <img
             src={mockImageSrc} // Sử dụng ảnh mẫu
             alt="avatar NTD"
@@ -50,23 +49,23 @@ const DetailCompany = () => {
         <div className="box_detail_com">
           <div className="box_tt_c">
             <Popover
-              content={<TooltipComponent content={data.new_title} />}
+              content={<TooltipComponent content={data.title} />}
               overlayClassName="custom-tooltip"
             >
               {/* <Link> đã được thay bằng <a> với href mẫu */}
               <a
-                href={`/${data.new_alias}-${data.new_id}`}
+                href={`/get-job-detail/${data.id}`}
                 className="title_com cl3582CD"
               >
-                <h3 className="title_com">{data.new_title}</h3>
+                <h3 className="title_com">{data.title}</h3>
               </a>
             </Popover>
             <Popover
-              content={<TooltipComponent content={`${data.usc_company}`} />}
+              content={<TooltipComponent content={`${data.employerName}`} />}
               overlayClassName="custom-tooltip"
             >
-              <a href={`/${data?.usc_alias}`}>
-                <p className="name_com">{`${data.usc_company}`}</p>
+              <a href={`/cong-ty-tnhh-mau-a`}>
+                <p className="name_com">{`${data.employerName}`}</p>
               </a>
             </Popover>
             {/* 'vote_com' đã bị comment giống code gốc */}
@@ -79,16 +78,16 @@ const DetailCompany = () => {
           content={
             <TooltipComponent
               content={`${
-                Array.isArray(data?.new_city)
-                  ? data.new_city.join(', ')
-                  : data.new_city
+                Array.isArray(data?.cityName)
+                  ? data.cityName.join(', ')
+                  : data.cityName
               }`}
             />
           }
           overlayClassName="custom-tooltip"
         >
           {/* Hiển thị thành phố đầu tiên từ dữ liệu mẫu */}
-          <p className="mor_i">{data.new_city[0]}</p>
+          <p className="mor_i">{data.cityName}</p>
         </Popover>
         {/* Thay thế hàm getMucLuong bằng chuỗi mẫu */}
         <p className="mor_i">{mockMucLuong}</p>

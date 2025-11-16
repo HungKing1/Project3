@@ -10,7 +10,13 @@ import DetailInfo from '../../../components/candidate/job_detail_infor/DetailInf
 import RecruitmentDetail from '../../../components/candidate/recruitment_detail/RecruitmentDetail';
 import Header from '../../../components/candidate/header/Header';
 import SearchJobBar from '../../../components/candidate/job_list/search_job_bar/SearchJobBar';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { set } from 'react-hook-form';
+import { get } from 'jquery';
 // ---
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // --- GIẢ LẬP CÁC COMPONENT KHÁC ---
 const Footer = () => <div style={{ background: '#f0f0f0', padding: 20, textAlign: 'center', marginTop: 20 }}>Đây là Footer (Mẫu)</div>;
@@ -93,6 +99,10 @@ const handleImageSource = (src) => src || "/images/candidate/ava_default.jpg";
 
 
 const JobDetail = () => {
+
+  const {idJob} = useParams();
+
+  // const {id} = useParams
   // Sử dụng mock data thay vì props
   const data = mockData;
   const id = mockData.new_id;
@@ -111,25 +121,8 @@ const JobDetail = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [type, setType] = useState(false);
   
-  const [detailInfo, setDetailInfo] = useState({
-    title: data?.new_title,
-    cap_bac: data?.new_cap_bac,
-    hinh_thuc_lam_viec: data?.new_hinh_thuc,
-    gioi_tinh: data?.new_gioi_tinh,
-    kinh_nghiem: data?.new_exp,
-    bang_cap: data?.new_bang_cap,
-    new_money_type: data?.new_money_type,
-    new_money_from: data?.new_money_from,
-    new_money_to: data?.new_money_to,
-    new_money: data?.new_money,
-    so_luong_can_tuyen: data?.new_so_luong,
-    thoi_gian_thu_viec: data?.new_thuviec,
-    hoa_hong: data?.new_hoahong,
-    han_nop_ho_so: data?.new_han_nop,
-    new_update_time: data?.new_update_time,
-    apply: data?.apply,
-    saveNew: data?.SaveNew,
-  });
+  const [detailInfo, setDetailInfo] = useState();
+
   const [recruitmentInfo, setRecruitmentInfo] = useState({
     moTaCongViec: data?.new_mota,
     yeuCauUngVien: data?.new_yeucau,
@@ -218,6 +211,20 @@ const JobDetail = () => {
       setIsOpenLetter(true);
     }
   };
+
+  const getJobDetailById = async (idJob) => {
+    try {
+      const {data} = await axios.get(`${API_BASE_URL}/public/get-job-detail/${idJob}`, {
+        withCredentials: true,
+      })
+      if(data.success) {
+        setDetailInfo(data.data)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+    
   // --- KẾT THÚC HÀM GIẢ LẬP ---
 
   useEffect(() => {
@@ -242,24 +249,27 @@ const JobDetail = () => {
     }
   }, [isLogin]);
 
+  useEffect(() => {
+    getJobDetailById(idJob);
+  }, [])
+
 
   return (
     <>
       {/* <Head> đã bị loại bỏ */}
-      <ModalLock />
       <Header />
       {/* <div className={s.position_chat}><BoxChat /></div> */}
 
       <SearchJobBar listDistrict={listDistrict} listJob={listJob} onClickSearch={handleSearch} />
 
       <div className={s.body}>
-        <div className={s.router}>
+        {/* <div className={s.router}>
           <div className={s.textBlue} onClick={() => navigateToAbout("/")}>Trang chủ</div>
           <div className={s.path}><div><span>›</span></div></div>
           <div className={s.textBlue} onClick={() => navigateToAbout("/tin-tuyen-dung")}>Việc làm {getJobName(data?.new_cat_id)}</div>
           <div className={s.path}><div><span>›</span></div></div>
           <div className={s.text} onClick={() => navigateToAbout("#")}>{data?.new_title}</div>
-        </div>
+        </div> */}
 
         <div className={s.job_detail_body}>
           <div className={s.grid_collum_1}>
@@ -289,7 +299,7 @@ const JobDetail = () => {
                   />
                 </div>
                 <div className={s.content}>
-                  <h2 className={s.text}>{data?.usc_company}</h2>
+                  <h2 className={s.text}>{detailInfo?.employerName}</h2>
                 </div>
               </div>
 
@@ -314,7 +324,7 @@ const JobDetail = () => {
                   </svg>
                   <div className={s.text}>Địa điểm:</div>
                 </div>
-                <div className={s.item_2}>{data?.usc_address}</div>
+                <div className={s.item_2}>{detailInfo?.address}</div>
               </div>
 
               <div className={s.job_detail_content_4}>
@@ -365,7 +375,7 @@ const JobDetail = () => {
             {/* (Box Tạo CV AI đã bị comment trong code gốc) */}
           </div>
 
-          <div className={s.grid_collum_1}>
+          {/* <div className={s.grid_collum_1}>
             <RecruitmentDetail 
               recruitmentInfo={recruitmentInfo} 
               isApply={isApply} 
@@ -374,7 +384,7 @@ const JobDetail = () => {
               handleLuuTin={handleLuuTin} 
               handleUngTuyenNgay={checkLoginToOpenModelApply} 
             />
-          </div>
+          </div> */}
 
           <div className={s.job_detail_box_4}>
             <div className={s.header}>

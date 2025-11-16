@@ -2,7 +2,11 @@
 import React, { useState } from 'react';
 import styles from './login-ntd.module.scss';
 import Content_left from '../../components/auth/content_left';
+import axios from 'axios';
 // Dữ liệu mẫu (Không cần thiết cho form này)
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const LoginEmployer = () => {
   // --- State cho giao diện ---
@@ -11,18 +15,30 @@ const LoginEmployer = () => {
     setPasswordVisibility(!isPasswordVisible);
   };
 
+  //body state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   // State cho checkbox điều khoản
   const [agreeToTerms, setAgreeToTerms] = useState(true);
 
   // --- Hàm xử lý mẫu (đã loại bỏ logic) ---
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); // Ngăn trình duyệt submit form
-    if (!agreeToTerms) {
-      alert('Bạn cần đồng ý với điều khoản!');
-      return;
+    const body = {
+      email,
+      password,
     }
-    alert('Đăng nhập! (Phần logic đã bị loại bỏ)');
-    // Logic gọi API đăng nhập sẽ được thêm ở đây
+    try {
+      const {data} = await axios.post(`${API_BASE_URL}/employer/login`, body, {
+        withCredentials: true
+      })
+      if(data.success) {
+        naviagte("/")
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -100,6 +116,7 @@ const LoginEmployer = () => {
                         className={`${styles.form_control} ${styles.numbersonly} ${styles.valid}`}
                         placeholder="Vui lòng nhập email hoặc số điện thoại"
                         required
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                       {/* Phần hiển thị lỗi đã bị loại bỏ */}
                     </div>
@@ -126,6 +143,7 @@ const LoginEmployer = () => {
                         maxLength={20}
                         placeholder="Nhập mật khẩu"
                         required
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       {isPasswordVisible ? (
                         <svg
@@ -177,7 +195,7 @@ const LoginEmployer = () => {
                       Quên mật khẩu
                     </a>
                   </span>
-                  <div
+                  {/* <div
                     className={`${styles.term_condition_container} ${styles['checkbox-wrapper-1']}`}
                   >
                     <input
@@ -199,14 +217,12 @@ const LoginEmployer = () => {
                       </a>{' '}
                       của Job247.vn
                     </label>
-                  </div>
+                  </div> */}
                   <button
                     className={styles.btn_confirm}
                     type="submit"
-                    disabled={!agreeToTerms}
                     style={{
-                      cursor: agreeToTerms ? 'pointer' : 'not-allowed',
-                      opacity: agreeToTerms ? '1' : '0.5',
+                      cursor: 'pointer' ,
                     }}
                   >
                     ĐĂNG NHẬP

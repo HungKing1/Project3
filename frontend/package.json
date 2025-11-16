@@ -21,6 +21,7 @@
     "react-hot-toast": "^2.6.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^7.9.5",
+    "react-toastify": "^11.0.5",
     "sass": "^1.93.3",
     "select2": "^4.1.0-rc.0"
   },

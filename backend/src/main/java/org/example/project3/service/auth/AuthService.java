@@ -1,5 +1,6 @@
 package org.example.project3.service.auth;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.project3.entity.candidate.Candidate;
 import org.example.project3.entity.employer.Employer;
@@ -12,6 +13,8 @@ import org.example.project3.request.auth.RegisterCandidateRequest;
 import org.example.project3.request.auth.RegisterEmployerRequest;
 import org.example.project3.response.ApiResponse;
 import org.example.project3.util.JwtUtil;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,14 +42,14 @@ public class AuthService implements IAuthService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public ApiResponse registerCandidate(RegisterCandidateRequest request) {
+    public ApiResponse registerCandidate(RegisterCandidateRequest request, HttpServletResponse response) {
         try {
             // Kiểm tra trùng email / phone
             if (candidateRepository.findByEmail(request.getEmail()).isPresent()) {
-                return new ApiResponse(false, "Email đã tồn tại trong hệ thống");
+                return new ApiResponse(false, "Email đã tồn tại trong hệ thống", null);
             }
             if (candidateRepository.findByPhone(request.getPhone()).isPresent()) {
-                return new ApiResponse(false, "Số điện thoại đã tồn tại trong hệ thống");
+                return new ApiResponse(false, "Số điện thoại đã tồn tại trong hệ thống", null);
             }
 
             // Mã hoá mật khẩu
@@ -87,51 +90,93 @@ public class AuthService implements IAuthService {
             Candidate savedCandidate = candidateRepository.save(candidate);
 
             // Sinh JWT
-            String accessToken = jwtUtil.generateToken(savedCandidate.getId(), savedCandidate.getEmail());
+            String accessToken = jwtUtil.generateToken(savedCandidate.getEmail());
+
+            ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(24*60*60)
+                    .sameSite("None")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             // Gói dữ liệu trả về
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
             data.put("candidate", savedCandidate);
 
-            return new ApiResponse(true, data);
+            return new ApiResponse(true, "Đăng ký thành công" , data);
 
         } catch (Exception e) {
-            return new ApiResponse(false, "Đăng ký thất bại: " + e.getMessage());
+            return new ApiResponse(false, "Đăng ký thất bại: " + e.getMessage(), null);
         }
     }
 
     @Override
-    public ApiResponse loginCandidate(LoginRequesst requesst) {
+    public ApiResponse loginCandidate(LoginRequesst requesst, HttpServletResponse response) {
         try {
             Optional<Candidate> candidate = candidateRepository.findByEmail(requesst.getEmail());
             if (candidate.isEmpty()) {
-                return new ApiResponse(false, "Email không tồn tại trong hệ thống");
+                return new ApiResponse(false, "Email không tồn tại trong hệ thống", null);
             }
             if (!passwordEncoder.matches(requesst.getPassword(), candidate.get().getPassword())) {
-                return new ApiResponse(false, "Mật khẩu không đúng");
+                return new ApiResponse(false, "Mật khẩu không đúng", null);
             }
 
-            String accessToken = jwtUtil.generateToken(candidate.get().getId(), candidate.get().getEmail());
+            String accessToken = jwtUtil.generateToken(candidate.get().getEmail());
+
+            ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(24*60*60)
+                    .sameSite("None")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
 
-            return new ApiResponse(true, data);
+            return new ApiResponse(true, "Đăng nhập thành công" , data);
 
         } catch (Exception e) {
-            return new ApiResponse(false, "Đăng nhập thất bại: " + e.getMessage());
+            return new ApiResponse(false, "Đăng nhập thất bại: " + e.getMessage(), null);
         }
     }
 
     @Override
-    public ApiResponse registerEmployer(RegisterEmployerRequest request) {
+    public ApiResponse logoutCandidate(HttpServletResponse response) {
+        try {
+            // Tạo cookie với cùng tên "access_token" nhưng maxAge=0 để xóa
+            ResponseCookie cookie = ResponseCookie.from("access_token", "")
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(0) // maxAge=0 => xóa cookie
+                    .sameSite("None")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            return new ApiResponse(true, "Đăng xuất thành công", null);
+        } catch (Exception e) {
+            return new ApiResponse(false, "Đăng xuất thất bại: " + e.getMessage(), null);
+        }
+    }
+
+
+    @Override
+    public ApiResponse registerEmployer(RegisterEmployerRequest request, HttpServletResponse response) {
         try {
             // Kiểm tra trùng email / phone
             if (employerRepository.findByEmail(request.getEmail()).isPresent()) {
-                return new ApiResponse(false, "Email đã tồn tại trong hệ thống");
+                return new ApiResponse(false, "Email đã tồn tại trong hệ thống", null);
             }
             if (employerRepository.findByPhone(request.getPhone()).isPresent()) {
-                return new ApiResponse(false, "Số điện thoại đã tồn tại trong hệ thống");
+                return new ApiResponse(false, "Số điện thoại đã tồn tại trong hệ thống", null);
             }
 
             // Mã hoá mật khẩu
@@ -153,39 +198,58 @@ public class AuthService implements IAuthService {
             Employer savedEmployer = employerRepository.save(employer);
 
             // Sinh JWT
-            String accessToken = jwtUtil.generateToken(savedEmployer.getId(), savedEmployer.getEmail());
+            String accessToken = jwtUtil.generateToken(savedEmployer.getEmail());
+
+            ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(24*60*60)
+                    .sameSite("None")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             // Gói dữ liệu trả về
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
             data.put("employer", savedEmployer);
 
-            return new ApiResponse(true, data);
+            return new ApiResponse(true, "Đăng ký thành công"  , data);
 
         } catch (Exception e) {
-            return new ApiResponse(false, "Đăng ký thất bại: " + e.getMessage());
+            return new ApiResponse(false, "Đăng ký thất bại: " + e.getMessage(), null);
         }
     }
 
     @Override
-    public ApiResponse loginEmployer(LoginRequesst requesst) {
+    public ApiResponse loginEmployer(LoginRequesst requesst, HttpServletResponse response) {
         try {
             Optional<Employer> employer = employerRepository.findByEmail(requesst.getEmail());
             if (employer.isEmpty()) {
-                return new ApiResponse(false, "Email không tồn tại trong hệ thống");
+                return new ApiResponse(false, "Email không tồn tại trong hệ thống", null);
             }
             if (!passwordEncoder.matches(requesst.getPassword(), employer.get().getPassword())) {
-                return new ApiResponse(false, "Mật khẩu không đúng");
+                return new ApiResponse(false, "Mật khẩu không đúng", null);
             }
 
-            String accessToken = jwtUtil.generateToken(employer.get().getId(), employer.get().getEmail());
+            String accessToken = jwtUtil.generateToken(employer.get().getEmail());
+            ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .path("/")
+                    .maxAge(24*60*60)
+                    .sameSite("None")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
 
-            return new ApiResponse(true, data);
+            return new ApiResponse(true, "Đăng nhập thành công" , data);
 
         } catch (Exception e) {
-            return new ApiResponse(false, "Đăng nhập thất bại: " + e.getMessage());
+            return new ApiResponse(false, "Đăng nhập thất bại: " + e.getMessage(), null);
         }
     }
 }

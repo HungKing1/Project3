@@ -5,6 +5,8 @@ import lombok.*;
 import org.example.project3.entity.employer.Employer;
 import org.example.project3.entity.job.reference.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "jobs")
 @Getter
@@ -18,39 +20,39 @@ public class Job {
     @Column(name = "job_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "epml_id")
     private Employer employer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "job_level_id")
     private JobLevel jobLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "district_id")
     private District district;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "ward_id")
     private Ward ward;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "work_type_id")
     private WorkType workType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "exp_years_id")
     private ExperienceYear experienceYear;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "industry_id")
     private Industry industry;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "salary_id")
     private Salary salary;
 
@@ -78,4 +80,7 @@ public class Job {
 
     @Column(name = "contact_email")
     private String contactEmail;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 }

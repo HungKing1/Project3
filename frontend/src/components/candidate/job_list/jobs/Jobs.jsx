@@ -31,6 +31,8 @@ const checkLoginServerSide = () => false; // Giả lập chưa đăng nhập
 // ---
 
 const Jobs = ({
+  jobCardList,
+  setPage,
   pageSize,
   total,
   workInfo,
@@ -179,11 +181,11 @@ const Jobs = ({
         }}
       >
         <div className={s.list_suggest}>
-          {copyData?.map((item, index) => (
+          {jobCardList?.map((item, index) => (
             <div
               key={index}
               className={`${s.item}`}
-              onMouseEnter={() => handleSetIdHover(item?.new_id)}
+              onMouseEnter={() => handleSetIdHover(item?.id)}
               onMouseLeave={() => handleSetIdHover(0)}
               style={{
                 display: 'flex',
@@ -193,11 +195,6 @@ const Jobs = ({
                 border: item?.isActive ? '1px solid #3582CD' : ''
               }}
             >
-              {item?.huyHieuTiaSet ? (
-                <svg className={s.icon_flash} xmlns="http://www.w3.org/2000/svg" width="33" height="35" viewBox="0 0 33 35" fill="none">
-                  {/* ... (path SVG) ... */}
-                </svg>
-              ) : null}
 
               <div className={s.content} style={{
                 display: 'flex',
@@ -206,9 +203,9 @@ const Jobs = ({
               }}>
                 <div className={s.contentLeft}>
                   <div className={s.image_logo}>
-                    <a href={item?.usc_company ? `${createLinkTilte2(item?.usc_company.trim())}` : `#`} style={{ all: 'inherit', cursor: 'pointer' }}>
+                    <a style={{ all: 'inherit', cursor: 'pointer' }}>
                       {/* <Image> đã được thay bằng <img> */}
-                      <img src={handleImageSource(item?.usc_logo) || "/images/candidate/ava_default.jpg"} alt={"Ảnh avatar NTD"} width={90} height={90} style={{ width: "90px", height: "90px", borderRadius: "50%", border: "1px solid #3582cd80" }} />
+                      <img src={handleImageSource("/images/candidate/ava_default.jpg")} alt={"Ảnh avatar NTD"} width={90} height={90} style={{ width: "90px", height: "90px", borderRadius: "50%", border: "1px solid #3582cd80" }} />
                     </a>
                   </div>
                   <div className={s.detail}>
@@ -217,16 +214,16 @@ const Jobs = ({
                       onMouseEnter={handleTitleMouseEnter}
                       onMouseLeave={handleTitleMouseLeave}
                       // onClick={() => window.location.href = `/${createLinkTilte2(item.new_alias)}-${item.new_id}`}
-                      onClick={() => naviagte('/nhan-vien-kinh-doanh-viec-lam-mau-12345')}
+                      onClick={() => naviagte(`/get-job-detail/${item.id}`)}
                     >
                       <Popover
-                        open={popoverVisible && idHover === item.new_id}
-                        content={<span>{item?.new_title}</span>}
+                        open={popoverVisible && idHover === item.id}
+                        content={<span>{item?.title}</span>}
                         title=""
                         overlayClassName="custom-overlay-1"
                       >
-                        <h3 data-id={`${item.new_id}`}>
-                          {item?.new_title}
+                        <h3 data-id={`${item.id}`}>
+                          {item?.title}
                         </h3>
                       </Popover>
                     </span>
@@ -238,41 +235,47 @@ const Jobs = ({
                       onMouseLeave={handleTitleMouseLeave1}
                     >
                       <Popover
-                        content={<span>{item?.usc_company}</span>}
+                        content={<span>{item?.employerName}</span>}
                         title=""
                         overlayClassName="custom-overlay-1"
                       >
-                        <a href={item?.usc_company ? `${createLinkTilte2(item?.usc_company.trim())}` : `#`} style={{ all: 'inherit' }}>
-                          {item?.usc_company ? item.usc_company : 'Chưa cập nhật'}
+                        <a style={{ all: 'inherit' }}>
+                          {item?.employerName ? item.employerName : 'Chưa cập nhật'}
                         </a>
                       </Popover>
                     </span>
 
                     <div className={s.list_tag}>
                       <div className={s.tag}>
-                        <span className={s.text}>{listCityText(item?.new_city.split(',').map(Number))}</span>
+                        <span className={s.text}>{item?.cityName}</span>
                       </div>
                       <div className={s.tag}>
-                        <span className={s.text}>{getMucLuong(item?.new_money_type, item?.new_money_from, item?.new_money_to, item?.new_money)}</span>
+                        <span className={s.text}>{item?.districtName}</span>
                       </div>
                       <div className={s.tag}>
-                        <span className={s.text}>Cập nhật: {getTimeCapNhat(item?.new_update_time)}</span>
+                        <span className={s.text}>{item?.experienceYearName}</span>
                       </div>
                       <div className={s.tag}>
-                        <span className={s.text}>{getHanNop(item?.new_han_nop)?.includes('Còn') ? `${getHanNop(item?.new_han_nop)} ứng tuyển` : getHanNop(item?.new_han_nop)}</span>
+                        <span className={s.text}>{item?.salaryName}</span>
+                      </div>
+                      <div className={s.tag}>
+                        <span className={s.text}>{item?.jobLevelName}</span>
+                      </div>
+                      <div className={s.tag}>
+                        <span className={s.text}>{item?.workTypeName}</span>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className={seeNow === true ? (window.innerWidth < 920 ? s.contentRight : s.contentRight_1) : s.contentRight}>
-                  <button className={s.buttonSeeMore_1} onClick={() => { handleSeeNow(true, item?.new_id); handleSetIdSeeNow(item?.new_id); }}>Xem nhanh {`>>`}</button>
-                  <button className={s.buttonSeeMore} onClick={() => { handleSeeNow(true, item?.new_id) }}>Xem {`>>`}</button>
+                  <button className={s.buttonSeeMore_1} onClick={() => { handleSeeNow(true, item?.id); handleSetIdSeeNow(item?.id); }}>Xem nhanh {`>>`}</button>
+                  <button className={s.buttonSeeMore} onClick={() => { handleSeeNow(true, item?.id) }}>Xem {`>>`}</button>
                   <div className={s.groupBottom}>
                     {item?.checkUngTuyen ?
                       <button className={s.buttonBlue} style={{ whiteSpace: 'nowrap' }}>Đã ứng tuyển</button>
                       :
                       <button className={s.buttonBlue} onClick={() => {
-                        handleFirstUT(item?.new_id);
+                        handleFirstUT(item?.id);
                       }
                       }>Ứng tuyển</button>
                     }
@@ -296,7 +299,7 @@ const Jobs = ({
           ))}
           {
             // <Pagination totalPage={totalPageCurrent} handleChangePage={handleChangePage} handleSeeNow={handleSeeNow} />
-            <Pagination />
+            <Pagination setPage={setPage} totalPage={totalPage}/>
           }
         </div>
       </div>

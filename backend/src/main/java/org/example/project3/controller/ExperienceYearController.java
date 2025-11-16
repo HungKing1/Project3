@@ -20,6 +20,6 @@ public class ExperienceYearController {
     public ResponseEntity<ApiResponse> findAll() {
         List<ExperienceYear> experienceYears = experienceYearService.findAll();
 
-        return ResponseEntity.ok(new ApiResponse(true, experienceYears));
+        return ResponseEntity.ok(new ApiResponse(true, "Lấy danh sách năm kinh nghiệm thành công", experienceYears));
     }
 }

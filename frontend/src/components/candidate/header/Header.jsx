@@ -1,9 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MenuAccount from "./MenuAccount";
 import MenuSidebar from "./MenuSidebar";
 import NotificationCenter from "./notification/NotificationCenter";
 import s from "./style.module.css";
+import { useAuthContext } from "../../../context/AuthContext";
 
 // --- Dữ liệu mẫu (Mock Data) & Hàm giả lập (Stubs) ---
 
@@ -27,6 +28,7 @@ const linkPageCv = () => "/mau-cv-xin-viec";
 export default function Header() {
   // Sử dụng state với dữ liệu mẫu
   const [checkLogin, setCheckLogin] = useState(mockCheckLogin);
+  const {isLoggedIn, accessToken} = useAuthContext()
   const [checkAccount, setCheckAccount] = useState(mockCheckAccount);
 
   // Các state cho UI (giữ nguyên)
@@ -117,7 +119,7 @@ export default function Header() {
             {/* Các menu dropdown đã bị comment giống code gốc */}
 
             {/* Link CV Xin việc */}
-            {(!checkLogin || checkAccount) && (
+            {(!accessToken || checkAccount) && (
               <div className={s.node_cate}>
                 <a
                   className={s.text_decoration}
@@ -141,7 +143,7 @@ export default function Header() {
             </div>
 
             {/* Link Bảng giá */}
-            {(!checkLogin || !checkAccount) && (
+            {(!accessToken || !checkAccount) && (
               <div className={s.node_cate}>
                 <a
                   className={s.text_decoration}
@@ -156,7 +158,7 @@ export default function Header() {
         </div>
 
         {/* --- KHU VỰC BÊN PHẢI (LOGIN/REGISTER HOẶC USER) --- */}
-        {!checkLogin ? (
+        {!accessToken ? (
           // --- Giao diện CHƯA ĐĂNG NHẬP ---
           <div className={s.header_right}>
             <div
@@ -341,7 +343,7 @@ export default function Header() {
         </a>
         
         {/* Nút thông báo (Mobile) */}
-        {checkLogin ? (
+        {accessToken ? (
           <>
             <div id="notiMobi">
               <button className={s.btn_person + " " + s.chat} onClick={toggleNotiMobi}>

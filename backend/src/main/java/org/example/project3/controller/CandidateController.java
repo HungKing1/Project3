@@ -22,7 +22,7 @@ public class CandidateController {
         } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body(new ApiResponse(false, "Thao tác thất bại: " + e.getMessage()));
+                    .body(new ApiResponse(false, "Thao tác thất bại: " + e.getMessage(), null));
         }
     }
 

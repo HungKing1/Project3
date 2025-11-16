@@ -2,17 +2,11 @@
 import React, { useState } from 'react';
 import { Select, Spin } from 'antd';
 import styles from './register-ntd.module.scss';
-// import Upload_img_ntd from '@/components/common/upload_img_ntd'; // Giả định component này tồn tại
+import * as selectData from "../../assets/selectData.js"
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-// --- Dữ liệu mẫu (Mock Data) ---
-const mockCities = [
-  { value: 1, label: 'Hà Nội' },
-  { value: 2, label: 'Hồ Chí Minh' },
-  { value: 45, label: 'Đà Nẵng' },
-  { value: 13, label: 'Bắc Ninh' },
-  { value: 33, label: 'Hải Phòng' },
-];
-// --- Kết thúc Dữ liệu mẫu ---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const RegisterEmployer = () => {
   // --- State cho giao diện ---
@@ -20,6 +14,14 @@ const RegisterEmployer = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisibility(!isPasswordVisible);
   };
+
+  const naviagte = useNavigate();
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyDescription, setCompanyDescription] = useState('');
+  const [cityId, setCityId] = useState('');
 
   const [isRePasswordVisible, setRePasswordVisibility] = useState(false);
   const toggleRePasswordVisibility = () => {
@@ -43,20 +45,24 @@ const RegisterEmployer = () => {
   // --- Hàm xử lý mẫu (đã loại bỏ logic) ---
   const handleSubmit = (event) => {
     event.preventDefault(); // Ngăn trình duyệt submit
-    if (!agreeToTerms) {
-      alert('Bạn cần đồng ý với điều khoản!');
-      return;
+    const body = {
+      email, 
+      phone, 
+      password,
+      companyName,
+      cityId,
+      companyDescription
     }
-    setLoading(true);
-    alert('Biểu mẫu đã được gửi! (Phần logic đã bị loại bỏ)');
-    console.log('Dữ liệu form (đã loại bỏ logic):', {
-      city: selectedCity,
-      images: parentImages,
-    });
-    // Giả lập thời gian chờ
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
+    try {
+      const {data} = axios.post(`${API_BASE_URL}/auth/employer/register`, body, {
+        withCredentials: true
+      })
+      if(data.success) {
+        naviagte("/")
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   return (
@@ -177,6 +183,7 @@ const RegisterEmployer = () => {
                         placeholder="Nhập email"
                         required
                         disabled={loading}
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
 
@@ -197,6 +204,7 @@ const RegisterEmployer = () => {
                         placeholder="Vui lòng nhập số điện thoại"
                         required
                         disabled={loading}
+                        onChange={(e) => setPhone(e.target.value)}
                       />
                     </div>
 
@@ -219,6 +227,7 @@ const RegisterEmployer = () => {
                         placeholder="Nhập mật khẩu"
                         required
                         disabled={loading}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       {isPasswordVisible ? (
                         <svg
@@ -335,6 +344,7 @@ const RegisterEmployer = () => {
                         placeholder="Nhập công ty"
                         required
                         disabled={loading}
+                        onChange={(e) => setCompanyName(e.target.value)}
                       />
                     </div>
 
@@ -354,10 +364,10 @@ const RegisterEmployer = () => {
                       <Select
                         className={styles.form_control}
                         placeholder="Tỉnh/Thành phố"
-                        value={selectedCity}
-                        onChange={(value) => setSelectedCity(value)}
+                        value={cityId}
+                        onChange={(value) => setCityId(value)}
                         style={{ width: '100%' }}
-                        options={mockCities} // Dùng dữ liệu mẫu
+                        options={selectData.cities} // Dùng dữ liệu mẫu
                         size="large"
                         showSearch
                         filterOption={(inputValue, option) =>
@@ -365,6 +375,7 @@ const RegisterEmployer = () => {
                             ?.toLowerCase()
                             .includes(inputValue?.toLowerCase())
                         }
+                        fieldNames={{label: "name", value: "id"}}
                         disabled={loading}
                       />
                       {/* Cần thêm logic validation nếu không dùng react-hook-form */}
@@ -389,13 +400,14 @@ const RegisterEmployer = () => {
                         className={`${styles.form_control} ${styles.text_area}`}
                         style={{ width: '100%' }}
                         disabled={loading}
+                        onChange={(e) => setCompanyDescription(e.target.value)}
                       />
                     </div>
 
                     {/* Giữ lại component Upload_img_ntd
                     <Upload_img_ntd onImagesChange={handleImagesChange} /> */}
 
-                    <div
+                    {/* <div
                       className={`${styles.term_condition_container} ${styles['checkbox-wrapper-1']}`}
                     >
                       <input
@@ -418,18 +430,15 @@ const RegisterEmployer = () => {
                         </a>{' '}
                         của Job247.vn
                       </label>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className={styles.box_confirm}>
                   <button
                     className={styles.btn_confirm}
                     type="submit"
-                    disabled={loading || !agreeToTerms}
                     style={{
-                      cursor:
-                        loading || !agreeToTerms ? 'not-allowed' : 'pointer',
-                      opacity: loading || !agreeToTerms ? '0.5' : '1',
+                      cursor: 'pointer',
                     }}
                   >
                     ĐĂNG KÝ {loading && <Spin />}

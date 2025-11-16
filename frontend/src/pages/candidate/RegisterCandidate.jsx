@@ -1,35 +1,21 @@
 /* eslint-disable @next/next/no-css-tags */
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { Select, Spin } from "antd";
 import styles from "./register-uv.module.scss";
+import * as selectData from "../../assets/selectData.js"
+import * as callData from "../../assets/function.js"
+import { set } from "react-hook-form";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useAuthContext } from "../../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
-// --- Dữ liệu mẫu (Mock Data) ---
-const mockCities = [
-  { value: 1, label: "Hà Nội" },
-  { value: 2, label: "Hồ Chí Minh" },
-  { value: 45, label: "Đà Nẵng" },
-  { value: 13, label: "Bắc Ninh" },
-  { value: 33, label: "Hải Phòng" },
-];
-
-const mockCareers = [
-  { value: 10, label: "Công nghệ thông tin" },
-  { value: 12, label: "Marketing / Quảng cáo" },
-  { value: 15, label: "Kế toán / Kiểm toán" },
-  { value: 21, label: "Bán hàng / Kinh doanh" },
-  { value: 22, label: "Tư vấn" },
-];
-
-const mockDistricts = [
-  { value: 100, label: "Quận 1 (HCM)" },
-  { value: 101, label: "Quận Cầu Giấy (HN)" },
-  { value: 102, label: "Quận Hải Châu (ĐN)" },
-  { value: 103, label: "Quận Ba Đình (HN)" },
-  { value: 104, label: "Thành phố Thủ Đức (HCM)" },
-];
-// --- Kết thúc Dữ liệu mẫu ---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const RegisterCandidate = () => {
+  const {isLoggedIn, setIsLoggedIn, setAccessToken} = useAuthContext()
+  const naviagte = useNavigate()
+
   // --- State cho giao diện ---
   const [isPasswordVisible, setPasswordVisibility] = useState(false);
   const togglePasswordVisibility = () => {
@@ -44,10 +30,28 @@ const RegisterCandidate = () => {
   // State để hiển thị ảnh preview
   const [avatar, setAvatar] = useState("");
 
-  // State cho các Select (vì đã loại bỏ react-hook-form)
-  const [selectedCareers, setSelectedCareers] = useState([]);
-  const [selectedLocations, setSelectedLocations] = useState([]);
-  const [selectedDistricts, setSelectedDistricts] = useState([]);
+  //data ward, district 
+  const [wards, setWards] = useState([]);
+  const [districts, setDistricts] = useState([]);
+
+  // State
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [careerGoal, setCareerGoal] = useState();
+  const [birthday, setBirthday] = useState(); // dùng chuỗi (yyyy-MM-dd) cho <input type="date">
+  const [experienceYearId, setExperienceYearId] = useState();
+  const [jobLevelId, setJobLevelId] = useState();
+  const [workTypeId, setWorkTypeId] = useState();
+  const [gender, setGender] = useState();
+  const [industryId, setIndustryId] = useState();
+  const [salaryId, setSalaryId] = useState();
+  const [cityId, setCityId] = useState();
+  const [districtId, setDistrictId] = useState();
+  const [wardId, setWardId] = useState();
 
   // State cho checkbox điều khoản
   const [agreeToTerms, setAgreeToTerms] = useState(true);
@@ -69,16 +73,52 @@ const RegisterCandidate = () => {
   };
 
   // Xử lý khi submit form (đã loại bỏ logic)
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); // Ngăn trình duyệt submit form
-    if (!agreeToTerms) {
-      alert("Bạn cần đồng ý với điều khoản!");
-      return;
+    const body = {
+      email,
+      phone,
+      name,
+      password,
+      careerGoal,
+      birthday,
+      experienceYearId,
+      jobLevelId,
+      workTypeId,
+      gender,
+      industryId,
+      salaryId,
+      cityId,
+      districtId,
+      wardId
     }
-    alert("Biểu mẫu đã được gửi! (Phần logic đã bị loại bỏ)");
-    // Logic gọi API đăng ký sẽ được thêm ở đây
+    console.log(body, "body")
+    try {
+      const {data} = await axios.post(`${API_BASE_URL}/auth/candidate/register`, body, {
+        withCredentials: true
+      })
+      if(data.success) {
+        localStorage.getItem("access_token", data.data.accessToken)
+        setAccessToken(data.data.accessToken)
+        toast.success("Đăng kí thành công")
+        setTimeout(() => {
+          naviagte('/')
+        }, 1000);
+      } else {
+        toast.error("Đăng kí thất bại")
+      }
+    } catch (error) {
+      console.log(error)    
+    }
   };
 
+  const updateDistrictAndWard = async(value) => {
+    setCityId(value)
+    const districtData = await callData.getDistrictsByCityId(value)
+    const wardData = await callData.getWardsByCityId(value)
+    setDistricts(districtData)
+    setWards(wardData)
+  }
   return (
     <>
       {/* <Head>... </Head> bị loại bỏ vì đây là React.js, không phải Next.js */}
@@ -240,6 +280,7 @@ const RegisterCandidate = () => {
                       name="email"
                       className={`${styles.form_control} ${styles.numbersonly} ${styles.valid}`}
                       placeholder="Vui lòng nhập email"
+                      onChange={e => setEmail(e.target.value)}
                       required // Thêm required HTML
                     />
                     {/* Phần hiển thị lỗi đã bị loại bỏ */}
@@ -257,6 +298,7 @@ const RegisterCandidate = () => {
                       name="sdt"
                       className={`${styles.form_control} ${styles.numbersonly} ${styles.valid}`}
                       placeholder="Vui lòng nhập số điện thoại"
+                      onChange={e => setPhone(e.target.value)}
                       required
                     />
                   </div>
@@ -273,6 +315,7 @@ const RegisterCandidate = () => {
                       name="name"
                       className={`${styles.form_control} ${styles.valid}`}
                       placeholder="Nhập họ tên"
+                      onChange={e => setName(e.target.value)}
                       required
                     />
                     <svg
@@ -310,6 +353,7 @@ const RegisterCandidate = () => {
                       className={styles.form_control}
                       maxLength={20}
                       placeholder="Nhập mật khẩu"
+                      onChange={e => setPassword(e.target.value)}
                       required
                     />
                     {isPasswordVisible ? (
@@ -366,6 +410,7 @@ const RegisterCandidate = () => {
                       className={styles.form_control}
                       maxLength={20}
                       placeholder="Nhập lại mật khẩu"
+                      onChange={e => setConfirmPassword(e.target.value)}
                       required
                     />
                     {isRePasswordVisible ? (
@@ -419,6 +464,7 @@ const RegisterCandidate = () => {
                       className={styles.form_control}
                       id="position"
                       placeholder="Nhập vị trí mong muốn"
+                      onChange={e => setCareerGoal(e.target.value)}
                       required
                     />
                     <svg
@@ -436,38 +482,190 @@ const RegisterCandidate = () => {
                     </svg>
                   </div>
 
-                  {/* Loại bỏ Controller, sử dụng Select chuẩn của AntD với state */}
                   <div className={`${styles.form_reg} ${styles.reg_right_50}`}>
+                    <label htmlFor="dob" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Ngày sinh <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <input
+                      type="date"
+                      id="dob"
+                      name="dob"
+                      value={birthday} // state dob, dùng useState để quản lý
+                      onChange={(e) => setBirthday(e.target.value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                        padding: "8px",
+                        fontSize: "14px",
+                        borderRadius: "4px",
+                        border: "1px solid #d9d9d9",
+                      }}
+                    />
+                    {/* Yêu cầu bắt buộc (required) sẽ được xử lý logic trong hàm handleSubmit */}
+                  </div>
+
+                  <div className={`${styles.form_reg} ${styles.reg_left_50}`}>
                     <label htmlFor="txtlastname" className={styles.form_title}>
                       <h3 style={{ all: "inherit" }}>
-                        Ngành nghề <span className={styles.red_star}>*</span>
+                        Ngành nghề{" "}
+                        <span className={styles.red_star}>*</span>
                       </h3>
                     </label>
                     <Select
-                      mode="multiple"
-                      placeholder="Chọn ngành nghề"
-                      value={selectedCareers}
-                      onChange={(value) => {
-                        // Giới hạn chọn 3
-                        if (value.length <= 3) {
-                          setSelectedCareers(value);
-                        }
-                      }}
+                      placeholder="Chọn ngành nghề mong muốn"
+                      value={industryId}
+                      onChange={value => setIndustryId(value)}
                       style={{
                         width: "98%",
                         marginLeft: "1%",
                       }}
-                      size="large"
                       filterOption={(inputValue, option) =>
                         option?.label
                           ?.toLowerCase()
                           ?.includes(inputValue?.toLowerCase())
                       }
-                      options={mockCareers} // Dùng dữ liệu mẫu
+                      size="large"
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={selectData.industries} 
                     />
-                    {/* Yêu cầu bắt buộc (required) sẽ được xử lý logic trong hàm handleSubmit */}
+                  </div>
+                  <div className={`${styles.form_reg} ${styles.reg_right_50}`}>
+                    <label htmlFor="txtlastname" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Mức lương{" "}
+                        <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <Select
+                      placeholder="Chọn mức lương mong muốn"
+                      value={salaryId}
+                      onChange={value => setSalaryId(value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                      }}
+                      filterOption={(inputValue, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.includes(inputValue?.toLowerCase())
+                      }
+                      size="large"
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={selectData.salaries} 
+                    />
+                  </div>
+                  <div className={`${styles.form_reg} ${styles.reg_left_50}`}>
+                    <label htmlFor="txtlastname" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Kinh nghiệm{" "}
+                        <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <Select
+                      placeholder="Chọn kinh nghiệm"
+                      value={experienceYearId}
+                      onChange={value => setExperienceYearId(value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                      }}
+                      filterOption={(inputValue, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.includes(inputValue?.toLowerCase())
+                      }
+                      size="large"
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={selectData.experienceYears} 
+                    />
                   </div>
 
+                  {/* Loại bỏ Controller, sử dụng Select chuẩn của AntD với state */}
+                  <div className={`${styles.form_reg} ${styles.reg_right_50}`}>
+                    <label htmlFor="txtlastname" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Cấp bậc{" "}
+                        <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <Select
+                      placeholder="Chọn cấp bậc"
+                      value={jobLevelId}
+                      onChange={value => setJobLevelId(value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                      }}
+                      filterOption={(inputValue, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.includes(inputValue?.toLowerCase())
+                      }
+                      size="large"
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={selectData.jobLevels} 
+                    />
+                  </div>
+
+                  <div className={`${styles.form_reg} ${styles.reg_left_50}`}>
+                    <label htmlFor="txtlastname" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Hình thức làm việc{" "}
+                        <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <Select
+                      placeholder="Chọn hình thức làm việc"
+                      value={workTypeId}
+                      onChange={value => setWorkTypeId(value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                      }}
+                      filterOption={(inputValue, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.includes(inputValue?.toLowerCase())
+                      }
+                      size="large"
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={selectData.workTypes} 
+                    />
+                  </div>
+
+                  <div className={`${styles.form_reg} ${styles.reg_right_50}`}>
+                    <label htmlFor="txtlastname" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Giới tính{" "}
+                        <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <Select
+                      placeholder="Chọn giới tính"
+                      value={gender}
+                      onChange={value => setGender(value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                      }}
+                      filterOption={(inputValue, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.includes(inputValue?.toLowerCase())
+                      }
+                      size="large"
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={
+                        [
+                          {"id": 1, "name": "Nam"},
+                          {"id": 2, "name": "Nữ"}
+                        ]
+                      } 
+                    />
+                  </div>
+ 
                   {/* Loại bỏ Controller, sử dụng Select chuẩn của AntD với state */}
                   <div className={`${styles.form_reg} ${styles.reg_left_50}`}>
                     <label htmlFor="txtlastname" className={styles.form_title}>
@@ -477,16 +675,9 @@ const RegisterCandidate = () => {
                       </h3>
                     </label>
                     <Select
-                      mode="multiple"
                       placeholder="Chọn tỉnh, thành"
-                      value={selectedLocations}
-                      onChange={(value) => {
-                        if (value.length <= 3) {
-                          setSelectedLocations(value);
-                          // Trong ứng dụng thật, bạn sẽ cập nhật danh sách quận huyện ở đây
-                          // setOptionDistrict(getDistrictFromCities(value));
-                        }
-                      }}
+                      value={cityId}
+                      onChange={(value) => updateDistrictAndWard(value)}
                       style={{
                         width: "98%",
                         marginLeft: "1%",
@@ -497,7 +688,8 @@ const RegisterCandidate = () => {
                           ?.includes(inputValue?.toLowerCase())
                       }
                       size="large"
-                      options={mockCities} // Dùng dữ liệu mẫu
+                      fieldNames={{label: 'name', value: 'id'}}
+                      options={selectData.cities} // Dùng dữ liệu mẫu
                     />
                   </div>
 
@@ -510,14 +702,9 @@ const RegisterCandidate = () => {
                       </h3>
                     </label>
                     <Select
-                      mode="multiple"
                       placeholder="Chọn quận, huyện"
-                      value={selectedDistricts}
-                      onChange={(value) => {
-                        if (value.length <= 3) {
-                          setSelectedDistricts(value);
-                        }
-                      }}
+                      value={districtId}
+                      onChange={value => setDistrictId(value)}
                       style={{
                         width: "98%",
                         marginLeft: "1%",
@@ -527,147 +714,63 @@ const RegisterCandidate = () => {
                           ?.toLowerCase()
                           ?.includes(inputValue?.toLowerCase())
                       }
+                      fieldNames={{label: 'name', value: 'id'}}
                       size="large"
-                      options={mockDistricts} // Dùng dữ liệu mẫu
-                      // disabled={selectedLocations.length === 0} // Có thể bật cái này
+                      options={districts} 
                     />
                   </div>
+
+                  <div className={`${styles.form_reg} ${styles.reg_left_50}`}>
+                    <label htmlFor="txtlastname" className={styles.form_title}>
+                      <h3 style={{ all: "inherit" }}>
+                        Phường xã làm việc{" "}
+                        <span className={styles.red_star}>*</span>
+                      </h3>
+                    </label>
+                    <Select
+                      placeholder="Chọn phường xã làm việc"
+                      value={wardId}
+                      onChange={value => setWardId(value)}
+                      style={{
+                        width: "98%",
+                        marginLeft: "1%",
+                      }}
+                      filterOption={(inputValue, option) =>
+                        option?.label
+                          ?.toLowerCase()
+                          ?.includes(inputValue?.toLowerCase())
+                      }
+                      fieldNames={{label: 'name', value: 'id'}}
+                      size="large"
+                      options={wards} 
+                    />
+                  </div>
+
                 </div>
               </div>
-              <div
-                className={`${styles.term_condition_container} ${styles["checkbox-wrapper-1"]}`}
-              >
-                <input
-                  type="checkbox"
-                  name="term_condition"
-                  id="term_condition"
-                  className={styles.substituted}
-                  onChange={(e) => setAgreeToTerms(e.target.checked)}
-                  checked={agreeToTerms}
-                />
-                <label htmlFor="term_condition">
-                  Tôi đã đọc và đồng ý{" "}
-                  <a href="/quy-che-hoat-dong" target="_blank" rel="noopener noreferrer">
-                    Quy chế hoạt động
-                  </a>{" "}
-                  và{" "}
-                  <a href="/quy-dinh-bao-mat" target="_blank" rel="noopener noreferrer">
-                    Chính sách bảo mật
-                  </a>{" "}
-                  của Job247.vn
-                </label>
-              </div>
               <div className={styles.box_confirm}>
-                <h2 className={styles.title}>
-                  {"Chọn 1 trong 2 cách sau để lưu và hoàn thiện hồ sơ"}
-                </h2>
                 <div className={styles.box_choose}>
-                  <div className={styles.cv_online}>
-                    <p>Cách 1:</p>
-                    {/* Nút này sẽ submit form */}
-                    <div
-                      className={styles.btn_cv}
-                      style={{ opacity: !agreeToTerms ? "0.5" : "1" }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M13.2599 3.60022L5.04985 12.2902C4.73985 12.6202 4.43985 13.2702 4.37985 13.7202L4.00985 16.9602C3.87985 18.1302 4.71985 18.9302 5.87985 18.7302L9.09985 18.1802C9.54985 18.1002 10.1799 17.7702 10.4899 17.4302L18.6999 8.74022C20.1199 7.24022 20.7599 5.53022 18.5499 3.44022C16.3499 1.37022 14.6799 2.10022 13.2599 3.60022Z"
-                          stroke="#377ABB"
-                          strokeWidth="1.5"
-                          strokeMiterlimit="10"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M11.8901 5.0498C12.3201 7.8098 14.5601 9.9198 17.3401 10.1998"
-                          stroke="#377ABB"
-                          strokeWidth="1.5"
-                          strokeMiterlimit="10"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M3 22H21"
-                          stroke="#377ABB"
-                          strokeWidth="1.5"
-                          strokeMiterlimit="10"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <button
-                        type="submit"
-                        disabled={!agreeToTerms}
-                        style={{
-                          cursor: !agreeToTerms ? "not-allowed" : "pointer",
-                        }}
-                        onClick={(e) => {
-                          setIsCreateCv(true);
-                          // Hàm handleSubmit sẽ được gọi
-                        }}
-                      >
-                        <h3 style={{ all: "inherit" }}>
-                          Tạo CV online từ Job247{" "}
-                          {/* Loại bỏ <Spin /> */}
-                        </h3>
-                      </button>
-                    </div>
-                  </div>
                   <div className={styles.cv_local}>
-                    <p>Hoặc cách 2:</p>
-                    {/* Nút này cũng sẽ submit form */}
                     <div
                       className={styles.btn_cv2}
                       style={{ opacity: !agreeToTerms ? "0.5" : "1" }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="25"
-                        height="24"
-                        viewBox="0 0 25 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M9.49994 17.75C9.08994 17.75 8.74994 17.41 8.74994 17V12.81L8.02994 13.53C7.73994 13.82 7.25994 13.82 6.96994 13.53C6.67994 13.24 6.67994 12.76 6.96994 12.47L8.96994 10.47C9.17994 10.26 9.50994 10.19 9.78994 10.31C10.0699 10.42 10.2499 10.7 10.2499 11V17C10.2499 17.41 9.90994 17.75 9.49994 17.75Z"
-                          fill="#F8971C"
-                        />
-                        <path
-                          d="M11.4999 13.7499C11.3099 13.7499 11.1199 13.6799 10.9699 13.5299L8.96994 11.5299C8.67994 11.2399 8.67994 10.7599 8.96994 10.4699C9.25994 10.1799 9.73994 10.1799 10.0299 10.4699L12.0299 12.4699C12.3199 12.7599 12.3199 13.2399 12.0299 13.5299C11.8799 13.6799 11.6899 13.7499 11.4999 13.7499Z"
-                          fill="#F8971C"
-                        />
-                        <path
-                          d="M15.5 22.75H9.5C4.07 22.75 1.75 20.43 1.75 15V9C1.75 3.57 4.07 1.25 9.5 1.25H14.5C14.91 1.25 15.25 1.59 15.25 2C15.25 2.41 14.91 2.75 14.5 2.75H9.5C4.89 2.75 3.25 4.39 3.25 9V15C3.25 19.61 4.89 21.25 9.5 21.25H15.5C20.11 21.25 21.75 19.61 21.75 15V10C21.75 9.59 22.09 9.25 22.5 9.25C22.91 9.25 23.25 9.59 23.25 10V15C23.25 20.43 20.93 22.75 15.5 22.75Z"
-                          fill="#F8971C"
-                        />
-                        <path
-                          d="M22.5 10.75H18.5C15.08 10.75 13.75 9.41999 13.75 5.99999V1.99999C13.75 1.69999 13.93 1.41999 14.21 1.30999C14.49 1.18999 14.81 1.25999 15.03 1.46999L23.03 9.46999C23.24 9.67999 23.31 10.01 23.19 10.29C23.07 10.57 22.8 10.75 22.5 10.75ZM15.25 3.80999V5.99999C15.25 8.57999 15.92 9.24999 18.5 9.24999H20.69L15.25 3.80999Z"
-                          fill="#F8971C"
-                        />
-                      </svg>
                       <button
                         type="submit"
-                        disabled={!agreeToTerms}
                         style={{
-                          cursor: !agreeToTerms ? "not-allowed" : "pointer",
+                          cursor: "pointer",
                         }}
-                        onClick={(e) => {
-                          setIsCreateCv(false);
-                          // Hàm handleSubmit sẽ được gọi
+                        onClick={() => {
                         }}
                       >
                         <h3 style={{ all: "inherit" }}>
-                          Tải CV từ máy tính của bạn{" "}
+                          Đăng kí{" "}
                           {/* Loại bỏ <Spin /> */}
                         </h3>
                       </button>
                     </div>
                   </div>
+                  
                 </div>
               </div>
               <div className={styles.redirect_login}>

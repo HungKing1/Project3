@@ -10,13 +10,7 @@ const renderPagination = (total) => {
 };
 // ---
 
-const Pagination = () => {
-  // --- Dữ liệu mẫu (Mock Data) ---
-  const totalItem = 5; // Giả sử có 5 trang
-  
-  // --- State nội bộ để quản lý UI ---
-  const [page, setPage] = useState(1); // Trang hiện tại, bắt đầu từ 1
-
+const Pagination = ({totalPage, page, setPage}) => {
   // Hàm nội bộ để xử lý việc nhấp vào trang
   const handleSetPage = (newPage) => {
     // Logic của prop (handleGoToSlide) đã bị loại bỏ
@@ -56,11 +50,11 @@ const Pagination = () => {
       </div>
       <div className="list_pag">
         {/* Sử dụng hàm renderPagination đã giả lập */}
-        {renderPagination(totalItem)?.map((item) => (
+        {renderPagination(totalPage)?.map((item) => (
           <div
             key={item}
             className={`item_pag ${
-              page === item && 'bg_3582CD bd_3582CD ffffff'
+              page == item && 'bg_3582CD bd_3582CD ffffff'
             }`}
             onClick={() => {
               handleSetPage(item);
@@ -75,7 +69,7 @@ const Pagination = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => {
           // Xử lý logic "Sau" bằng state nội bộ
-          if (page >= totalItem) {
+          if (page >= totalPage) {
             /* Không làm gì */
           } else {
             handleSetPage(page + 1);
