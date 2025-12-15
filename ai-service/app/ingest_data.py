@@ -32,7 +32,7 @@ def ingest():
         print(f"🧹 Đã xóa data cũ tại {PERSIST_DIRECTORY}")
 
     client = chromadb.PersistentClient(path=PERSIST_DIRECTORY)
-    emb_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2")
+    emb_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="paraphrase-multilingual-MiniLM-L12-v2")
 
     for filename, config in CSV_CONFIG.items():
         file_path = os.path.join(DATA_FOLDER, filename)
