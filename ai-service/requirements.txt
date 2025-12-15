@@ -1,8 +1,18 @@
+# Web Framework
 fastapi
 uvicorn
-chromadb
-sentence-transformers
-pandas
-pydantic
-python-dotenv
 python-multipart
+pydantic
+
+# Environment variables
+python-dotenv
+
+# Database & Vector Search
+chromadb
+pandas
+numpy
+
+# AI & Embeddings
+sentence-transformers
+torch
+google-genai  

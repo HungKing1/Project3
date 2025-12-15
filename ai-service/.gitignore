@@ -1,3 +1,4 @@
 .env
 app/__pycache__/*
 chroma_db/*
+run
