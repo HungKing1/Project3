@@ -1,8 +1,9 @@
-/* --- Variables (Thêm các biến để dễ quản lý màu sắc, bóng đổ, chuyển động) --- */
-$primary-color: #3582CD; // Màu xanh chủ đạo
-$primary-hover: #2868a8; // Màu xanh đậm hơn khi hover
-$secondary-color: #F8971C; // Màu cam cho nút hành động nổi bật
-$bg-color-light: #f4f7fa; // Màu nền nhẹ
+/* --- Variables --- */
+$primary-color: #3582CD;
+$primary-hover: #2868a8;
+$secondary-color: #F8971C;
+$success-color: #28a745; /* Màu xanh lá cho thành công */
+$bg-color-light: #f4f7fa;
 $white: #ffffff;
 $text-main: #333333;
 $text-sub: #666666;
@@ -11,18 +12,18 @@ $transition-fast: all 0.2s ease-in-out;
 $transition-medium: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 $shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
 $shadow-md: 0 8px 24px rgba(0,0,0,0.12);
-$shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn khi hover
+$shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15);
 
 .job_list_container {
     width: 100%;
-    transition: width $transition-medium; // Chuyển động mượt khi thay đổi width
+    transition: width $transition-medium;
     padding-bottom: 20px;
 }
 
 .list_suggest {
     display: flex;
     flex-direction: column;
-    gap: 16px; // Khoảng cách giữa các card
+    gap: 16px;
 }
 
 .pagination_wrapper {
@@ -37,15 +38,14 @@ $shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn 
     background: $white;
     border-radius: $border-radius;
     padding: 20px;
-    border: 1px solid transparent; // Viền trong suốt mặc định
-    box-shadow: $shadow-sm; // Bóng đổ nhẹ mặc định
-    transition: $transition-medium; // Chuyển động mượt mà cho mọi thay đổi
+    border: 1px solid transparent;
+    box-shadow: $shadow-sm;
+    transition: $transition-medium;
     overflow: hidden;
-    cursor: pointer; // Biểu tượng con trỏ khi di chuột
-    display: flex; // Đảm bảo card là flex container
-    flex-direction: column; // Sắp xếp nội dung theo chiều dọc (khi cần)
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
 
-    /* Dải màu active ẩn bên trái */
     .active_bar {
         position: absolute;
         top: 0;
@@ -53,93 +53,90 @@ $shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn 
         bottom: 0;
         width: 4px;
         background-color: $primary-color;
-        opacity: 0; // Ẩn mặc định
+        opacity: 0;
         transition: opacity $transition-fast;
     }
 
     &:hover {
-        transform: translateY(-3px); // Nâng card lên nhẹ nhàng
-        box-shadow: $shadow-hover; // Bóng đổ mạnh hơn
-        border-color: rgba($primary-color, 0.3); // Viền nhẹ màu primary
+        transform: translateY(-3px);
+        box-shadow: $shadow-hover;
+        border-color: rgba($primary-color, 0.3);
 
         .active_bar {
-            opacity: 1; // Hiển thị dải màu khi hover
+            opacity: 1;
         }
 
         .job_title {
-            color: $primary-color; // Đổi màu title khi hover
+            color: $primary-color;
         }
     }
 
-    /* Trạng thái Active (khi được chọn xem nhanh) */
     &.active {
-        border-color: $primary-color; // Viền đậm màu primary
-        background-color: #f8fbff; // Nền nhẹ nhàng hơn
-        box-shadow: $shadow-md; // Bóng đổ vừa
-        .active_bar { opacity: 1; } // Luôn hiển thị dải màu
+        border-color: $primary-color;
+        background-color: #f8fbff;
+        box-shadow: $shadow-md;
+        .active_bar { opacity: 1; }
     }
 
     .card_content {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 20px; // Khoảng cách giữa left và right section
-        width: 100%; // Đảm bảo chiếm toàn bộ chiều rộng
+        gap: 20px;
+        width: 100%;
     }
 }
 
 /* --- Info Section (Left) --- */
 .info_section {
     display: flex;
-    align-items: flex-start; // Căn đầu để logo và text thẳng hàng
+    align-items: flex-start;
     gap: 16px;
-    flex: 1; // Cho phép phần này mở rộng tối đa
+    flex: 1;
 
     .logo_wrapper {
-        flex-shrink: 0; // Ngăn logo bị co lại
+        flex-shrink: 0;
         width: 80px;
         height: 80px;
         border-radius: 50%;
         overflow: hidden;
-        border: 1px solid #eee; // Viền nhẹ cho logo
+        border: 1px solid #eee;
         background: $white;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05); // Bóng đổ nhẹ cho wrapper
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
     .company_logo {
         width: 100%;
         height: 100%;
-        object-fit: contain; // Giữ tỷ lệ ảnh
-        padding: 4px; // Đảm bảo logo không chạm viền
+        object-fit: contain;
+        padding: 4px;
     }
 
     .details_wrapper {
         display: flex;
         flex-direction: column;
-        gap: 8px; // Khoảng cách giữa tiêu đề, công ty, tags
-        flex: 1; // Cho phép text mở rộng
+        gap: 8px;
+        flex: 1;
     }
 
     .job_title {
-        font-family: 'Roboto', sans-serif; // Font chữ đẹp hơn
+        font-family: 'Roboto', sans-serif;
         font-size: 18px;
         font-weight: 700;
         color: $text-main;
         margin: 0;
         cursor: pointer;
         transition: color $transition-fast;
-
-        /* Cắt dòng nếu quá dài */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
 
         &:hover {
-            color: $primary-color; // Màu primary khi hover
+            color: $primary-color;
         }
     }
 
@@ -148,26 +145,26 @@ $shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn 
         color: $text-sub;
         margin: 0;
         font-weight: 500;
-        white-space: nowrap; // Ngăn xuống dòng
+        white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; // Hiển thị ... nếu quá dài
-        max-width: 400px; // Giới hạn chiều rộng
+        text-overflow: ellipsis;
+        max-width: 400px;
     }
 
     .tags_list {
         display: flex;
-        flex-wrap: wrap; // Cho phép tags xuống dòng
-        gap: 8px; // Khoảng cách giữa các tag
+        flex-wrap: wrap;
+        gap: 8px;
         margin-top: 4px;
 
         .tag_item {
-            background-color: #e6f7ff; // Nền xanh nhạt
-            color: $primary-color; // Chữ màu primary
+            background-color: #e6f7ff;
+            color: $primary-color;
             font-size: 13px;
             padding: 4px 10px;
             border-radius: 4px;
             font-weight: 500;
-            white-space: nowrap; // Ngăn tag xuống dòng
+            white-space: nowrap;
         }
     }
 }
@@ -176,14 +173,17 @@ $shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn 
 .action_section {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; // Căn phải các nút
+    align-items: flex-end;
     gap: 12px;
-    min-width: 140px; // Chiều rộng tối thiểu
-    flex-shrink: 0; // Ngăn phần này bị co lại
+    min-width: 140px;
+    flex-shrink: 0;
 
-    /* Chế độ khi màn hình xem nhanh đang bật */
     &.see_now_mode {
         .btn {
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+        .applied_text {
             font-size: 13px;
             padding: 6px 12px;
         }
@@ -191,20 +191,29 @@ $shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn 
 
     .action_buttons {
         display: flex;
-        gap: 8px; // Khoảng cách giữa các nút "Xem nhanh" và "Chi tiết"
+        gap: 8px;
     }
 
     .apply_button_wrapper {
         width: 100%;
         display: flex;
-        justify-content: flex-end; // Căn nút "Ứng tuyển ngay" sang phải
+        justify-content: flex-end;
     }
 
+    /* Style cho text "Đã ứng tuyển" giống button */
     .applied_text {
-        color: #28a745; // Màu xanh lá cho trạng thái đã ứng tuyển
+        display: flex;             /* Để căn giữa chữ */
+        align-items: center;
+        justify-content: center;
+        width: 100%;               /* Chiếm toàn bộ chiều rộng wrapper */
+        padding: 8px 16px;         /* Padding giống các nút khác */
+        background-color: #e6f9ec; /* Nền màu xanh lá rất nhạt */
+        color: $success-color;     /* Chữ màu xanh lá đậm */
         font-weight: 600;
         font-size: 14px;
-        padding: 8px 0;
+        border-radius: 6px;        /* Bo góc giống button */
+        cursor: default;           /* Con trỏ mặc định */
+        white-space: nowrap;
     }
 }
 
@@ -216,50 +225,43 @@ $shadow-hover: 0 12px 30px rgba(53, 130, 205, 0.15); // Bóng đổ mạnh hơn 
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: $transition-fast; // Chuyển động nhanh hơn cho nút
-    outline: none; // Loại bỏ outline khi focus
+    transition: $transition-fast;
+    outline: none;
     white-space: nowrap;
 
     &:active {
-        transform: scale(0.96); // Hiệu ứng nhấn nút
+        transform: scale(0.96);
     }
 }
 
-.btn_outline {
-    background: transparent;
-    border: 1px solid $primary-color;
-    color: $primary-color;
-
-    &:hover {
-        background: rgba($primary-color, 0.05); // Nền nhẹ màu primary khi hover
-    }
-}
-
+/* Style cho nút "Chi tiết" - Nền xanh nhạt */
 .btn_primary {
-    background: transparent;
-    color: $text-sub;
-    font-weight: 500; // Nhẹ hơn nút outline
-    border: 1px solid transparent; // Giữ border để không bị dịch chuyển
+    background-color: #E6F7FF;
+    color: $primary-color;
+    border: 1px solid transparent;
 
     &:hover {
-        color: $primary-color;
-        text-decoration: underline; // Gạch chân khi hover
+        background-color: $primary-color;
+        color: $white;
+        text-decoration: none;
+        box-shadow: 0 4px 10px rgba($primary-color, 0.2);
     }
 }
 
+/* Style cho nút "Ứng tuyển ngay" - Nền Cam */
 .btn_apply {
     background: $secondary-color;
     color: $white;
     width: 100%;
-    box-shadow: 0 4px 10px rgba($secondary-color, 0.3); // Bóng đổ nổi bật
+    box-shadow: 0 4px 10px rgba($secondary-color, 0.3);
 
     &:hover {
-        background: darken($secondary-color, 5%); // Đậm hơn khi hover
-        box-shadow: 0 6px 15px rgba($secondary-color, 0.4); // Bóng đổ mạnh hơn
+        background: darken($secondary-color, 5%);
+        box-shadow: 0 6px 15px rgba($secondary-color, 0.4);
     }
 }
 
-/* --- Responsive (giữ nguyên hoặc tinh chỉnh nhẹ) --- */
+/* --- Responsive --- */
 @media (max-width: 768px) {
     .job_list_container {
         padding: 0 10px;

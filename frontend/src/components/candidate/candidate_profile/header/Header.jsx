@@ -29,14 +29,15 @@ const Header = () => {
     return (
         <div className={s.heaeder_manage}>
             <div className={s.heaeder_left}>
-                <p>{"Hiện thị hồ sơ của tôi"}</p>
-                <Switch checked={candiAllowSearch == '1' ? true : false} onChange={(check) => onChange(check)} />
+                <p>{""}</p>
+                {/* <p>{"Hiện thị hồ sơ của tôi"}</p> */}
+                {/* <Switch checked={candiAllowSearch == '1' ? true : false} onChange={(check) => onChange(check)} /> */}
             </div>
             <div className={s.heaeder_right}>
                 <a href="/">Tìm việc làm</a>
-                <svg xmlns="http://www.w3.org/2000/svg" width="27" height="32" viewBox="0 0 27 32" fill="none" className={s.notif} onClick={toggleNotiPc}>
+                {/* <svg xmlns="http://www.w3.org/2000/svg" width="27" height="32" viewBox="0 0 27 32" fill="none" className={s.notif} onClick={toggleNotiPc}>
                     <path d="M10.2513 28.5208H16.0846C16.0846 30.125 14.7721 31.4375 13.168 31.4375C11.5638 31.4375 10.2513 30.125 10.2513 28.5208ZM26.293 25.6042V27.0625H0.0429688V25.6042L2.95964 22.6875V13.9375C2.95964 9.41667 5.8763 5.47917 10.2513 4.16667V3.72917C10.2513 2.125 11.5638 0.8125 13.168 0.8125C14.7721 0.8125 16.0846 2.125 16.0846 3.72917V4.16667C20.4596 5.47917 23.3763 9.41667 23.3763 13.9375V22.6875L26.293 25.6042ZM20.4596 13.9375C20.4596 9.85417 17.2513 6.64583 13.168 6.64583C9.08464 6.64583 5.8763 9.85417 5.8763 13.9375V24.1458H20.4596V13.9375Z" fill="#333333" />
-                </svg>
+                </svg> */}
                 <button className={s.logout} onClick={() => {
                     window.location.href = "/"
                 }}>

@@ -78,7 +78,7 @@ const Sidebar = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className={s.option}>
+      {/* <div className={s.option}>
         <button
           className={s.refesh}
           onClick={handleRefreshProfile}
@@ -97,7 +97,7 @@ const Sidebar = () => {
         >
           Xem hồ sơ
         </button>
-      </div>
+      </div> */}
 
       {/* Sidebar Menu Content */}
       <div className={s.sidebarContent}>

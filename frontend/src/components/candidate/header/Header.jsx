@@ -69,9 +69,9 @@ export default function Header() {
              <a className={s.nav_item} href="/">Trang chủ</a>
             
              {/* Link CV Xin việc */}
-             {(!accessToken || checkAccount) && (
+             {/* {(!accessToken || checkAccount) && (
                 <a className={s.nav_item} href={linkPageCv()}>CV xin việc</a>
-             )}
+             )} */}
 
              {/* Các menu khác (giữ chỗ) */}
              {/* <a className={s.nav_item} href="/cam-nang-tim-viec">Cẩm nang</a> */}
@@ -124,12 +124,12 @@ export default function Header() {
             )}
             
             {/* Nút Thông báo */}
-            <div id="noti">
+            {/* <div id="noti">
               <button className={s.btn_icon_circle} onClick={toggleNotiPc}>
                  <img src="/images/bell.svg" alt="Thông báo" />
               </button>
               {showNotiPc && <NotificationCenter setIsOutside={setIsOutsideNotiPc} />}
-            </div>
+            </div> */}
 
             {/* User Info */}
             <div id="user" className={s.user_container}>

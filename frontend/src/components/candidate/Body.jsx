@@ -174,7 +174,8 @@ const Body = () => {
     // Hàm xử lý link (Giữ lại, dùng mock functions)
     const nganhNgheHandle = (id) => {
         const job = getJobName(id);
-        return `/tim-viec-lam-${createLinkTilte2(job)}`; // Sử dụng hàm stub
+        // return `/tim-viec-lam-${createLinkTilte2(job)}`; // Sử dụng hàm stub
+        return `/tim-viec-lam`; // Sử dụng hàm stub
     };
 
     // Hook xử lý UI (Giữ lại)

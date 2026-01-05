@@ -66,13 +66,13 @@ const Banner = () => {
                 ))}
               </div>
             </div>
-
+{/* 
             <div className={s.action_btn_container}>
               <a className={s.btn_post_job} href={'/nha-tuyen-dung/dang-tin-moi'}>
                  Đăng tin tuyển dụng miễn phí
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: '8px'}}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
               </a>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -328,7 +328,7 @@ const JobDetail = () => {
               </div>
 
               <div className={s.job_detail_content_4}>
-                <a href={`/${data?.usc_alias}`} className={s.link}>Xem trang công ty</a>
+                {/* <a href={`/${data?.usc_alias}`} className={s.link}>Xem trang công ty</a> */}
               </div>
             </div>
 
