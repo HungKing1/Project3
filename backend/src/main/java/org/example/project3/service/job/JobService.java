@@ -1,10 +1,14 @@
 package org.example.project3.service.job;
 
 import lombok.RequiredArgsConstructor;
+import org.example.project3.entity.candidate.Candidate;
 import org.example.project3.entity.job.Job;
+import org.example.project3.repository.candidate.CandidateRepository;
+import org.example.project3.repository.job.ApplicationRepository;
 import org.example.project3.repository.job.JobRepository;
 import org.example.project3.response.ApiResponse;
 import org.example.project3.response.GetJobResponse;
+import org.example.project3.util.JwtUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,14 +18,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import jakarta.persistence.criteria.Predicate;
 
 @Service
 @RequiredArgsConstructor
 public class JobService implements IJobService{
     private final JobRepository jobRepository;
+    private final CandidateRepository candidateRepository;
+    private final ApplicationRepository applicationRepository;
 
     @Override
     public ResponseEntity<ApiResponse> getJobs(int page, int pageSize) {
@@ -53,9 +59,19 @@ public class JobService implements IJobService{
     @Override
     public ResponseEntity<ApiResponse> getJobById(Long id) {
         try {
-            GetJobResponse convertedJob = jobRepository.findById(id)
-                    .map(GetJobResponse::new)
+            Job job = jobRepository.findById(id)
                     .orElseThrow(() -> new Exception("Không tìm thấy job theo id"));
+            GetJobResponse convertedJob = new GetJobResponse(job);
+
+            String email = JwtUtil.getUserEmail();
+            if(email != null) {
+                Optional<Candidate> candidate = candidateRepository.findByEmail(email);
+                if(candidate.isPresent()) {
+                    boolean isApplied = applicationRepository.existsByCandidateIdAndJobId(candidate.get().getId(), id);
+                    convertedJob.setApplied(isApplied);
+                }
+            }
+
             return  ResponseEntity.status(HttpStatus.OK).body(
                     new ApiResponse(true, "Lấy job thành công", convertedJob)
             );
@@ -117,8 +133,34 @@ public class JobService implements IJobService{
             // 3. Thực thi truy vấn với cả Specification và Pageable
             Page<Job> jobPage = jobRepository.findAll(spec, pageable);
 
-            // 4. Ánh xạ kết quả sang DTO
-            Page<GetJobResponse> responsePage = jobPage.map(GetJobResponse::new);
+            String email = JwtUtil.getUserEmail();
+            Set<Long> appliedJobIds = new HashSet<>();
+
+            if (email != null) {
+                Optional<Candidate> candidate = candidateRepository.findByEmail(email);
+
+                if (candidate.isPresent()) {
+                    List<Long> pageJobIds = jobPage.getContent().stream()
+                            .map(Job::getId) // Assuming your entity is Job
+                            .toList();
+
+                    if (!pageJobIds.isEmpty()) {
+                        List<Long> foundIds = applicationRepository.findAppliedJobIds(candidate.get().getId(), pageJobIds);
+                        appliedJobIds.addAll(foundIds);
+                    }
+                }
+            }
+
+            Page<GetJobResponse> responsePage = jobPage.map(job -> {
+                    GetJobResponse response = new GetJobResponse(job);
+
+                    if (appliedJobIds.contains(job.getId())) {
+                        response.setApplied(true);
+                    } else {
+                        response.setApplied(false);
+                    }
+                    return response;
+            });
 
             // 5. Trả về kết quả
             return ResponseEntity.ok(new ApiResponse(true, "Tìm kiếm công việc thành công", responsePage));

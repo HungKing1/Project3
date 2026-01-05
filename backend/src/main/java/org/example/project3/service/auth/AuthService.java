@@ -94,10 +94,10 @@ public class AuthService implements IAuthService {
 
             ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
                     .httpOnly(true)
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .maxAge(24*60*60)
-                    .sameSite("None")
+                    .sameSite("Lax")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -117,28 +117,33 @@ public class AuthService implements IAuthService {
     @Override
     public ApiResponse loginCandidate(LoginRequesst requesst, HttpServletResponse response) {
         try {
-            Optional<Candidate> candidate = candidateRepository.findByEmail(requesst.getEmail());
-            if (candidate.isEmpty()) {
+            Optional<Candidate> candidateOptional = candidateRepository.findByEmail(requesst.getEmail());
+            if (candidateOptional.isEmpty()) {
                 return new ApiResponse(false, "Email không tồn tại trong hệ thống", null);
             }
-            if (!passwordEncoder.matches(requesst.getPassword(), candidate.get().getPassword())) {
+            if (!passwordEncoder.matches(requesst.getPassword(), candidateOptional.get().getPassword())) {
                 return new ApiResponse(false, "Mật khẩu không đúng", null);
             }
 
-            String accessToken = jwtUtil.generateToken(candidate.get().getEmail());
+            String accessToken = jwtUtil.generateToken(candidateOptional.get().getEmail());
 
             ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
                     .httpOnly(true)
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .maxAge(24*60*60)
-                    .sameSite("None")
+                    .sameSite("Lax")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            Candidate candidate = candidateOptional.get();
+            Long candidateId = candidate.getId();
+            String email = candidate.getEmail();
 
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
+            data.put("candidateId", candidateId);
+            data.put("email", email);
 
             return new ApiResponse(true, "Đăng nhập thành công" , data);
 
@@ -153,10 +158,10 @@ public class AuthService implements IAuthService {
             // Tạo cookie với cùng tên "access_token" nhưng maxAge=0 để xóa
             ResponseCookie cookie = ResponseCookie.from("access_token", "")
                     .httpOnly(true)
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .maxAge(0) // maxAge=0 => xóa cookie
-                    .sameSite("None")
+                    .sameSite("Lax")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -202,10 +207,10 @@ public class AuthService implements IAuthService {
 
             ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
                     .httpOnly(true)
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .maxAge(24*60*60)
-                    .sameSite("None")
+                    .sameSite("Lax")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -236,10 +241,10 @@ public class AuthService implements IAuthService {
             String accessToken = jwtUtil.generateToken(employer.get().getEmail());
             ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
                     .httpOnly(true)
-                    .secure(true)
+                    .secure(false)
                     .path("/")
                     .maxAge(24*60*60)
-                    .sameSite("None")
+                    .sameSite("Lax")
                     .build();
 
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

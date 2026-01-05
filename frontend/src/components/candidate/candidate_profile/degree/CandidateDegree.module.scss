@@ -1,0 +1,205 @@
+@mixin input-styles {
+  padding: 14px 20px;
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border-color: #3582cd;
+  }
+
+  &:focus-within {
+    border-color: #3582cd;
+    box-shadow: 0 0 0 3px rgba(53, 130, 205, 0.1);
+  }
+}
+
+.body {
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  background-color: #f8fafc;
+
+  .container {
+    width: 1000px;
+    padding: 32px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    .title {
+      margin-bottom: 32px;
+      .title_1 { color: #3582cd; font-size: 24px; font-weight: 800; }
+      .title_2 { width: 50px; height: 4px; background: #f39623; border-radius: 2px; margin-top: 4px; }
+    }
+
+    .degree_list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px; // KHOẢNG CÁCH GIỮA CÁC BẰNG CẤP
+    }
+
+    .degree_card {
+      background: #ffffff;
+      border: 1px solid #edf2f7;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: transform 0.2s ease;
+
+      &:hover {
+        border-color: #cbd5e0;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      }
+
+      .degree_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed #e2e8f0;
+
+        .degree_number {
+          font-weight: 700;
+          color: #2d3748;
+          font-size: 16px;
+          text-transform: uppercase;
+        }
+
+        .btn_delete_text {
+          color: #e53e3e;
+          font-size: 14px;
+          font-weight: 600;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+          padding: 6px 12px;
+          border-radius: 6px;
+          transition: background 0.2s;
+
+          &:hover { background: #fff5f5; }
+        }
+      }
+    }
+
+    .form_grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; // Chia 2 cột
+      gap: 20px;
+    }
+
+    .form_input {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      label { font-size: 14px; font-weight: 600; color: #4a5568; }
+      .form_input_div { @include input-styles; }
+    }
+
+    .time_row {
+      grid-column: span 2; // Hàng thời gian chiếm hết chiều rộng
+      display: flex;
+      gap: 20px;
+      .form_input { flex: 1; }
+    }
+
+    .select_wrapper { padding: 0 !important; }
+
+    .antd_select_custom {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn_action_group {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .btn_add {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        color: #3582cd;
+        font-weight: 700;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: 1px solid #3582cd;
+        transition: all 0.2s;
+
+        &:hover { background: #f0f7ff; }
+        .btn_add_icon { font-size: 20px; }
+      }
+
+      .btn_submit {
+        background: #3582cd;
+        color: white;
+        border: none;
+        padding: 12px 40px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        &:hover { background: #2b6cb0; }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .form_grid { grid-template-columns: 1fr !important; }
+  .time_row { flex-direction: column; grid-column: span 1 !important; }
+}
+.form_input_div input {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+
+// Thêm vào trong .degree_header của file scss
+.header_actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .btn_save_item {
+    background: #3582cd;
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: #2b6cb0;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background: #a0aec0;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn_delete_text {
+    color: #e74c3c;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    &:hover { text-decoration: underline; }
+  }
+}

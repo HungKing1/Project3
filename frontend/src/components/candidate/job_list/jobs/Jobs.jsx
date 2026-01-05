@@ -1,306 +1,181 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Popover } from 'antd';
-import Pagination from '../../../Pagination';
-import s from './styles.module.scss'; // Giả định file CSS này tồn tại
+import React, { useState, useEffect } from 'react';
+import { Popover } from 'antd'; // Giữ nguyên
+import Pagination from '../../../Pagination'; // Giữ nguyên
+import s from './styles.module.scss';
 import { useNavigate } from 'react-router-dom';
 
-// --- HÀM GIẢ LẬP (Stubs) ---
-const city_array = [
-  { cit_id: 0, cit_name: 'Toàn quốc', cit_parent: 0 },
-  { cit_id: 1, cit_name: 'Hà Nội', cit_parent: 0 },
-  { cit_id: 45, cit_name: 'Hồ Chí Minh', cit_parent: 0 },
-];
-const getMucLuong = (type, from, to, money) => {
-  if (type === 1) return `${from / 1000000} - ${to / 1000000} triệu`;
-  if (money > 0) return `${money / 1000000} triệu`;
-  return "Thỏa thuận";
-};
-const getHanNop = (timestamp) => {
-    const daysLeft = Math.round((timestamp - Date.now()/1000) / 86400);
-    if (daysLeft <= 0) return "Đã hết hạn";
-    return `Còn ${daysLeft} ngày`;
-};
-const getTimeCapNhat = (timestamp) => {
-    const minutesLeft = Math.round((Date.now()/1000 - timestamp) / 60);
-    if (minutesLeft < 60) return `${minutesLeft} phút trước`;
-    return `${Math.round(minutesLeft / 60)} giờ trước`;
-};
-const handleImageSource = (src) => src || "/images/candidate/ava_default.jpg";
-const createLinkTilte2 = (title) => title ? title.toLowerCase().replace(/ /g, '-') : 'mock-alias';
-const checkLoginServerSide = () => false; // Giả lập chưa đăng nhập
-// ---
-
 const Jobs = ({
+  page,
   jobCardList,
   setPage,
-  pageSize,
-  total,
-  workInfo,
   totalPage,
   seeNow,
   newId,
-  handleChatNgay,
   handleUngTuyenNgay,
   handleSeeNow,
-  handleChangePage,
 }) => {
-  // (useContext đã bị loại bỏ)
   const [idHover, setIdHover] = useState(0);
-  const [idSeeNow, setIdSeeNow] = useState(0);
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [popoverVisible, setPopoverVisible] = useState(false);
-  const [popoverVisible1, setPopoverVisible1] = useState(false);
-  const [totalPageCurrent, setTotalPageCurrent] = useState();
-  const [changeId, setChangeId] = useState(0);
-  const [copyData, setCopyData] = useState([]);
-  // (useRouter đã bị loại bỏ)
+  const [idSeeNow, setIdSeeNow] = useState(0); // Dùng để highlight card đang xem nhanh
+  const navigate = useNavigate();
 
-  const handleSetIdHover = (id) => {
-    setIdHover(id);
-  };
+  const handleSetIdHover = (id) => setIdHover(id);
+  const handleSetIdSeeNow = (id) => setIdSeeNow(id);
 
-  const handleSetIdSeeNow = (id) => {
-    setIdSeeNow(id);
-  };
-
-  const handleXem = () => {
-    console.log("Xem >>");
-  };
-
-  const handleTitleMouseEnter = () => {
-    setPopoverVisible(true);
-  };
-
-  const handleTitleMouseLeave = () => {
-    setPopoverVisible(false);
-  };
-
-  const handleTitleMouseEnter1 = () => {
-    setPopoverVisible1(true);
-  };
-
-  const handleTitleMouseLeave1 = () => {
-    setPopoverVisible1(false);
-  };
-
-  // Hàm này thêm thuộc tính 'isActive' để highlight tin đang chọn
-  const addPropertyIsShow = (numberChoose) => {
-    if (numberChoose == 0) {
-      let copy = [...workInfo];
-      copy.map((work) => {
-        work.isActive = false;
-      });
-      setCopyData(copy);
-    } else {
-      let copy = [...workInfo];
-      copy.map((work) => {
-        if (work.new_id == numberChoose) {
-          work.isActive = true;
-        } else {
-          work.isActive = false;
-        }
-      });
-      setCopyData(copy);
-    }
-  };
-
+  // Giữ nguyên logic handleFirstUT của bạn
   const handleFirstUT = (id) => {
-    // Giả lập chưa đăng nhập
-    const isLoggedIn = false; 
-    if (isLoggedIn) {
-      // Đã đăng nhập
+     handleUngTuyenNgay(id);
+  };
+
+  useEffect(() => {
+    // Giữ nguyên logic này nếu bạn đang dùng để highlight card khi xem nhanh
+    if (newId) {
+      setIdSeeNow(newId);
     } else {
-      // setCookie("urlUt", router.asPath) // Bị loại bỏ
-      handleUngTuyenNgay(id); // Gọi hàm ứng tuyển (sẽ mở modal login)
+      setIdSeeNow(0);
     }
-  };
-
-  const listCityText = (listCity) => {
-    const textCitys = [];
-    if (listCity.includes(0)) return 'Toàn quốc';
-    listCity.map((c) => {
-      city_array.map((city) => {
-        if (city.cit_id == c) {
-          textCitys.push(city.cit_name);
-        }
-      });
-    });
-    return textCitys.join(', ');
-  };
-
-  useEffect(() => {
-    setTotalPageCurrent(totalPage);
-  }, [totalPage]);
-
-  useEffect(() => {
-    // console.log('newId', router.asPath); // Bị loại bỏ
-    if (workInfo) {
-      addPropertyIsShow(newId);
-    }
-  }, [newId, pageCurrent, workInfo]);
+  }, [newId]);
 
 
-  const naviagte = useNavigate()
   return (
     <>
+      {/* Custom Popover Style - Đặt ở đây để đảm bảo Ant Design Popover được style */}
       <style>
         {`
-            .custom-overlay-1 
-            {
-                .ant-popover-arrow::after {
-                    background: #2767A5;
-                }
-                .ant-popover-content{
-                    .ant-popover-inner {
-                        display: flex;
-                        width: 288px;
-                        padding: 10px !important;
-                        align-items: center;
-                        box-sizing: border-box;
-                        border-radius: 4px;
-                        background: #2767A5;
-                        .ant-popover-inner-content {
-                            color: #FFF !important;
-                            text-align: center;
-                            font-family: Roboto;
-                            font-size: 15px;
-                            font-style: normal;
-                            font-weight: 500;
-                            line-height: 135%;
-                        }
-                    }
-                }
+            .custom-popover .ant-popover-inner {
+                background-color: #3582CD; /* Màu xanh chủ đạo */
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             }
-          `}
+            .custom-popover .ant-popover-arrow::after {
+                 background-color: #3582CD !important; /* Màu mũi tên */
+            }
+            .custom-popover .ant-popover-inner-content {
+                color: #fff;
+                font-weight: 500;
+                text-align: center;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        `}
       </style>
+
       <div
-        className={s.job_detail_box_7}
+        className={s.job_list_container}
         style={{
-          width: idSeeNow ? `width: calc(100% - 574px)` : '100%',
-          transition: 'all 0.3s'
+          width: seeNow && idSeeNow ? 'calc(100% - 580px)' : '100%',
         }}
       >
         <div className={s.list_suggest}>
           {jobCardList?.map((item, index) => (
             <div
               key={index}
-              className={`${s.item}`}
+              className={`${s.job_card} ${idSeeNow === item?.id ? s.active : ''}`} // Thêm class active
               onMouseEnter={() => handleSetIdHover(item?.id)}
               onMouseLeave={() => handleSetIdHover(0)}
-              style={{
-                display: 'flex',
-                justifyItems: 'center',
-                alignItems: 'center',
-                flexDirection: 'row',
-                border: item?.isActive ? '1px solid #3582CD' : ''
-              }}
             >
+              {/* Dải màu active bên trái */}
+              <div className={s.active_bar}></div>
 
-              <div className={s.content} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%'
-              }}>
-                <div className={s.contentLeft}>
-                  <div className={s.image_logo}>
-                    <a style={{ all: 'inherit', cursor: 'pointer' }}>
-                      {/* <Image> đã được thay bằng <img> */}
-                      <img src={handleImageSource("/images/candidate/ava_default.jpg")} alt={"Ảnh avatar NTD"} width={90} height={90} style={{ width: "90px", height: "90px", borderRadius: "50%", border: "1px solid #3582cd80" }} />
-                    </a>
+              <div className={s.card_content}>
+                {/* Left Section */}
+                <div className={s.info_section}>
+                  <div className={s.logo_wrapper}>
+                     {/* Đảm bảo src luôn có giá trị fallback */}
+                     <img
+                        src={item?.logo || "/images/candidate/applicant.png"}
+                        alt="Logo công ty"
+                        className={s.company_logo}
+                        onError={(e) => {e.target.src = "/images/candidate/applicant.png"}} // Fallback khi lỗi ảnh
+                     />
                   </div>
-                  <div className={s.detail}>
-                    <span
-                      className={`${s.detail_1} ${seeNow === true ? s.detail_1_plus : ""}`}
-                      onMouseEnter={handleTitleMouseEnter}
-                      onMouseLeave={handleTitleMouseLeave}
-                      // onClick={() => window.location.href = `/${createLinkTilte2(item.new_alias)}-${item.new_id}`}
-                      onClick={() => naviagte(`/get-job-detail/${item.id}`)}
+
+                  <div className={s.details_wrapper}>
+                    {/* Job Title */}
+                    <Popover
+                        content={item?.title}
+                        overlayClassName="custom-popover"
+                        trigger="hover"
+                        mouseEnterDelay={0.5}
                     >
-                      <Popover
-                        open={popoverVisible && idHover === item.id}
-                        content={<span>{item?.title}</span>}
-                        title=""
-                        overlayClassName="custom-overlay-1"
-                      >
-                        <h3 data-id={`${item.id}`}>
-                          {item?.title}
+                        <h3
+                            className={s.job_title}
+                            onClick={() => navigate(`/get-job-detail/${item.id}`)}
+                        >
+                            {item?.title}
                         </h3>
-                      </Popover>
-                    </span>
+                    </Popover>
 
-                    <span
-                      className={s.detail_2}
-                      style={{ flex: 1 }}
-                      onMouseEnter={handleTitleMouseEnter1}
-                      onMouseLeave={handleTitleMouseLeave1}
+                    {/* Company Name */}
+                    <Popover
+                        content={item?.employerName}
+                        overlayClassName="custom-popover"
+                        trigger="hover"
+                         mouseEnterDelay={0.5}
                     >
-                      <Popover
-                        content={<span>{item?.employerName}</span>}
-                        title=""
-                        overlayClassName="custom-overlay-1"
-                      >
-                        <a style={{ all: 'inherit' }}>
-                          {item?.employerName ? item.employerName : 'Chưa cập nhật'}
-                        </a>
-                      </Popover>
-                    </span>
+                        <p className={s.company_name}>
+                             {item?.employerName || 'Đang cập nhật'}
+                        </p>
+                    </Popover>
 
-                    <div className={s.list_tag}>
-                      <div className={s.tag}>
-                        <span className={s.text}>{item?.cityName}</span>
-                      </div>
-                      <div className={s.tag}>
-                        <span className={s.text}>{item?.districtName}</span>
-                      </div>
-                      <div className={s.tag}>
-                        <span className={s.text}>{item?.experienceYearName}</span>
-                      </div>
-                      <div className={s.tag}>
-                        <span className={s.text}>{item?.salaryName}</span>
-                      </div>
-                      <div className={s.tag}>
-                        <span className={s.text}>{item?.jobLevelName}</span>
-                      </div>
-                      <div className={s.tag}>
-                        <span className={s.text}>{item?.workTypeName}</span>
-                      </div>
+                    {/* Tags (Salary, City, Experience) */}
+                    <div className={s.tags_list}>
+                      {item?.salaryName && <span className={s.tag_item}>{item?.salaryName}</span>}
+                      {item?.cityName && <span className={s.tag_item}>{item?.cityName}</span>}
+                      {item?.districtName && <span className={s.tag_item}>{item?.districtName}</span>}
+                      {item?.experienceYearName && <span className={s.tag_item}>{item?.experienceYearName}</span>}
+                      {item?.workTypeName && <span className={s.tag_item}>{item?.workTypeName}</span>}
                     </div>
                   </div>
                 </div>
-                <div className={seeNow === true ? (window.innerWidth < 920 ? s.contentRight : s.contentRight_1) : s.contentRight}>
-                  <button className={s.buttonSeeMore_1} onClick={() => { handleSeeNow(true, item?.id); handleSetIdSeeNow(item?.id); }}>Xem nhanh {`>>`}</button>
-                  <button className={s.buttonSeeMore} onClick={() => { handleSeeNow(true, item?.id) }}>Xem {`>>`}</button>
-                  <div className={s.groupBottom}>
-                    {item?.checkUngTuyen ?
-                      <button className={s.buttonBlue} style={{ whiteSpace: 'nowrap' }}>Đã ứng tuyển</button>
-                      :
-                      <button className={s.buttonBlue} onClick={() => {
-                        handleFirstUT(item?.id);
-                      }
-                      }>Ứng tuyển</button>
-                    }
+
+                {/* Right Section */}
+                <div className={`${s.action_section} ${seeNow && idSeeNow ? s.see_now_mode : ''}`}>
+                  <div className={s.action_buttons}>
+                      <button
+                        className={`${s.btn} ${s.btn_outline}`}
+                        onClick={(e) => {
+                            e.stopPropagation(); // Ngăn sự kiện click lan ra card cha
+                            handleSeeNow(true, item?.id);
+                            handleSetIdSeeNow(item?.id); // Set ID để highlight
+                        }}
+                      >
+                        Xem nhanh
+                      </button>
+
+                      <button
+                        className={`${s.btn} ${s.btn_primary}`}
+                        onClick={(e) => {
+                            e.stopPropagation(); // Ngăn sự kiện click lan ra card cha
+                            navigate(`/get-job-detail/${item.id}`);
+                        }}
+                      >
+                        Chi tiết
+                      </button>
+                  </div>
+
+                  <div className={s.apply_button_wrapper}>
+                     {item?.applied ? (
+                        <span className={s.applied_text}>Đã ứng tuyển</span>
+                     ) : (
+                        <button
+                            className={`${s.btn} ${s.btn_apply}`}
+                            onClick={(e) => {
+                                e.stopPropagation(); // Ngăn sự kiện click lan ra card cha
+                                handleFirstUT(item?.id);
+                            }}
+                        >
+                            Ứng tuyển ngay
+                        </button>
+                     )}
                   </div>
                 </div>
               </div>
-              <div style={{
-                display: item?.isActive ? 'flex' : 'none',
-                position: 'absolute',
-                justifyContent: 'center',
-                alignItems: 'center',
-                right: '-12px',
-              }}>
-                <svg className={s.icon_see_now} style={{
-                  display: 'flex'
-                }} xmlns="http://www.w3.org/2000/svg" width="12" height="13" viewBox="0 0 12 13" fill="none">
-                  <path d="M11.2111 5.60582C11.9482 5.97434 11.9482 7.02615 11.2111 7.39467L1.44721 12.2766C0.782313 12.6091 4.23659e-07 12.1256 4.56153e-07 11.3822L8.82948e-07 1.61828C9.15442e-07 0.874896 0.782314 0.3914 1.44722 0.723851L11.2111 5.60582Z" fill="#3582CD" />
-                </svg>
-              </div>
             </div>
           ))}
-          {
-            // <Pagination totalPage={totalPageCurrent} handleChangePage={handleChangePage} handleSeeNow={handleSeeNow} />
-            <Pagination setPage={setPage} totalPage={totalPage}/>
-          }
+
+          <div className={s.pagination_wrapper}>
+             <Pagination page={page} setPage={setPage} totalPage={totalPage}/>
+          </div>
         </div>
       </div>
     </>

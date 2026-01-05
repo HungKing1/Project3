@@ -6,6 +6,8 @@ import SearchJobBar from "./search_job_bar/SearchJobBar";
 import Jobs from "./jobs/Jobs";
 import s from "./styles.module.scss"
 import axios from "axios";
+import { callApi } from "../../../utils/apiClient";
+import toast from "react-hot-toast";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -238,27 +240,40 @@ export default function JobListSearch({jobCardList, setPage, page, totalPage, to
       }
     }
   };
+  const [localJobList, setLocalJobList] = useState(jobCardList || []);
 
-  const handleUngTuyenNgay = (id) => {
-    setIdNew(id);
-    setActionType(2);
-    
-    // Giả lập logic kiểm tra đăng nhập
-    const isLoggedIn = false; // Thay đổi thành true để test
-    const userType = '2'; // '1' = NTD, '2' = UV
+  useEffect(() => {
+    if (jobCardList) {
+      setLocalJobList(jobCardList);
+    }
+  }, [jobCardList]);
 
-    if (!isLoggedIn || userType == '1') {
-      setOpenModelLogin(true);
-    } else {
-      if (isCvExist) {
-        setIsOpenLetter(true);
-      } else if (confirm('Bạn chưa hoàn thiện hồ sơ. Hoàn thiện ngay?')) {
-        if (confirm('Tạo CV Online?')) {
-          window.location.href = '/mau-cv-xin-viec';
-        } else if (confirm('Đăng tải hồ sơ?')) {
-          window.location.href = '/ung-vien/tai-len-ho-so';
-        }
+  const handleUngTuyenNgay = async (id) => {
+    const candidate = JSON.parse(localStorage.getItem("candidate") || "{}");
+    const body = {
+      candidateId: candidate.candidateId,
+      jobId: id
+    }
+    try {
+      const data = await callApi("/candidate/apply-job", "POST", body)
+      if(data.success) {
+        toast.success(data.message);
+        setLocalJobList(prevList => {
+            // Duyệt qua danh sách cũ, tìm job vừa ứng tuyển
+            return prevList.map(job => {
+                if (job.id === id) {
+                    // Copy job đó và set applied = true
+                    return { ...job, applied: true };
+                }
+                // Các job khác giữ nguyên
+                return job;
+            })
+        });
+      } else {
+        toast.error(data.message)
       }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -529,8 +544,9 @@ export default function JobListSearch({jobCardList, setPage, page, totalPage, to
               >
                 {data?.total > 0 && (
                   <Jobs
-                    jobCardList={jobCardList}
+                    jobCardList={localJobList}
 
+                    page={page}
                     setPage={setPage}
                     pageSize={pageSize}
                     totalPage={totalPage}

@@ -288,13 +288,13 @@ const JobDetail = () => {
               <div className={s.job_detail_content_1}>
                 <div>
                   <img // <Image> đã được thay bằng <img>
-                    src={data?.usc_logo ? handleImageSource(data?.usc_logo) : "/images/candidate/ava_default.jpg"} 
+                    src={data?.usc_logo ? handleImageSource(data?.usc_logo) : "/images/candidate/applicant1.png"} 
                     alt={"avatar ntd"} 
                     width={60} 
                     height={60} 
                     style={{ height: "60px", width: "60px", borderRadius: "100%", objectFit: 'cover' }}
                     onError={(e) => {
-                      e.currentTarget.src = "/images/candidate/ava_default.jpg"
+                      e.currentTarget.src = "/images/candidate/applicant1.png"
                     }}
                   />
                 </div>
@@ -470,7 +470,7 @@ const JobDetail = () => {
 
               <div className={s.textThank}>Thanks for watching!</div>
               <img // <Image> đã được thay bằng <img>
-                src={"/images/nha-tuyen-dung/chi-tiet-tin-tuyen-dung/letter.png"} 
+                src={"/images/candidate/applicant1.png"} 
                 alt={"letter envelope"} 
                 height={700} 
                 width={700} 

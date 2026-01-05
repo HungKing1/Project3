@@ -1,96 +1,112 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState } from 'react';
+import React from 'react';
+import styles from './Pagination.module.scss';
 
-// --- Giả lập (Stub) hàm functions/renderPagination ---
-// Hàm này tạo ra một mảng số trang, ví dụ: [1, 2, 3, 4, 5]
-const renderPagination = (total) => {
-  if (!total || total <= 1) return [1];
-  // Tạo một mảng đơn giản từ 1 đến total
-  return Array.from({ length: total }, (_, index) => index + 1);
+// --- Logic tạo mảng trang thông minh ---
+const usePagination = ({ currentPage, totalPage, siblingCount = 1 }) => {
+  const paginationRange = React.useMemo(() => {
+    // 1. Fix lỗi: Nếu totalPage không tồn tại hoặc <= 0, trả về mảng rỗng ngay lập tức
+    if (!totalPage || totalPage <= 0) {
+      return [];
+    }
+
+    const totalPageNumbers = siblingCount + 5;
+
+    if (totalPageNumbers >= totalPage) {
+      return Array.from({ length: totalPage }, (_, idx) => idx + 1);
+    }
+
+    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPage);
+
+    const shouldShowLeftDots = leftSiblingIndex > 2;
+    const shouldShowRightDots = rightSiblingIndex < totalPage - 2;
+
+    const firstPageIndex = 1;
+    const lastPageIndex = totalPage;
+
+    if (!shouldShowLeftDots && shouldShowRightDots) {
+      let leftItemCount = 3 + 2 * siblingCount;
+      let leftRange = Array.from({ length: leftItemCount }, (_, idx) => idx + 1);
+      return [...leftRange, 'DOTS', totalPage];
+    }
+
+    if (shouldShowLeftDots && !shouldShowRightDots) {
+      let rightItemCount = 3 + 2 * siblingCount;
+      let rightRange = Array.from({ length: rightItemCount }, (_, idx) => totalPage - rightItemCount + idx + 1);
+      return [firstPageIndex, 'DOTS', ...rightRange];
+    }
+
+    if (shouldShowLeftDots && shouldShowRightDots) {
+      let middleRange = Array.from({ length: rightSiblingIndex - leftSiblingIndex + 1 }, (_, idx) => leftSiblingIndex + idx);
+      return [firstPageIndex, 'DOTS', ...middleRange, 'DOTS', lastPageIndex];
+    }
+    
+    return []; // Fallback an toàn
+  }, [totalPage, siblingCount, currentPage]);
+
+  return paginationRange;
 };
-// ---
 
-const Pagination = ({totalPage, page, setPage}) => {
-  // Hàm nội bộ để xử lý việc nhấp vào trang
-  const handleSetPage = (newPage) => {
-    // Logic của prop (handleGoToSlide) đã bị loại bỏ
-    setPage(newPage);
+// --- Component Chính ---
+const Pagination = ({ totalPage, page, setPage }) => {
+  const paginationRange = usePagination({
+    currentPage: page,
+    totalPage: totalPage,
+  });
+
+  // 2. Fix lỗi: Kiểm tra paginationRange có tồn tại không trước khi check .length
+  if (page === 0 || !paginationRange || paginationRange.length < 2) {
+    return null;
+  }
+
+  const onNext = () => {
+    if (page < totalPage) setPage(page + 1);
   };
 
-  // useEffect đồng bộ với prop (currentPage) đã bị loại bỏ
+  const onPrevious = () => {
+    if (page > 1) setPage(page - 1);
+  };
 
   return (
-    <div className="pagination_com">
-      <div
-        className="show_tag show_left"
-        style={{ cursor: 'pointer' }}
-        onClick={() => {
-          // Xử lý logic "Trước" bằng state nội bộ
-          if (page <= 1) {
-            /* Không làm gì */
-          } else {
-            handleSetPage(page - 1);
-          }
-        }}
+    <div className={styles.paginationContainer}>
+      <button
+        className={styles.pageBtn}
+        onClick={onPrevious}
+        disabled={page === 1}
+        aria-label="Trang trước"
       >
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 28 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect x="0.5" y="0.5" width="27" height="27" rx="13.5" fill="white" />
-          <rect x="0.5" y="0.5" width="27" height="27" rx="13.5" stroke="#3582CD" />
-          <path
-            d="M12.9187 14.5059C12.7616 14.3717 12.6733 14.1897 12.6733 14C12.6733 13.8103 12.7616 13.6283 12.9187 13.4941L16.7614 10.2126C16.9141 10.0777 16.9985 9.89694 16.9966 9.70932C16.9947 9.52171 16.9066 9.34224 16.7512 9.20958C16.5958 9.07691 16.3856 9.00166 16.1658 9.00003C15.9461 8.9984 15.7344 9.07052 15.5763 9.20086L11.7362 12.4823C11.2648 12.8849 11 13.4308 11 14C11 14.5692 11.2648 15.1151 11.7362 15.5177L15.5797 18.7991C15.7377 18.9295 15.9494 19.0016 16.1692 19C16.3889 18.9983 16.5991 18.9231 16.7545 18.7904C16.9099 18.6578 16.9981 18.4783 17 18.2907C17.0019 18.1031 16.9174 17.9223 16.7647 17.7874L12.9187 14.5059Z"
-            fill="#3582CD"
-          />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-      </div>
-      <div className="list_pag">
-        {/* Sử dụng hàm renderPagination đã giả lập */}
-        {renderPagination(totalPage)?.map((item) => (
-          <div
-            key={item}
-            className={`item_pag ${
-              page == item && 'bg_3582CD bd_3582CD ffffff'
-            }`}
-            onClick={() => {
-              handleSetPage(item);
-            }}
+      </button>
+
+      {paginationRange.map((pageNumber, index) => {
+        if (pageNumber === 'DOTS') {
+          return <span key={index} className={styles.dots}>&#8230;</span>;
+        }
+
+        return (
+          <button
+            key={index}
+            className={`${styles.pageBtn} ${pageNumber === page ? styles.active : ''}`}
+            onClick={() => setPage(pageNumber)}
           >
-            {item}
-          </div>
-        ))}
-      </div>
-      <div
-        className="show_tag show_right"
-        style={{ cursor: 'pointer' }}
-        onClick={() => {
-          // Xử lý logic "Sau" bằng state nội bộ
-          if (page >= totalPage) {
-            /* Không làm gì */
-          } else {
-            handleSetPage(page + 1);
-          }
-        }}
+            {pageNumber}
+          </button>
+        );
+      })}
+
+      <button
+        className={styles.pageBtn}
+        onClick={onNext}
+        disabled={page === totalPage}
+        aria-label="Trang sau"
       >
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 28 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect x="0.5" y="0.5" width="27" height="27" rx="13.5" fill="white" />
-          <rect x="0.5" y="0.5" width="27" height="27" rx="13.5" stroke="#3582CD" />
-          <path
-            d="M16.2651 12.4687L12.4255 9.18492C12.2662 9.06164 12.0576 8.99552 11.8429 9.00024C11.6281 9.00495 11.4238 9.08015 11.2721 9.21027C11.1204 9.34038 11.0329 9.51543 11.0279 9.69919C11.0228 9.88295 11.1005 10.0613 11.2449 10.1974L15.082 13.4812C15.2388 13.6155 15.327 13.7976 15.327 13.9875C15.327 14.1774 15.2388 14.3595 15.082 14.4937L11.2449 17.7776C11.088 17.9119 10.9999 18.0941 11 18.2841C11.0001 18.474 11.0883 18.6561 11.2453 18.7904C11.4023 18.9247 11.6152 19.0001 11.8372 19C12.0591 18.9999 12.2719 18.9244 12.4288 18.7901L16.2651 15.5062C16.7356 15.1034 17 14.5571 17 13.9875C17 13.4179 16.7356 12.8716 16.2651 12.4687Z"
-            fill="#3582CD"
-          />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-      </div>
+      </button>
     </div>
   );
 };

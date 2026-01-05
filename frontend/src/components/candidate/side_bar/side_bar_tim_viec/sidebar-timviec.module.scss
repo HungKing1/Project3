@@ -1,0 +1,164 @@
+/* sidebar-timviec.module.scss */
+
+$primary-orange: #FFA14A;
+$bg-hover-gradient: linear-gradient(90deg, #FFA14A 0%, #ffb775 100%);
+$bg-hover-glass: rgba(255, 255, 255, 0.1);
+$text-white: #FFFFFF;
+$text-sub: rgba(255, 255, 255, 0.8);
+$border-guide: rgba(255, 255, 255, 0.15);
+
+.danhmuc_ql {
+    width: 100%;
+    font-family: 'Roboto', sans-serif;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+    }
+
+    a, .v_text {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        color: $text-white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .danhmuc_link {
+        padding: 0;
+        font-size: 14px;
+
+        ul, p { padding: 0; margin: 0; }
+        li { list-style: none; }
+
+        .dmql {
+            margin-bottom: 5px;
+            padding-left: 20px;
+            line-height: 44px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-radius: 0 24px 24px 0;
+            margin-right: 15px;
+            border-left: 3px solid transparent;
+
+            .v_img {
+                display: flex;
+                align-items: center;
+                min-width: 24px;
+                justify-content: center;
+                svg { transition: transform 0.3s ease; }
+            }
+
+            .v_text {
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+            &:hover {
+                background: $bg-hover-glass;
+                
+                .v_img svg { transform: scale(1.1); }
+            }
+
+            &.li_active {}
+        }
+
+        .mt_ql:after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid rgba(255,255,255,0.7);
+            border-bottom: 2px solid rgba(255,255,255,0.7);
+            transform: translateY(-60%) rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+
+        .mt_ql:not(.active):after {
+            transform: translateY(-60%) rotate(45deg); 
+        }
+        
+        .mt_ql.active:after {
+             transform: translateY(-60%) rotate(-135deg);
+        }
+
+        .ex_dm {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+
+            li {
+                position: relative;
+                margin-left: 32px;
+                padding-left: 12px;
+                margin-bottom: 2px;
+                border-left: 1px solid $border-guide;
+                border-radius: 0 21px 21px 0;
+
+                a {
+                    font-size: 15px;
+                    line-height: 42px;
+                    color: $text-sub;
+                    border-radius: 0 21px 21px 0;
+                    margin-right: 15px;
+                    padding-left: 10px;
+                    position: relative;
+                    
+                    &:hover {
+                        color: $text-white;
+                        background-color: $bg-hover-glass;
+                        padding-left: 15px;
+                        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+                    }
+                }
+
+                &.li_active {
+                    border-left: 2px solid $primary-orange;
+                    margin-left: 31px;
+
+                    a {
+                        background: $bg-hover-gradient;
+                        color: $text-white;
+                        font-weight: 600;
+                        box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
+                        padding-left: 15px;
+                    }
+                }
+            }
+
+            .log_out {
+                margin-top: 10px;
+                margin-left: 32px;
+                padding-left: 12px;
+                color: #FFC700 !important;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                cursor: pointer;
+                
+                &:hover {
+                    filter: brightness(1.2);
+                    transform: translateX(5px);
+                }
+            }
+        }
+
+        .show {
+            max-height: 500px;
+            opacity: 1;
+            margin-bottom: 10px;
+            padding-top: 5px;
+        }
+    }
+}

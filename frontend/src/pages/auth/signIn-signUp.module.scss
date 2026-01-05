@@ -1,313 +1,285 @@
+/* Variables (giữ nguyên hoặc dùng màu cũ làm biến) */
+$primary-bg-color: #74B4F2;
+$employer-btn-bg: #0B40BA;
+$candidate-btn-bg: #FF8C21;
+$ask-text-color: #FFF;
+$login-link-color: #1D23B2;
+
+/* Keyframes Animations */
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(190, 216, 239, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(190, 216, 239, 0); /* Hiệu ứng tỏa sáng */
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(190, 216, 239, 0);
+    }
+}
+
+@keyframes rotateArrow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
 .wrapper_layout {
     max-width: 100%;
-    background: #74B4F2;
+    background: $primary-bg-color; // Màu nền chính
     height: 100vh;
+    width: 100%;
+    overflow: hidden; // Đảm bảo không có scrollbar ngoài ý muốn
+    font-family: 'Roboto', sans-serif; // Đảm bảo font Roboto
+}
 
-    .wrapper_body {
-        background-image: url("/images/authorization/bg-1920.png");
-        background-repeat: no-repeat;
-        background-size: cover;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
+.wrapper_body {
+    background-image: url("/images/authorization/bg-1920.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+
+    /* Hiệu ứng hạt bụi/lấp lánh nhẹ trên nền */
+    &::before {
+        content: '';
+        position: absolute;
+        width: 100%;
         height: 100%;
-        overflow: hidden;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.8;
+        z-index: 0;
+        pointer-events: none;
+        animation: subtleMove 120s linear infinite;
+    }
+    @keyframes subtleMove {
+        from { background-position: 0 0; }
+        to { background-position: 100% 100%; }
+    }
 
-        .arr_back {
-            position: absolute;
-            top: 27px;
-            left: 64px;
-        }
 
-        .container_left {
-            position: absolute;
-            width: 1064px;
-            height: 808px;
-            left: 0;
-
-            .img_1920 {
-                display: block;
+    .arr_back_btn { /* Đổi tên class để làm button thay vì chỉ SVG */
+        position: absolute;
+        top: 27px;
+        left: 64px;
+        z-index: 1000;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.2); // Hiệu ứng glassmorphism nhẹ
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50px; // Bo tròn hoàn toàn
+        padding: 10px 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #F8F8F8; // Màu chữ và icon
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none; // Đảm bảo không có gạch chân nếu là Link
+        
+        &:hover {
+            transform: translateX(-5px) scale(1.02);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            svg {
+                animation: rotateArrow 0.5s ease-out; // Hiệu ứng xoay nhẹ khi hover
             }
-
-            .img_1366 {
-                display: none;
-            }
         }
 
-        .container_left_tablet {
-            display: none;
+        svg {
+            fill: currentColor; // Sẽ lấy màu từ parent (F8F8F8)
+            transition: transform 0.3s ease;
+        }
+    }
+
+    .container_right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 60px;
+        padding: 20px;
+        z-index: 100;
+        width: 100%;
+        max-width: 1200px;
+        
+        /* Animation khi chuyển đổi giữa Đăng ký/Đăng nhập */
+        &.is_animating {
+            animation: fadeInSlideUp 0.5s ease-out;
         }
 
-        .container_right {
+        .title_right {
             display: flex;
-            height: 628px;
             flex-direction: column;
             align-items: center;
-            gap: 72px;
-            padding-right: 80px;
-            z-index: 100;
+            gap: 16px;
+            width: 100%;
 
-            .title_right {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 16px;
-
-                .title {
-                    color: #FFF;
-                    text-align: center;
-                    font-family: Roboto;
-                    font-size: 40px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 150%;
-                    /* 60px */
-                    width: 536px;
-                }
-
-                .star {
-                    width: 188px;
-                    height: 35px;
-                }
+            .title {
+                color: $ask-text-color;
+                text-align: center;
+                font-size: 40px;
+                font-weight: 700;
+                line-height: 150%;
+                width: 100%;
+                max-width: 800px;
+                text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); // Tăng bóng chữ
+                letter-spacing: 0.5px; // Tăng khoảng cách chữ nhẹ
             }
 
-            .user {
+            .star {
+                width: 188px;
+                height: 35px;
+                animation: pulseGlow 2s infinite ease-in-out; // Hiệu ứng "nhấp nháy" nhẹ
+            }
+        }
+
+        .user {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 52px;
+            width: 100%;
+
+            .type_user {
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
                 align-items: center;
-                gap: 52px;
+                width: 100%;
 
-                .type_user {
+                .type_user_inner {
                     display: flex;
                     flex-direction: column;
-                    align-items: flex-start;
+                    align-items: center;
                     gap: 48px;
 
-                    .employer {
-                        display: flex;
-                        padding: 24px 60px;
-                        justify-content: center;
-                        align-items: center;
-                        gap: 10px;
-                        border-radius: 40px;
-                        background: #0B40BA;
-                        cursor: pointer !important;
-                        box-shadow: 0px 24px 20px 0px rgba(190, 216, 239, 0.70);
-                    }
-
-                    .candidate {
-                        display: flex;
-                        padding: 24px 100px;
-                        justify-content: center;
-                        align-items: center;
-                        gap: 10px;
-                        align-self: stretch;
-                        border-radius: 40px;
-                        cursor: pointer;
-                        background: #FF8C21;
-                        box-shadow: 0px 24px 20px 0px rgba(255, 207, 160, 0.70);
-                    }
-
-                    a {
-                        color: #FFF;
-                        text-align: center;
-                        font-family: Roboto;
-                        font-size: 24px;
-                        font-style: normal;
-                        font-weight: 700;
-                        line-height: normal;
+                    @media (min-width: 1024px) {
+                        flex-direction: row;
+                        gap: 60px;
                     }
                 }
 
-                .ask {
-                    color: #FFF;
+                .employer,
+                .candidate {
+                    display: flex;
+                    padding: 24px 60px;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 10px;
+                    border-radius: 40px;
+                    cursor: pointer !important;
+                    box-shadow: 0px 15px 20px 0px rgba(0, 0, 0, 0.25); // Bóng đổ hiện đại
+                    color: $ask-text-color;
                     font-family: Roboto;
-                    font-size: 25px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: normal;
+                    font-size: 20px;
+                    font-weight: 700;
+                    min-width: 350px;
+                    text-align: center;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); // Easing "nảy" nhẹ
+                    position: relative;
+                    overflow: hidden; // Để hiệu ứng shine không tràn ra ngoài
+
+                    &:hover {
+                        transform: translateY(-8px) scale(1.03); // Nảy lên và phóng to nhẹ
+                        box-shadow: 0px 25px 30px rgba(0, 0, 0, 0.35); // Bóng đổ đậm hơn khi hover
+                    }
+
+                    /* Hiệu ứng Shine */
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: -75%;
+                        width: 50%;
+                        height: 100%;
+                        background: rgba(255, 255, 255, 0.3);
+                        transform: skewX(-20deg);
+                        transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                    }
+
+                    &:hover::before {
+                        left: 125%;
+                    }
                 }
 
-                .login {
-                    color: #1D23B2;
-                    font-family: Roboto;
-                    font-size: 25px;
-                    font-style: normal;
+                .employer {
+                    background: $employer-btn-bg;
+                }
+
+                .candidate {
+                    background: $candidate-btn-bg;
+                }
+
+                a {
                     text-decoration: none;
-                    font-weight: 800;
-                    line-height: normal;
-                }
-            }
-        }
-    }
-}
-
-@media (min-width: 1920px) {
-    .wrapper_layout {
-        .wrapper_body {
-            .container_left {
-                width: 1245px;
-                height: 990px;
-
-                .img_1920 {
-                    display: none;
-                }
-
-                .img_1366 {
-                    display: block;
                 }
             }
 
-            .container_right {
-                padding-right: 200px;
+            .ask {
+                color: $ask-text-color;
+                font-size: 25px;
+                font-weight: 400;
+                line-height: normal;
+                text-align: center;
+                text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); // Bóng chữ nhẹ
+            }
 
-                .title_right {
-                    .title {
-                        font-size: 48px;
+            .login {
+                color: $login-link-color;
+                font-size: 25px;
+                text-decoration: none;
+                font-weight: 800;
+                line-height: normal;
+                transition: all 0.3s ease; // Chuyển động mượt mà
+                position: relative;
+
+                &::after { // Gạch chân động
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 3px;
+                    bottom: -5px;
+                    left: 0;
+                    background-color: $login-link-color;
+                    transition: width 0.3s ease;
+                }
+
+                &:hover {
+                    color: lighten($login-link-color, 10%); // Sáng hơn khi hover
+                    &::after {
+                        width: 100%;
                     }
                 }
             }
-
         }
     }
 }
 
-@media (min-width: 1024px) and (max-width: 1365px) {
+// Responsive
+@media screen and (max-width: 1365px) {
     .wrapper_layout {
         .wrapper_body {
-            flex-direction: column-reverse;
             background-image: url("/images/authorization/bg-1023.png");
-            overflow: hidden;
-
-            .container_left {
-                display: none;
-
-                .img_1920 {
-                    display: block;
-                }
-
-                .img_1366 {
-                    display: none;
-                }
+            .arr_back_btn {
+                left: 30px; // Điều chỉnh vị trí nút back
             }
-
-            .container_left_tablet {
-                display: flex;
-                width: 767px;
-                height: 650px;
-                justify-content: center;
-                position: relative;
-
-                .img_bot {
-                    z-index: 100;
-                }
-
-                .bong {
-                    position: absolute;
-                    width: 693px;
-                    height: 883.9px;
-                    top: 0px;
-                }
-            }
-
-            .container_right {
-                padding: 0;
-                padding-top: 48px;
-                height: unset;
-
-                .title_right {
-                    .check_resp {
-                        display: none;
-                    }
-
-                    .title {
-                        width: unset;
-                        font-size: 36px;
-                    }
-                }
-
-                .user {
-                    .type_user {
-                        display: flex;
-                        flex-direction: row;
-                    }
-                }
-            }
-
-        }
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-    .wrapper_layout {
-        .wrapper_body {
-            background-image: url("/images/authorization/bg-768.png");
-            flex-direction: column-reverse;
-            gap: 0;
-
-            .container_left {
-                display: none;
-
-                .img_1920 {
-                    display: block;
-                }
-
-                .img_1366 {
-                    display: none;
-                }
-            }
-
-            .container_left_tablet {
-                display: flex;
-                justify-content: center;
-                position: relative;
-
-                .img_bot {
-                    z-index: 100;
-                }
-
-                .bong {
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                }
-            }
-
-            .container_right {
-                padding: 0;
-                height: unset;
-                padding-top: 48px;
-
-                .title_right {
-                    .check_resp {
-                        display: none;
-                    }
-
-                    .title {
-                        width: unset;
-                        font-size: 36px;
-                    }
-                }
-
-                .user {
-                    .type_user {
-                        display: flex;
-                        flex-direction: row;
-
-                        .employer,
-                        .candidate {
-                            padding: 24px 40px;
-                        }
-
-                        a {
-                            font-size: 20px;
-                        }
-                    }
-                }
-            }
-
         }
     }
 }
@@ -315,115 +287,56 @@
 @media screen and (max-width: 768px) {
     .wrapper_layout {
         .wrapper_body {
-            flex-direction: column-reverse;
             background-image: url("/images/authorization/bg-414.png");
+            align-items: flex-start;
+            overflow-y: auto; // Cho phép scroll trên mobile nếu nội dung dài
 
-            .arr_back {
-                top: 12px;
+            .arr_back_btn {
+                top: 20px;
                 left: 20px;
-            }
-
-            .container_left {
-                display: none;
-
-                .img_1920 {
-                    display: block;
-                }
-
-                .img_1366 {
-                    display: none;
-                }
-            }
-
-            .container_left_tablet {
-                display: flex;
-                justify-content: center;
-                position: relative;
-
-                .img_bot {
-                    z-index: 100;
-                }
-
-                img {
-                    width: 90%;
-                    height: 90%;
-                }
-
-                .bong {
-                    position: absolute;
-                    width: 100%;
-                    height: 100%;
-                    top: 60px;
-                }
+                padding: 8px 15px;
+                font-size: 14px;
             }
 
             .container_right {
-                padding: 0;
-                padding-top: 48px;
-                height: unset;
-                gap: 24px;
+                padding-top: 80px;
+                gap: 40px;
 
                 .title_right {
-                    .check_resp {
-                        display: none;
-                    }
-
                     .title {
-                        width: 383px;
                         font-size: 28px;
+                        width: 90%;
+                    }
+                    .star {
+                        width: 140px;
+                        height: auto;
                     }
                 }
 
                 .user {
                     .type_user {
-                        display: flex;
-                        // flex-direction: column;
-                        align-items: center;
-                        gap: 20px;
-
-                        .candidate,
-                        .employer {
-                            padding: 24px 40px;
-                            white-space:  nowrap;
+                        .type_user_inner {
+                            gap: 20px;
                         }
 
-                        a {
-                            font-size: 20px;
+                        .employer,
+                        .candidate {
+                            padding: 20px 20px;
+                            min-width: unset;
+                            width: 100%;
+                            max-width: 340px;
+                            font-size: 16px;
                         }
                     }
 
                     .ask {
-                        font-size: 20px;
-
+                        font-size: 18px;
                         .login {
-                            font-size: 20px;
+                            font-size: 18px;
                         }
                     }
                 }
             }
-
         }
-    }
-}
-
-@media screen and (max-width: 430px) {
-    .user {
-        margin: 0 30px;
-    }
-
-    .employer {
-        width: 327.3px;
-        padding: 24px 20px !important;
-    }
-
-    .candidate {
-        width: 327.3px;
-        padding: 24px 10px  !important;
-    }
-}
-
-@media screen and (max-width: 1365px) {
-    .wrapper_layout {
-        height: unset;
     }
 }

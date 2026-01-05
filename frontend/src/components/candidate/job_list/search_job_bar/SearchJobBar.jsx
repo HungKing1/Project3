@@ -1,15 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useRef, use } from 'react';
+import React, { useState, useRef } from 'react';
 import { Select } from 'antd';
 import s from './styles.module.scss';
 import * as selectData from "../../../../assets/selectData.js"
 import * as callData from "../../../../assets/function.js"
-import { set } from 'react-hook-form';
-import axios from 'axios';
-import { param } from 'jquery';
 import { createSearchParams, useNavigate } from 'react-router-dom';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // --- Dữ liệu mẫu (Mock Data) ---
 const mockTotalHuyHieu = 50;
@@ -20,36 +15,26 @@ const filterOption = (input, option) =>
 
 const SearchJobBar = (props) => {
   const tagContainerRef = useRef(null);
-
   const navigate = useNavigate()
 
   // --- State cho UI ---
-  const [keyword, setKeyword] = useState(""); // từ khóa thanh tìm kiếm
-  const [filter, setFilter] = useState(false); // Bật tắt tìm kiếm nâng cao
-  const [showDistrict, setShowDistrict] = useState(false); // Hiện nút chọn quận huyện
+  const [keyword, setKeyword] = useState(""); 
+  const [filter, setFilter] = useState(false); 
+  const [showDistrict, setShowDistrict] = useState(false); 
 
   const {
-        // Giá trị
-        city, exp, salary, edu, workType, district, page, pageSize, districtList,
-        // Hàm set
-        setCity, setExp, setSalary, setEdu, setWorkType, setDistrict, setPage, setPageSize, setDistritList,
-        //
-        totalJob
+        city, exp, salary, edu, workType, district, 
+        setCity, setExp, setSalary, setEdu, setWorkType, setDistrict, setDistritList,
+        totalJob, districtList
     } = props;
   
-  // (Logic `useSearchVariables`, `useContext`, `useRouter` đã bị loại bỏ)
-  // (Logic `useEffect` để đồng bộ URL và fetch data đã bị loại bỏ)
-  
-  // --- Các hàm xử lý UI (đã stub/đơn giản hóa) ---
-
   const handleInputChange = (event) => {
     setKeyword(event.target.value);
   };
 
   const handleFilter = () => {
     setFilter(!filter);
-    // Logic kiểm tra URL params đã bị loại bỏ
-    if (city !== 0) {
+    if (city !== 0 && city) { // Kiểm tra city tồn tại
       setShowDistrict(true);
     }
   };
@@ -63,75 +48,40 @@ const SearchJobBar = (props) => {
     setDistrict(value);
   };
 
-  const onChangeCity = (value) => {
-    setCity(value);
-    if (value === 0) {
-      setShowDistrict(false);
-      setSelectDistrict(0);
-    } else {
-      setShowDistrict(true); // Hiển thị quận huyện khi chọn thành phố
-    }
-  };
-
-  const onSelectExp = (value) => {
-    setExp(value);
-  };
-
-  const onSelectSalary = (value) => {
-    setSalary(value);
-  };
-
-  const onSelectLevel = (value) => {
-    setEdu(value);
-  };
-
-  const onSelectWorkForm = (value) => {
-    setWorkType(value);
-  };
+  const onSelectExp = (value) => setExp(value);
+  const onSelectSalary = (value) => setSalary(value);
+  const onSelectLevel = (value) => setEdu(value);
+  const onSelectWorkForm = (value) => setWorkType(value);
 
   const resetFilter = () => {
-    setCity();
-    setExp();
-    setSalary();
-    setEdu();
-    setWorkType();
-    setDistrict();  
-    setDistritList();
+    setCity(undefined); // Reset về undefined để Antd Select hiển thị placeholder
+    setExp(undefined);
+    setSalary(undefined);
+    setEdu(undefined);
+    setWorkType(undefined);
+    setDistrict(undefined);  
+    setDistritList([]);
     setShowDistrict(false);
-  };
-
-  const handleTotalHuyHieu = () => {
-    if (mockTotalHuyHieu > 0) {
-      alert('Chuyển đến trang Huy hiệu tia sét! (Logic đã bị loại bỏ)');
-    }
+    setKeyword("");
   };
 
   const scrollLeft = () => {
     if (tagContainerRef.current) {
-      tagContainerRef.current.scrollTo({
-        left: tagContainerRef.current.scrollLeft - 400,
-        behavior: 'smooth',
-      });
+      tagContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (tagContainerRef.current) {
-      tagContainerRef.current.scrollTo({
-        left: tagContainerRef.current.scrollLeft + 400,
-        behavior: 'smooth',
-      });
+      tagContainerRef.current.scrollBy({ left: 200, behavior: 'smooth' });
     }
   };
-    // Hàm cho tìm kiếm job theo cac truong
+
   const handleSearchJob = async () => {
     const params = {
-      city, 
-      exp,
-      salary,
-      job_level: edu,
-      work_type: workType,
-      district
+      keyword, // Thêm keyword vào params
+      city, exp, salary, 
+      job_level: edu, work_type: workType, district
     }
 
     Object.keys(params).forEach(key => {
@@ -149,34 +99,27 @@ const SearchJobBar = (props) => {
 
   return (
     <>
-      {/* Thẻ link CSS (select2) này có thể không cần thiết
-          nếu bạn chỉ dùng Ant Design, nhưng giữ lại theo code gốc */}
-      <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-      
       <div className={s.container}>
         <div className={s.body}>
-          <div className={s.item_1}>
-            <div className={s.group_input}>
-              {/* <Image> đã được thay bằng <img> */}
-              <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/ep_search.svg"} alt={"logo tim kiem"} height={23} width={23} style={{ height: "23px", width: "23px" }} />
+          
+          {/* --- THANH TÌM KIẾM CHÍNH --- */}
+          <div className={s.search_bar_wrapper}>
+            <div className={s.input_group}>
+              <img src="/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/ep_search.svg" alt="icon" className={s.search_icon} />
               <input
-                type="search"
-                autoComplete="off"
-                placeholder="Nhập từ khóa mong muốn..."
+                type="text"
+                placeholder="Nhập từ khóa công việc, kỹ năng..."
                 value={keyword}
                 onChange={handleInputChange}
-                // (Logic showSearchList đã bị loại bỏ)
+                className={s.search_input}
               />
-              {/* (Khung gợi ý tìm kiếm đã bị loại bỏ) */}
             </div>
 
-            {/* Đã thay thế <select> (của select2) bằng <Select> (của Ant Design) */}
-            <div className={`${s.group_select_1} select_2 select_ds_tin_tuyen_dung`}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M4 10.1433C4 5.64588 7.58172 2 12 2C16.4183 2 20 5.64588 20 10.1433C20 14.6055 17.4467 19.8124 13.4629 21.6744C12.5343 22.1085 11.4657 22.1085 10.5371 21.6744C6.55332 19.8124 4 14.6055 4 10.1433Z" stroke="#6B6B6B" strokeWidth="1.5" />
-                <path d="M14.1249 12.1178L15.5 13.5M14.1249 12.1178C14.6657 11.5752 15 10.8266 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13C12.8302 13 13.5817 12.6628 14.1249 12.1178Z" stroke="#6B6B6B" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-              <Select
+            <div className={s.divider}></div>
+
+            <div className={s.select_group}>
+              <img src="/images/home/icon_filter_auto.svg" alt="location" className={s.location_icon} /> {/* Giả định icon location */}
+               <Select
                 showSearch
                 value={city}
                 style={{ width: '100%' }}
@@ -185,213 +128,127 @@ const SearchJobBar = (props) => {
                   const data = await callData.getDistrictsByCityId(value)
                   if(data) {
                     setDistritList(data)
+                    setShowDistrict(true)
+                  } else {
+                      setShowDistrict(false)
                   }
                 }}
                 filterOption={filterOption}
-                className={`${s.select} select-location city`}
+                className={s.ant_select_custom}
                 options={selectData.cities}
                 fieldNames={{label: 'name', value: 'id'}}
                 placeholder="Tất cả tỉnh thành"
+                variant="borderless" // Bỏ border mặc định của Antd
               />
             </div>
             
-            <div
-              className={`${s.button_search} ${s.displayMobiHide}`}
-              style={{ backgroundColor: "#F8971C" }}
-              onClick={() => {
-                setKeyword("");
-                resetFilter();
-              }}
-            >Xóa lọc</div>
-            <div className={s.button_search} onClick={handleSearchJob}>Tìm kiếm</div>
+            <div className={s.action_group}>
+                 <button className={s.btn_reset} onClick={resetFilter}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                 </button>
+                 <button className={s.btn_search} onClick={handleSearchJob}>Tìm kiếm</button>
+            </div>
           </div>
 
-          <div className={s.item_2}>
-            <div className={s.total}>
-              <span className={s.text}>Tổng <span>{totalJob}</span> kết quả</span>
-              {/* (Logic huy hiệu tia sét đã bị stub) */}
+          {/* --- THANH CÔNG CỤ PHỤ (Tổng kết quả + Lọc nâng cao) --- */}
+          <div className={s.toolbar}>
+            <div className={s.total_result}>
+              Tìm thấy <span className={s.highlight}>{totalJob}</span> công việc phù hợp
             </div>
 
-            <div className={s.advanced_filtering} onClick={handleFilter}>
-              <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/filter-remove.svg"} alt={"Logo loc nang cao"} height={20} width={20} style={{ height: "20px", width: "20px" }} />
+            <button className={`${s.btn_filter} ${filter ? s.active : s.active}`} onClick={handleFilter}>
+              <img src="/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/filter-remove.svg" alt="filter" />
               Lọc nâng cao
-              {filter === true ? <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/up.svg"} alt={"Logo loc"} height={20} width={20} style={{ height: "20px", width: "20px", marginLeft: "auto" }} /> :
-                <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/down.svg"} alt={"Logo loc"} height={20} width={20} style={{ height: "20px", width: "20px", marginLeft: "auto" }} />}
-            </div>
+              <img src={`/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/${filter ? 'up' : 'down'}.svg`} alt="arrow" className={s.arrow_icon} />
+            </button>
           </div>
 
-          {filter === true ? (
-            <div className={s.item_3}>
-              <div className={s.box_search_1}>
-                <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/dollar_circle.png"} alt={"Logo kinh nghiem"} width={24} height={24} style={{ height: "24px", width: "24px" }} />
-                <Select
-                  showSearch
-                  value={exp}
-                  optionFilterProp="children"
-                  onChange={value => setExp(value)}
-                  filterOption={filterOption}
-                  className={"select_search_1"}
-                  options={selectData.experienceYears}
-                  fieldNames={{label: 'name', value: 'id'}}
-                  placeholder="Tất cả kinh nghiệm"
-                />
-              </div>
-              <div className={s.box_search_2}>
-                <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/select_salary.png"} alt={"Logo luong"} width={24} height={24} style={{ height: "24px", width: "24px" }} />
-                <Select
-                  showSearch
-                  value={salary}
-                  optionFilterProp="children"
-                  onChange={value => setSalary(value)}
-                  filterOption={filterOption}
-                  className={"select_search_1"}
-                  options={selectData.salaries}
-                  fieldNames={{label: 'name', value: 'id'}}
-                  placeholder="Tất cả mức lương"
-                />
-              </div>
-              <div className={s.box_search_3}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-                  {/* ... (path SVG) ... */}
-                </svg>
-                <Select
-                  showSearch
-                  value={edu}
-                  optionFilterProp="children"
-                  onChange={value => setEdu(value)}
-                  filterOption={filterOption}
-                  className={"select_search_1"}
-                  options={selectData.jobLevels}
-                  fieldNames={{label: 'name', value: 'id'}}
-                  placeholder="Tất cả trình độ"
-                />
-              </div>
-              <div className={s.box_search_4}>
-                <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/select_wf.png"} alt={"Logo hinh thuc"} width={24} height={24} style={{ height: "24px", width: "24px" }} />
-                <Select
-                  showSearch
-                  value={workType}
-                  optionFilterProp="children"
-                  onChange={value => setWorkType(value)}
-                  filterOption={filterOption}
-                  className={"select_search_1"}
-                  options={selectData.workTypes}
-                  fieldNames={{label: 'name', value: 'id'}}
-                  placeholder="Tất cả hình thức làm việc"                
-                  />
-              </div>
-              <div className={s.box_search_5} style={{
-                display: showDistrict ? 'flex' : 'none' // Dùng mock data
-              }}>
-                {districtList && <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/left_icon.svg"} alt={"Logo trai"} width={28} height={28} style={{ height: "28px", width: "28px" }} onClick={scrollLeft} />}
-                <div className={s.district_wrap} ref={tagContainerRef}>
-                  {districtList?.map((item) => { // Dùng mock data
-                    return (
-                      <div key={item.id} style={{cursor: "pointer"}} className={district == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onChangeDistrict(item.id)}>{item.name}</div>
-                    )
-                  })}
+          {/* --- KHU VỰC LỌC NÂNG CAO (Mở rộng) --- */}
+          <div className={`${s.advanced_filter_area} ${filter ? s.show : ''}`}>
+             <div className={s.filter_grid}>
+                {/* Kinh nghiệm */}
+                <div className={s.filter_item}>
+                    <label>Kinh nghiệm</label>
+                    <Select
+                        showSearch
+                        value={exp}
+                        onChange={setExp}
+                        filterOption={filterOption}
+                        className={s.filter_select}
+                        options={selectData.experienceYears}
+                        fieldNames={{label: 'name', value: 'id'}}
+                        placeholder="Tất cả"
+                    />
                 </div>
-                {districtList && <img src={"/images/nha-tuyen-dung/danh-sach-tin-tuyen-dung/right_icon.svg"} alt={"Logo phai"} width={28} height={28} style={{ height: "28px", width: "28px" }} onClick={scrollRight} /> }
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </div>
-
-      {/* --- Modal Lọc nâng cao (Mobile) --- */}
-      <div>
-        <div className={filter ? s.modal_mask : s.displayNone}></div>
-        <div className={filter ? s.modal_wrap : s.displayNone}>
-          <div className={s.filter}>
-            <div className={s.header} onClick={() => { }}>
-              <div>Bộ lọc nâng cao</div>
-              <svg style={{ cursor: "pointer" }} onClick={handleFilter} xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
-                <rect y="0.5" width="24" height="24" rx="12" fill="white" fillOpacity="0.15" />
-                <path d="M16.9497 7.55025L7.05025 17.4497M7.05025 7.55025L16.9497 17.4497" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-
-            <div className={s.body_filter}>
-              <div className={s.box_1}>
-                <span className={s.text_district}>Địa điểm</span>
-                <div className={s.select_district}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    {/* ... (path SVG) ... */}
-                  </svg>
-                  <Select
-                    showSearch
-                    value={city}
-                    optionFilterProp="children"
-                    onChange={async (value) => {
-                      setCity(value)
-                      try {
-                        const data = await callData.getDistrictsByCityId(value)
-                        if(data) {
-                          setDistritList(data)
-                        }
-                      } catch (error) {
-                        console.log(error)
-                      }
-                    }}                    
-                    filterOption={filterOption}
-                    options={selectData.cities}
-                    fieldNames={{label: 'name', value: 'id'}}
-                    placeholder="Tất cả tỉnh thành"
-                    className={"select_search_1"}
-                  />
+                 {/* Mức lương */}
+                 <div className={s.filter_item}>
+                    <label>Mức lương</label>
+                    <Select
+                        showSearch
+                        value={salary}
+                        onChange={setSalary}
+                        filterOption={filterOption}
+                        className={s.filter_select}
+                        options={selectData.salaries}
+                        fieldNames={{label: 'name', value: 'id'}}
+                        placeholder="Tất cả"
+                    />
                 </div>
-              </div>
-
-              <div className={s.box_2}>
-                <span className={s.text_exp}>Kinh nghiệm</span>
-                <div className={s.select_exp}>
-                  {selectData.experienceYears?.map((item) => { // Dùng mock data
-                    return (
-                      <div key={item.id} className={exp == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectExp(item.id)}>{item.name}</div>
-                    )
-                  })}
+                {/* Trình độ */}
+                 <div className={s.filter_item}>
+                    <label>Trình độ</label>
+                    <Select
+                        showSearch
+                        value={edu}
+                        onChange={setEdu}
+                        filterOption={filterOption}
+                        className={s.filter_select}
+                        options={selectData.jobLevels}
+                        fieldNames={{label: 'name', value: 'id'}}
+                        placeholder="Tất cả"
+                    />
                 </div>
-              </div>
-
-              <div className={s.box_2}>
-                <span className={s.text_exp}>Mức lương</span>
-                <div className={s.select_exp}>
-                  {selectData.salaries?.map((item) => { // Dùng mock data
-                    return (
-                      <div key={item.id} className={salary == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectSalary(item.id)}>{item.name}</div>
-                    )
-                  })}
+                 {/* Hình thức */}
+                 <div className={s.filter_item}>
+                    <label>Hình thức</label>
+                    <Select
+                        showSearch
+                        value={workType}
+                        onChange={setWorkType}
+                        filterOption={filterOption}
+                        className={s.filter_select}
+                        options={selectData.workTypes}
+                        fieldNames={{label: 'name', value: 'id'}}
+                        placeholder="Tất cả"
+                    />
                 </div>
-              </div>
+             </div>
 
-              <div className={s.box_2}>
-                <span className={s.text_exp}>Trình độ</span>
-                <div className={s.select_exp}>
-                  {selectData.jobLevels?.map((item) => { // Dùng mock data
-                    return (
-                      <div key={item.id} className={edu == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectLevel(item.id)}>{item.name}</div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              <div className={s.box_2}>
-                <span className={s.text_exp}>Hình thức làm việc</span>
-                <div className={s.select_exp}>
-                  {selectData.workTypes?.map((item) => { // Dùng mock data
-                    return (
-                      <div key={item.id} className={workType == item.id ? s.tag_exp_select : s.tag_exp} onClick={() => onSelectWorkForm(item.id)}>{item.name}</div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className={s.footer}>
-              <button className={s.reset_filter} onClick={resetFilter}>Xóa lọc</button>
-              <button className={s.apply} onClick={apply}>Áp dụng</button>
-            </div>
+             {/* Chọn Quận/Huyện (Chỉ hiện khi đã chọn Tỉnh/Thành) */}
+             {showDistrict && districtList?.length > 0 && (
+                 <div className={s.district_section}>
+                    <div className={s.scroll_btn} onClick={scrollLeft}>‹</div>
+                    <div className={s.district_list} ref={tagContainerRef}>
+                        {districtList.map((item) => (
+                            <div 
+                                key={item.id} 
+                                className={`${s.district_tag} ${district === item.id ? s.selected : ''}`} 
+                                onClick={() => onChangeDistrict(item.id)}
+                            >
+                                {item.name}
+                            </div>
+                        ))}
+                    </div>
+                    <div className={s.scroll_btn} onClick={scrollRight}>›</div>
+                 </div>
+             )}
+             
+             <div className={s.filter_footer}>
+                <button className={s.btn_close_filter} onClick={() => setFilter(false)}>Đóng lại</button>
+                <button className={s.btn_apply_filter} onClick={apply}>Áp dụng bộ lọc</button>
+             </div>
           </div>
+
         </div>
       </div>
     </>

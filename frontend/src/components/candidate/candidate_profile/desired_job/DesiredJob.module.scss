@@ -1,0 +1,221 @@
+// --- MIXINS ---
+@mixin input-styles {
+  padding: 14px 10px 14px 20px;
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #3582cd;
+    box-shadow: 0 2px 8px rgba(53, 130, 205, 0.1);
+  }
+
+  &:focus-within {
+    border-color: #3582cd;
+    box-shadow: 0 0 0 4px rgba(53, 130, 205, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+@mixin button-styles {
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  width: 183px;
+  height: 47px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  background: linear-gradient(90deg, #3494d9 16.78%, #72bde7 52.36%, #a5c5f6 88.46%);
+  background-size: 200% auto;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 15px rgba(52, 148, 217, 0.3);
+
+  &:hover {
+    background-position: right center;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(52, 148, 217, 0.5);
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(52, 148, 217, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+@mixin container-styles {
+  background: #fff;
+  box-shadow: 0px 20px 50px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  border-radius: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0px 25px 60px rgba(0, 0, 0, 0.08);
+  }
+}
+
+// --- MAIN STYLES ---
+
+// Cấu trúc chung
+.body {
+  margin: 40px 0 60px 0;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+  display: flex;
+  animation: fadeIn 0.6s ease-out;
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    @include container-styles;
+
+    .title {
+      display: flex;
+      align-items: center;
+      .title_1 {
+        color: #3582cd;
+        font-family: Roboto;
+        font-weight: 700;
+      }
+      .title_2 {
+        background: #f39623;
+        border-radius: 2px;
+      }
+    }
+
+    .form {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+
+      .form_input {
+        display: flex;
+        flex-direction: column;
+        label {
+          color: #444;
+          font-family: Roboto;
+          font-weight: 600;
+          transition: color 0.3s;
+        }
+        &:hover label { color: #3582cd; }
+
+        .form_input_div {
+          @include input-styles;
+          input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: Roboto;
+          }
+        }
+      }
+
+      // WRAPPER CHO NÚT SUBMIT - QUAN TRỌNG
+      .btn_wrapper {
+        width: 100%;        // Chiếm hết chiều ngang để xuống hàng riêng
+        display: flex;
+        justify-content: center; // Căn giữa nút
+        margin-top: 30px;   // Tạo khoảng cách với hàng trên
+      }
+
+      .btn_submit {
+        @include button-styles;
+      }
+    }
+  }
+}
+
+// --- MEDIA QUERIES ---
+
+@media screen and (min-width: 1920px) {
+  .body .container {
+    width: 1503px;
+    padding: 40px 32px;
+    gap: 32px;
+    .title { gap: 12px; .title_1 { font-size: 24px; } .title_2 { width: 60px; height: 4px; } }
+    .form {
+      column-gap: 20px; row-gap: 24px;
+      .form_input .form_input_div { input, .select { width: 691px; } }
+    }
+  }
+}
+
+@media screen and (min-width: 1366px) and (max-width: 1919px) {
+  .body .container {
+    width: 1040px;
+    padding: 32px 24px;
+    gap: 28px;
+    .title { gap: 10px; .title_1 { font-size: 20px; } .title_2 { width: 50px; height: 3px; } }
+    .form {
+      column-gap: 15px; row-gap: 20px;
+      .form_input .form_input_div { input, .select { width: 460px; } }
+    }
+  }
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+  .body .container {
+    width: 992px;
+    padding: 32px 20px;
+    gap: 28px;
+    .title { gap: 10px; .title_1 { font-size: 20px; } .title_2 { width: 50px; height: 3px; } }
+    .form {
+      column-gap: 15px; row-gap: 20px;
+      .form_input .form_input_div { input, .select { width: 436px; } }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .body .container {
+    width: 736px;
+    padding: 32px 20px;
+    gap: 28px;
+    .form {
+      column-gap: 15px; row-gap: 20px;
+      .form_input .form_input_div { input, .select { width: 308px; } }
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .body .container {
+    width: 97%;
+    padding: 32px 20px;
+    gap: 28px;
+    .form .form_input {
+      width: 100%;
+      .form_input_div { input, .select { width: 100%; } }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form_input_div_no_pad {
+  padding: 8px 10px 8px 20px !important;
+}

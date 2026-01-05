@@ -2614,3 +2614,138 @@ button.upload_cvo {
     display: none;
   }
 }
+/* =========================================
+   PHẦN BỔ SUNG HIỆU ỨNG (ADD-ON EFFECTS)
+   Dán phần này vào cuối file CSS của bạn
+   ========================================= */
+
+/* 1. Khai báo Keyframes cho chuyển động */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseEffect {
+  0% { box-shadow: 0 0 0 0 rgba(248, 151, 28, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(248, 151, 28, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(248, 151, 28, 0); }
+}
+
+/* 2. Làm mượt tất cả các thẻ Card và Nút bấm */
+.item_outstanding, 
+.detail_company, 
+.detail_com_onl, 
+.news_box, 
+.post_btn, 
+.submit_job, 
+.item_tag, 
+.see_now,
+.buttonChat,
+.buttonBlue,
+.buttonSave {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* 3. Hiệu ứng cho Card "Việc làm nổi bật" (.item_outstanding) */
+.item_outstanding:hover {
+  transform: translateY(-5px); /* Nổi lên 5px */
+  box-shadow: 0 10px 25px rgba(53, 130, 205, 0.15); /* Bóng đổ sâu hơn */
+  border-color: #3582cd; /* Đổi màu viền nhẹ */
+}
+
+.item_outstanding img {
+  transition: transform 0.3s ease;
+}
+
+.item_outstanding:hover img {
+  transform: scale(1.1); /* Phóng to icon nhẹ */
+}
+
+/* 4. Hiệu ứng cho Card "Công ty hàng đầu" (.detail_company & .detail_com_onl) */
+.detail_company:hover,
+.detail_com_onl:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #3582cd;
+  background-color: #fff; /* Đảm bảo nền trắng sáng */
+}
+
+/* 5. Hiệu ứng cho Card "Tin tức" (.news_box) */
+.news_box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.news_box .img_news {
+  overflow: hidden; /* Để ảnh không tràn ra khi zoom */
+  display: block;
+}
+
+.news_box .img_news img { /* Giả sử thẻ img nằm trong .img_news */
+  transition: transform 0.5s ease;
+}
+
+.news_box:hover .img_news img {
+  transform: scale(1.05); /* Zoom ảnh bên trong */
+}
+
+/* 6. Hiệu ứng cho Nút Đăng tin (.post_btn) */
+.post_btn:hover {
+  background-color: #d88113; /* Màu cam đậm hơn */
+  box-shadow: 0 4px 15px rgba(243, 150, 35, 0.5);
+  transform: scale(1.02); /* Phóng to nhẹ */
+}
+
+/* Thêm hiệu ứng nhịp đập cho nút quan trọng này */
+.post_btn {
+  animation: pulseEffect 2s infinite;
+}
+
+/* 7. Hiệu ứng cho Nút Tìm kiếm (.submit_job) */
+button.submit_job:hover {
+  background-color: #2767a5; /* Xanh đậm hơn */
+  box-shadow: 0 4px 12px rgba(53, 130, 205, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 8. Hiệu ứng cho Tags từ khóa (.item_tag) */
+.item_tag:hover {
+  background-color: #3582cd;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(53, 130, 205, 0.3);
+}
+
+/* 9. Hiệu ứng cho Avatar Công ty (.avata_com, .avata_com_onl) */
+a.avata_com,
+a.avata_com_onl {
+  transition: all 0.3s ease;
+}
+
+a.avata_com:hover,
+a.avata_com_onl:hover {
+  border-color: #F8971C; /* Đổi viền sang màu cam */
+  box-shadow: 0 0 8px rgba(248, 151, 28, 0.3);
+}
+
+/* 10. Hiệu ứng cho các nút trong Card Công ty (Chat, Ứng tuyển) */
+.detail_com_onl .buttonChat:hover,
+.detail_com_onl .buttonBlue:hover {
+  filter: brightness(1.1); /* Sáng hơn chút */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.detail_com_onl .buttonSave:hover {
+  background-color: #f0f8ff;
+}
+
+/* 11. Tinh chỉnh thanh Search Bar (.box_form) */
+.box_form {
+  transition: box-shadow 0.3s ease;
+}
+
+.box_form:hover,
+.box_form:focus-within {
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15); /* Bóng đổ đậm hơn khi dùng */
+}

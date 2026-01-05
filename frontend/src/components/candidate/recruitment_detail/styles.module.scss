@@ -1,1848 +1,286 @@
-.job_detail_box_3 {
-    .job_detail_content_1 {
-        .job_content {
-            max-width: 100%;
-            text-align: justify;
-            font-family: 'Roboto';
+/* --- Variables --- */
+$primary-color: #3582CD;
+$primary-hover: #2a6bb0;
+$danger-color: #E74C3C;
+$danger-hover: #c0392b;
+$text-color: #333;
+$text-secondary: #666;
+$bg-light: #F9FAFB;
+$border-radius: 8px;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
-            p,
-            p>*,
-            pre,
-            pre>* {
-                // font-size: max(18px, 1em) !important;
-                font-size: 16px !important;
-                line-height: 30px !important;
-                margin-bottom: 16px;
-                text-align: justify;
-            }
+/* --- General Styles --- */
+.job_detail_box {
+    background: #FFF;
+    border-radius: $border-radius;
+    box-shadow: $shadow;
+    padding: 32px;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 
-            h2,
-            h2>* {
-                // font-size: max(24px, 1.125em) !important;
-                font-size: 24px !important;
-                line-height: 30px;
-                margin-bottom: 16px;
-            }
-
-            h3,
-            h3>* {
-                // font-size: max(22px, 1.125em) !important;
-                font-size: 18px !important;
-                line-height: 30px;
-                margin-bottom: 16px;
-            }
-
-            h4,
-            h4>* {
-                // font-size: max(18px, 1em) !important;
-                font-size: 16px !important;
-                line-height: 30px;
-                margin-bottom: 16px;
-            }
-
-            h5,
-            h5>* {
-                // font-size: max(18px, 1em) !important;
-                font-size: 16px !important;
-                line-height: 30px;
-                margin-bottom: 16px;
-            }
-
-            h6,
-            h6>* {
-                // font-size: max(18px, 1em) !important;
-                font-size: 16px !important;
-                line-height: 30px;
-                margin-bottom: 16px;
-            }
-
-            a,
-            a>* {
-                font-weight: 600;
-                text-decoration: underline;
-                color: rgb(53, 130, 205) !important;
-            }
-
-            .job_body {
-                word-wrap: break-word;
-            }
-        }
-    }
-
-    .job_detail_content_2 {
-        .groupButton {
-            .button_red {
-                display: flex;
-                    height: 40px;
-                    width: 118px;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    border: 1px solid red;
-                    background: #FFF;
-
-                    .div {
-                        height: 24px;
-                        display: flex;
-                        gap: 6px;
-                        justify-content: center;
-                        align-items: center;
-
-                        .icon {
-                            display: flex;
-                            height: 24px;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .content {
-                            color: red;
-                            font-family: Roboto;
-                            font-size: 14px;
-                            font-style: normal;
-                            font-weight: 600;
-                            line-height: 22px;
-                            letter-spacing: 0.175px;
-                        }
-                    }
-            }
-        }
-    }
-}
-
-@media (max-width: 767px) {
-    .job_detail_box_3 {
-        display: flex;
-        width: 414px;
+    @media (max-width: 768px) {
         padding: 20px 16px;
+    }
+}
+
+/* --- Content Section --- */
+.main_content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.header_section {
+    border-left: 5px solid $primary-color;
+    padding-left: 16px;
+    margin-bottom: 8px;
+
+    .section_title {
+        color: $text-color;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.4;
+
+        @media (max-width: 768px) {
+            font-size: 18px;
+        }
+    }
+}
+
+.info_section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.info_block {
+    .sub_title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .html_content {
+        font-size: 15px;
+        line-height: 1.6;
+        color: $text-secondary;
+        text-align: justify;
+        
+        /* Style cho các thẻ bên trong html content */
+        p { margin-bottom: 8px; }
+        ul, ol { padding-left: 20px; margin-bottom: 8px; }
+        a {
+            color: $primary-color;
+            text-decoration: none;
+            font-weight: 500;
+            &:hover { text-decoration: underline; }
+        }
+        pre {
+            white-space: pre-wrap;
+            font-family: inherit;
+        }
+    }
+}
+
+/* --- Action Section (Buttons) --- */
+.action_section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #EEE;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.note_text {
+    font-size: 15px;
+    color: $text-color;
+    margin: 0;
+    
+    strong {
+        color: $primary-color;
+    }
+}
+
+.button_group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    @media (max-width: 576px) {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 32px;
-        box-sizing: border-box;
-
-        border-radius: 8px;
-        background: #FFF;
-
-        .job_detail_content_1 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-            box-sizing: border-box;
-
-            .job_header {
-                display: flex;
-                padding-left: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                align-self: stretch;
-
-                border-left: 6px solid #3582CD;
-
-                .text {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 20px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 28px;
-                }
-            }
-
-            .job_content {
-                .job_title {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 150%;
-                }
-
-                .job_body {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 150%;
-                    white-space: pre-line;
-                }
-            }
-        }
-
-        .job_detail_content_2 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-
-            .title {
-                color: #333;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 20px;
-
-                >strong {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 20px;
-                }
-            }
-
-            .groupButton {
-                display: flex;
-                padding-right: 0px;
-                align-items: center;
-                gap: 12px;
-                align-self: stretch;
-
-                .button_blue {
-                    display: flex;
-                    height: 40px;
-                    padding: 9px 10px 9px 10px;
-                    justify-content: center;
-                    align-items: center;
-                    outline: none;
-                    border: none;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    background: #3582CD;
-
-                    >span {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 14px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 22px;
-                        letter-spacing: 0.175px;
-                    }
-                }
-
-                .button {
-                    display: flex;
-                    height: 40px;
-                    width: 118px;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    border: 1px solid #85C2FD;
-                    background: #FFF;
-
-                    .div {
-                        height: 24px;
-                        display: flex;
-                        gap: 6px;
-                        justify-content: center;
-                        align-items: center;
-
-                        .icon {
-                            display: flex;
-                            height: 24px;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .content {
-                            color: #3582CD;
-                            font-family: Roboto;
-                            font-size: 14px;
-                            font-style: normal;
-                            font-weight: 600;
-                            line-height: 22px;
-                            letter-spacing: 0.175px;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        .job_detail_content_3 {
-            display: flex;
-            padding: 8px 16px;
-            align-items: flex-start;
-            gap: 12px;
-            align-self: stretch;
-
-            border-radius: 5px;
-            background: #F4F5F5;
-
-            .img {
-                display: flex;
-                width: 15px;
-                height: 20px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .text {
-                color: #212F3F;
-                font-family: Roboto;
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 22px;
-                /* 157.143% */
-                letter-spacing: 0.14px;
-
-                >a {
-                    color: #3582CD;
-                    font-family: Roboto;
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 22px;
-                    letter-spacing: 0.14px;
-                    text-decoration: none;
-                }
-            }
-        }
-
-        .job_detail_content_4 {
-            display: flex;
-            padding-bottom: 0px;
-            flex-direction: column;
-            align-items: flex-start;
-            align-self: stretch;
-            padding-bottom: 24px;
-
-            border-radius: 4px;
-            background: linear-gradient(50deg, #003161 -20.66%, #225D97 48.28%, #4186C9 117.21%);
-
-            .title {
-                display: flex;
-                padding: 20px 0px 20px 24px;
-                align-items: center;
-                align-self: stretch;
-
-                .chart {
-                    display: flex;
-                    padding-left: 16px;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    align-self: stretch;
-
-                    border-left: 6px solid #A5D3FF;
-
-                    .content {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 20px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 28px;
-                    }
-                }
-            }
-
-            .text {
-                align-self: stretch;
-
-                color: #FFF;
-                text-align: center;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 135%;
-
-                >div>a {
-                    color: #FFAF36;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 135%;
-                    text-decoration: none;
-                }
-            }
-
-            .fitJobLevel {
-                display: flex;
-                padding: 4px 16px 24px 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-                align-self: stretch;
-
-                box-sizing: border-box;
-
-                .fitLeft {
-                    width: 350px;
-                    display: flex;
-                    padding: 17px;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    flex: 1 0 0;
-                    align-self: stretch;
-                    box-sizing: border-box;
-
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.20);
-
-
-                }
-
-                .fitRight {
-                    display: flex;
-                    flex-direction: row;
-                    padding: 17px 0px;
-                    align-items: flex-start;
-                    gap: 16px;
-                    width: 347px;
-
-                    .left {
-                        width: 247.01px;
-                        height: 247.01px;
-                    }
-
-                    .right {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 12px;
-                        flex: 1;
-                        margin-top: auto;
-
-                        .item_note {
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-
-                            .vtcv {
-                                display: flex;
-                                width: 12px;
-                                height: 12px;
-                                padding: 6px 6px;
-                                justify-content: center;
-                                align-items: center;
-                                box-sizing: border-box;
-
-                                border-radius: 16px;
-
-                            }
-
-                            .textNote {
-                                color: #FFF;
-                                font-family: Roboto;
-                                font-size: 13px;
-                                font-style: normal;
-                                font-weight: 500;
-                                line-height: 16px;
-                                /* 123.077% */
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        width: 100%;
+        
+        .btn { width: 100%; }
     }
 }
 
-@media (max-width: 376px) {
-    .job_detail_box_3 {
-        .job_detail_content_2 {
-            .groupButton {
-                .button_blue {
-                    min-width: max-content;
-                }
-            }
-        }
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    font-family: inherit;
+    min-width: 120px;
+    height: 44px;
+
+    &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    svg {
+        transition: transform 0.2s;
+    }
+    
+    &:hover svg {
+        transform: scale(1.1);
     }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
-    .job_detail_box_3 {
+/* Button Variants */
+.btn_primary {
+    background-color: $primary-color;
+    color: #FFF;
+    border: none;
+    box-shadow: 0 4px 10px rgba(53, 130, 205, 0.3);
+
+    &:hover {
+        background-color: $primary-hover;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(53, 130, 205, 0.4);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+.btn_disabled {
+    background-color: #95a5a6;
+    color: #FFF;
+    border: none;
+    cursor: default;
+    
+    &:hover { transform: none; }
+}
+
+.btn_outline {
+    background-color: #FFF;
+    border: 1px solid $primary-color;
+    color: $primary-color;
+
+    &:hover {
+        background-color: rgba(53, 130, 205, 0.05);
+    }
+
+    &.active {
+        background-color: rgba(53, 130, 205, 0.1);
+        border-color: $primary-color;
+    }
+}
+
+.btn_danger_outline {
+    background-color: #FFF;
+    border: 1px solid $danger-color;
+    color: $danger-color;
+
+    &:hover {
+        background-color: rgba(231, 76, 60, 0.05);
+    }
+}
+
+/* --- Modal Styles --- */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modalContent {
+    background: #FFF;
+    padding: 24px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    h3 { margin: 0; font-size: 18px; color: $text-color; }
+    
+    .textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        resize: vertical;
+        font-family: inherit;
+        &:focus { border-color: $primary-color; outline: none; }
+    }
+
+    .modalActions {
         display: flex;
-        width: 720px;
-        padding: 20px 24px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 32px;
-        box-sizing: border-box;
+        justify-content: flex-end;
+        gap: 10px;
+    }
 
-        border-radius: 8px;
-        background: #FFF;
+    .modalBtn, .btnOk {
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: none;
+        font-weight: 500;
+    }
 
-        .job_detail_content_1 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-            box-sizing: border-box;
+    .btnCancel {
+        background: #f1f1f1;
+        color: $text-color;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        &:hover { background: #e1e1e1; }
+    }
 
-            .job_header {
-                display: flex;
-                padding-left: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                align-self: stretch;
-
-                border-left: 6px solid #3582CD;
-
-                .text {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 20px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 28px;
-                }
-            }
-
-            .job_content {
-                .job_title {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 150%;
-                }
-
-                .job_body {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 150%;
-                    white-space: pre-line;
-                }
-            }
-        }
-
-        .job_detail_content_2 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-
-            .title {
-                color: #333;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 20px;
-
-                >strong {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 20px;
-                }
-            }
-
-            .groupButton {
-                display: flex;
-                padding-right: 0px;
-                align-items: center;
-                gap: 12px;
-                align-self: stretch;
-
-                .button_blue {
-                    display: flex;
-                    height: 40px;
-                    padding: 9px 16.72px 9px 16px;
-                    justify-content: center;
-                    align-items: center;
-                    outline: none;
-                    border: none;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    background: #3582CD;
-
-                    >span {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 14px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 22px;
-                        letter-spacing: 0.175px;
-                    }
-                }
-
-                .button {
-                    display: flex;
-                    height: 40px;
-                    width: 118px;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    border: 1px solid #85C2FD;
-                    background: #FFF;
-
-                    .div {
-                        height: 24px;
-                        display: flex;
-                        gap: 6px;
-                        justify-content: center;
-                        align-items: center;
-
-                        .icon {
-                            display: flex;
-                            height: 24px;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .content {
-                            color: #3582CD;
-                            font-family: Roboto;
-                            font-size: 14px;
-                            font-style: normal;
-                            font-weight: 600;
-                            line-height: 22px;
-                            letter-spacing: 0.175px;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        .job_detail_content_3 {
-            display: flex;
-            padding: 8px 16px;
-            align-items: flex-start;
-            gap: 12px;
-            align-self: stretch;
-
-            border-radius: 5px;
-            background: #F4F5F5;
-
-            .img {
-                display: flex;
-                width: 15px;
-                height: 20px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .text {
-                color: #212F3F;
-                font-family: Roboto;
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 22px;
-                /* 157.143% */
-                letter-spacing: 0.14px;
-
-                >a {
-                    color: #3582CD;
-                    font-family: Roboto;
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 22px;
-                    letter-spacing: 0.14px;
-                    text-decoration: none;
-                }
-            }
-        }
-
-        .job_detail_content_4 {
-            display: flex;
-            padding-bottom: 0px;
-            flex-direction: column;
-            align-items: flex-start;
-            align-self: stretch;
-            // padding-bottom: 24px;
-
-            border-radius: 4px;
-            background: linear-gradient(50deg, #003161 -20.66%, #225D97 48.28%, #4186C9 117.21%);
-
-            .title {
-                display: flex;
-                padding: 20px 0px 20px 24px;
-                align-items: center;
-                align-self: stretch;
-
-                .chart {
-                    display: flex;
-                    padding-left: 16px;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    align-self: stretch;
-
-                    border-left: 6px solid #A5D3FF;
-
-                    .content {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 20px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 28px;
-                    }
-                }
-            }
-
-            .text {
-                align-self: stretch;
-
-                color: #FFF;
-                text-align: center;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 135%;
-
-                >div>a {
-                    color: #FFAF36;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 135%;
-                    text-decoration: none;
-                }
-            }
-
-            .fitJobLevel {
-                display: flex;
-                padding: 4px 16px 24px 16px;
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 28px;
-                align-self: stretch;
-
-                box-sizing: border-box;
-
-                .fitLeft {
-                    width: 270px;
-                    display: flex;
-                    padding: 17px;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    flex: 1 0 0;
-                    align-self: stretch;
-                    box-sizing: border-box;
-
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.20);
-
-
-                }
-
-                .fitRight {
-                    display: flex;
-                    flex-direction: row;
-                    padding: 17px 0px;
-                    align-items: flex-start;
-                    gap: 28px;
-                    width: 342px;
-
-                    .left {
-                        width: 207.01px;
-                        height: 207.01px;
-                    }
-
-                    .right {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 12px;
-                        flex: 1;
-                        margin-top: auto;
-
-                        .item_note {
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-
-                            .vtcv {
-                                display: flex;
-                                width: 12px;
-                                height: 12px;
-                                padding: 6px 6px;
-                                justify-content: center;
-                                align-items: center;
-                                box-sizing: border-box;
-
-                                border-radius: 16px;
-
-                            }
-
-                            .textNote {
-                                color: #FFF;
-                                font-family: Roboto;
-                                font-size: 13px;
-                                font-style: normal;
-                                font-weight: 500;
-                                line-height: 16px;
-                                /* 123.077% */
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    .btnOk {
+        background: $primary-color;
+        color: #fff;
+        &:hover { background: $primary-hover; }
     }
 }
 
-@media (min-width: 1024px) and (max-width: 1365px) {
-    .job_detail_box_3 {
-        display: flex;
-        width: 976px;
-        padding: 20px 24px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 32px;
-        box-sizing: border-box;
-
-        border-radius: 8px;
-        background: #FFF;
-
-        .job_detail_content_1 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-            box-sizing: border-box;
-
-            .job_header {
-                display: flex;
-                padding-left: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                align-self: stretch;
-
-                border-left: 6px solid #3582CD;
-
-                .text {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 20px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 28px;
-                }
-            }
-
-            .job_content {
-                .job_title {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 150%;
-                }
-
-                .job_body {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 150%;
-                    white-space: pre-line;
-                }
-            }
-        }
-
-        .job_detail_content_2 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-
-            .title {
-                color: #333;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 20px;
-
-                >strong {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 20px;
-                }
-            }
-
-            .groupButton {
-                display: flex;
-                padding-right: 0px;
-                align-items: center;
-                gap: 12px;
-                align-self: stretch;
-
-                .button_blue {
-                    display: flex;
-                    height: 40px;
-                    padding: 9px 16.72px 9px 16px;
-                    justify-content: center;
-                    align-items: center;
-                    outline: none;
-                    border: none;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    background: #3582CD;
-
-                    >span {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 14px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 22px;
-                        letter-spacing: 0.175px;
-                    }
-                }
-
-                .button {
-                    display: flex;
-                    height: 40px;
-                    width: 118px;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    border: 1px solid #85C2FD;
-                    background: #FFF;
-
-                    .div {
-                        height: 24px;
-                        display: flex;
-                        gap: 6px;
-                        justify-content: center;
-                        align-items: center;
-
-                        .icon {
-                            display: flex;
-                            height: 24px;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .content {
-                            color: #3582CD;
-                            font-family: Roboto;
-                            font-size: 14px;
-                            font-style: normal;
-                            font-weight: 600;
-                            line-height: 22px;
-                            letter-spacing: 0.175px;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        .job_detail_content_3 {
-            display: flex;
-            padding: 8px 16px;
-            align-items: flex-start;
-            gap: 12px;
-            align-self: stretch;
-
-            border-radius: 5px;
-            background: #F4F5F5;
-
-            .img {
-                display: flex;
-                width: 15px;
-                height: 20px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .text {
-                color: #212F3F;
-                font-family: Roboto;
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 22px;
-                /* 157.143% */
-                letter-spacing: 0.14px;
-
-                >a {
-                    color: #3582CD;
-                    font-family: Roboto;
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 22px;
-                    letter-spacing: 0.14px;
-                    text-decoration: none;
-                }
-            }
-        }
-
-        .job_detail_content_4 {
-            display: flex;
-            padding-bottom: 0px;
-            flex-direction: column;
-            align-items: flex-start;
-            align-self: stretch;
-            padding-bottom: 24px;
-
-            border-radius: 4px;
-            background: linear-gradient(50deg, #003161 -20.66%, #225D97 48.28%, #4186C9 117.21%);
-
-            .title {
-                display: flex;
-                padding: 20px 388.8px 20px 24px;
-                align-items: center;
-                align-self: stretch;
-
-                .chart {
-                    display: flex;
-                    padding-left: 16px;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    align-self: stretch;
-
-                    border-left: 6px solid #A5D3FF;
-
-                    .content {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 20px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 28px;
-                    }
-                }
-            }
-
-            .text {
-                align-self: stretch;
-
-                color: #FFF;
-                text-align: center;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 135%;
-
-                >div>a {
-                    color: #FFAF36;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 135%;
-                    text-decoration: none;
-                }
-            }
-
-            .fitJobLevel {
-                display: flex;
-                padding: 4px 16px 24px 16px;
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 16px;
-                align-self: stretch;
-
-                box-sizing: border-box;
-
-                .fitLeft {
-                    width: 485px;
-                    display: flex;
-                    padding: 17px;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    flex: 1 0 0;
-                    align-self: stretch;
-                    box-sizing: border-box;
-
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.20);
-
-
-                }
-
-                .fitRight {
-                    display: flex;
-                    flex-direction: row;
-                    padding: 17px 0px;
-                    align-items: flex-start;
-                    gap: 16px;
-                    width: 382px;
-
-                    .left {
-                        width: 247.01px;
-                        height: 247.01px;
-                    }
-
-                    .right {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 12px;
-                        flex: 1;
-                        margin-top: auto;
-
-                        .item_note {
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-
-                            .vtcv {
-                                display: flex;
-                                width: 12px;
-                                height: 12px;
-                                padding: 6px 6px;
-                                justify-content: center;
-                                align-items: center;
-                                box-sizing: border-box;
-
-                                border-radius: 16px;
-
-                            }
-
-                            .textNote {
-                                color: #FFF;
-                                font-family: Roboto;
-                                font-size: 13px;
-                                font-style: normal;
-                                font-weight: 500;
-                                line-height: 16px;
-                                /* 123.077% */
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-@media (min-width: 1366px) and (max-width: 1919px) {
-    .job_detail_box_3 {
-        display: flex;
-        width: 824px;
-        padding: 20px 24px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 32px;
-        box-sizing: border-box;
-
-        border-radius: 8px;
-        background: #FFF;
-
-        .job_detail_content_1 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-            box-sizing: border-box;
-
-            .job_header {
-                display: flex;
-                padding-left: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                align-self: stretch;
-
-                border-left: 6px solid #3582CD;
-
-                .text {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 20px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 28px;
-                }
-            }
-
-            .job_content {
-                .job_title {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 150%;
-                }
-
-                .job_body {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 150%;
-                    white-space: pre-line;
-                }
-            }
-        }
-
-        .job_detail_content_2 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-
-            .title {
-                color: #333;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 20px;
-
-                >strong {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 20px;
-                }
-            }
-
-            .groupButton {
-                display: flex;
-                padding-right: 0px;
-                align-items: center;
-                gap: 12px;
-                align-self: stretch;
-
-                .button_blue {
-                    display: flex;
-                    height: 40px;
-                    padding: 9px 16.72px 9px 16px;
-                    justify-content: center;
-                    align-items: center;
-                    outline: none;
-                    border: none;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    background: #3582CD;
-
-                    >span {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 14px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 22px;
-                        letter-spacing: 0.175px;
-                    }
-                }
-
-                .button {
-                    display: flex;
-                    height: 40px;
-                    width: 118px;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    border: 1px solid #85C2FD;
-                    background: #FFF;
-
-                    .div {
-                        height: 24px;
-                        display: flex;
-                        gap: 6px;
-                        justify-content: center;
-                        align-items: center;
-
-                        .icon {
-                            display: flex;
-                            height: 24px;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .content {
-                            color: #3582CD;
-                            font-family: Roboto;
-                            font-size: 14px;
-                            font-style: normal;
-                            font-weight: 600;
-                            line-height: 22px;
-                            letter-spacing: 0.175px;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        .job_detail_content_3 {
-            display: flex;
-            padding: 8px 16px;
-            align-items: flex-start;
-            gap: 12px;
-            align-self: stretch;
-
-            border-radius: 5px;
-            background: #F4F5F5;
-
-            .img {
-                display: flex;
-                width: 15px;
-                height: 20px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .text {
-                color: #212F3F;
-                font-family: Roboto;
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 22px;
-                /* 157.143% */
-                letter-spacing: 0.14px;
-
-                >a {
-                    color: #3582CD;
-                    font-family: Roboto;
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 22px;
-                    letter-spacing: 0.14px;
-                    text-decoration: none;
-                }
-            }
-        }
-
-        .job_detail_content_4 {
-            display: flex;
-            padding-bottom: 0px;
-            flex-direction: column;
-            align-items: flex-start;
-            align-self: stretch;
-            padding-bottom: 24px;
-
-            border-radius: 4px;
-            background: linear-gradient(50deg, #003161 -20.66%, #225D97 48.28%, #4186C9 117.21%);
-
-            .title {
-                display: flex;
-                padding: 20px 388.8px 20px 24px;
-                align-items: center;
-                align-self: stretch;
-
-                .chart {
-                    display: flex;
-                    padding-left: 16px;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    align-self: stretch;
-
-                    border-left: 6px solid #A5D3FF;
-
-                    .content {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 20px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 28px;
-                    }
-                }
-            }
-
-            .text {
-                align-self: stretch;
-
-                color: #FFF;
-                text-align: center;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 135%;
-
-                >div>a {
-                    color: #FFAF36;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 135%;
-                    text-decoration: none;
-                }
-            }
-
-            .fitJobLevel {
-                display: flex;
-                padding: 4px 16px 24px 16px;
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 16px;
-                align-self: stretch;
-
-                box-sizing: border-box;
-
-                .fitLeft {
-                    width: 334px;
-                    display: flex;
-                    padding: 17px;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    flex: 1 0 0;
-                    align-self: stretch;
-                    box-sizing: border-box;
-
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.20);
-
-
-                }
-
-                .fitRight {
-                    display: flex;
-                    flex-direction: row;
-                    padding: 17px 0px;
-                    align-items: flex-start;
-                    gap: 16px;
-                    width: 382px;
-
-                    .left {
-                        width: 247.01px;
-                        height: 247.01px;
-                    }
-
-                    .right {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 12px;
-                        flex: 1;
-                        margin-top: auto;
-
-                        .item_note {
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-
-                            .vtcv {
-                                display: flex;
-                                width: 12px;
-                                height: 12px;
-                                padding: 6px 6px;
-                                justify-content: center;
-                                align-items: center;
-                                box-sizing: border-box;
-
-                                border-radius: 16px;
-
-                            }
-
-                            .textNote {
-                                color: #FFF;
-                                font-family: Roboto;
-                                font-size: 13px;
-                                font-style: normal;
-                                font-weight: 500;
-                                line-height: 16px;
-                                /* 123.077% */
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@media (min-width: 1920px) {
-    .job_detail_box_3 {
-        display: flex;
-        width: 824px;
-        padding: 20px 24px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 32px;
-        box-sizing: border-box;
-
-        border-radius: 8px;
-        background: #FFF;
-
-        .job_detail_content_1 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-            box-sizing: border-box;
-
-            .job_header {
-                display: flex;
-                padding-left: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                align-self: stretch;
-
-                border-left: 6px solid #3582CD;
-
-                .text {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 20px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 28px;
-                }
-            }
-
-            .job_content {
-                .job_title {
-                    color: #212F3F;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 150%;
-                }
-
-                .job_body {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 150%;
-                    white-space: pre-line;
-                }
-            }
-        }
-
-        .job_detail_content_2 {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 16px;
-            align-self: stretch;
-
-            .title {
-                color: #333;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 20px;
-
-                >strong {
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: 20px;
-                }
-            }
-
-            .groupButton {
-                display: flex;
-                padding-right: 0px;
-                align-items: center;
-                gap: 12px;
-                align-self: stretch;
-
-                .button_blue {
-                    display: flex;
-                    height: 40px;
-                    padding: 9px 16.72px 9px 16px;
-                    justify-content: center;
-                    align-items: center;
-                    outline: none;
-                    border: none;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    background: #3582CD;
-
-                    >span {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 14px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 22px;
-                        letter-spacing: 0.175px;
-                    }
-                }
-
-                .button {
-                    display: flex;
-                    height: 40px;
-                    width: 118px;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 6px;
-                    cursor: pointer;
-
-                    border-radius: 6px;
-                    border: 1px solid #85C2FD;
-                    background: #FFF;
-
-                    .div {
-                        height: 24px;
-                        display: flex;
-                        gap: 6px;
-                        justify-content: center;
-                        align-items: center;
-
-                        .icon {
-                            display: flex;
-                            height: 24px;
-                            justify-content: center;
-                            align-items: center;
-                        }
-
-                        .content {
-                            color: #3582CD;
-                            font-family: Roboto;
-                            font-size: 14px;
-                            font-style: normal;
-                            font-weight: 600;
-                            line-height: 22px;
-                            letter-spacing: 0.175px;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        .job_detail_content_3 {
-            display: flex;
-            padding: 8px 16px;
-            align-items: flex-start;
-            gap: 12px;
-            align-self: stretch;
-
-            border-radius: 5px;
-            background: #F4F5F5;
-
-            .img {
-                display: flex;
-                width: 15px;
-                height: 20px;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .text {
-                color: #212F3F;
-                font-family: Roboto;
-                font-size: 14px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 22px;
-                /* 157.143% */
-                letter-spacing: 0.14px;
-
-                >a {
-                    color: #3582CD;
-                    font-family: Roboto;
-                    font-size: 14px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 22px;
-                    letter-spacing: 0.14px;
-                    text-decoration: none;
-                }
-            }
-        }
-
-        .job_detail_content_4 {
-            display: flex;
-            padding-bottom: 0px;
-            flex-direction: column;
-            align-items: flex-start;
-            align-self: stretch;
-            padding-bottom: 24px;
-
-            border-radius: 4px;
-            background: linear-gradient(50deg, #003161 -20.66%, #225D97 48.28%, #4186C9 117.21%);
-
-            .title {
-                display: flex;
-                padding: 20px 388.8px 20px 24px;
-                align-items: center;
-                align-self: stretch;
-
-                .chart {
-                    display: flex;
-                    padding-left: 16px;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    align-self: stretch;
-
-                    border-left: 6px solid #A5D3FF;
-
-                    .content {
-                        color: #FFF;
-                        font-family: Roboto;
-                        font-size: 20px;
-                        font-style: normal;
-                        font-weight: 600;
-                        line-height: 28px;
-                    }
-                }
-            }
-
-            .text {
-                align-self: stretch;
-
-                color: #FFF;
-                text-align: center;
-                font-family: Roboto;
-                font-size: 16px;
-                font-style: normal;
-                font-weight: 400;
-                line-height: 135%;
-
-                >div>a {
-                    color: #FFAF36;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 600;
-                    line-height: 135%;
-                    text-decoration: none;
-                }
-            }
-
-            .fitJobLevel {
-                display: flex;
-                padding: 4px 16px 24px 16px;
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 16px;
-                align-self: stretch;
-
-                box-sizing: border-box;
-
-                .fitLeft {
-                    width: 334px;
-                    display: flex;
-                    padding: 17px;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    flex: 1 0 0;
-                    align-self: stretch;
-                    box-sizing: border-box;
-
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.20);
-
-
-                }
-
-                .fitRight {
-                    display: flex;
-                    flex-direction: row;
-                    padding: 17px 0px;
-                    align-items: flex-start;
-                    gap: 16px;
-                    width: 382px;
-
-                    .left {
-                        width: 247.01px;
-                        height: 247.01px;
-                    }
-
-                    .right {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        gap: 12px;
-                        flex: 1;
-                        margin-top: auto;
-
-                        .item_note {
-                            display: flex;
-                            align-items: center;
-                            gap: 8px;
-
-                            .vtcv {
-                                display: flex;
-                                width: 12px;
-                                height: 12px;
-                                padding: 6px 6px;
-                                justify-content: center;
-                                align-items: center;
-                                box-sizing: border-box;
-
-                                border-radius: 16px;
-
-                            }
-
-                            .textNote {
-                                color: #FFF;
-                                font-family: Roboto;
-                                font-size: 13px;
-                                font-style: normal;
-                                font-weight: 500;
-                                line-height: 16px;
-                                /* 123.077% */
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@media (max-width: 413px) {
-    .job_detail_box_3 {
-        // padding: 20px 16px 20px 0px !important;
-        width: 100% !important;
-    }
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

@@ -1,0 +1,226 @@
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin button-hover {
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+}
+
+@mixin slider-item-hover {
+  transition: all 0.3s ease;
+  &:hover {
+    .sliderCarousel_item {
+      box-shadow: 0 4px 15px rgba(53, 130, 205, 0.3);
+      border-color: #f39623;
+    }
+    span {
+      color: #f39623;
+    }
+  }
+}
+
+@media all {
+  .container {
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 60px;
+    @include flex-center;
+
+    .body {
+      display: flex;
+      padding: 28px 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.05);
+      height: 193px;
+      box-sizing: border-box;
+      transition: box-shadow 0.3s ease;
+
+      &:hover {
+        box-shadow: 0px 15px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .carousel {
+        display: flex;
+        flex-shrink: 0;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+
+        .btn1 {
+          @include button-hover;
+          .svgbtn {
+              transition: fill 0.3s ease;
+              &:hover path {
+                  fill: #3582cd;
+              }
+          }
+        }
+
+        .sliderCarousel {
+          display: flex;
+          justify-content: space-between;
+
+          .slider {
+            display: flex;
+            flex-direction: column;
+            @include flex-center;
+            gap: 12px;
+            cursor: pointer;
+            @include slider-item-hover;
+
+            span {
+              color: var(--Chnh, #3582cd);
+              font-family: Roboto;
+              font-size: 16px;
+              font-style: normal;
+              font-weight: 500;
+              line-height: normal;
+              transition: color 0.3s ease;
+              text-align: center;
+            }
+
+            .sliderCarousel_item {
+              border-radius: 100%;
+              border: 2px solid #3582cd;
+              width: 106px;
+              height: 106px;
+              @include flex-center;
+              gap: 12px;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              background-color: #fff;
+
+              .sliderCarousel_item_image {
+                width: 52px;
+                height: 52px;
+                position: relative;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+              }
+
+              &:hover .sliderCarousel_item_image {
+                  transform: scale(1.1);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1920px) {
+  .container {
+    .body {
+      width: 1503px;
+      .carousel {
+        .sliderCarousel {
+          width: 1127px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1366px) and (max-width: 1919px) {
+  .container {
+    .body {
+      width: 1040px;
+      .carousel {
+        .sliderCarousel {
+          width: 880px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1365px) {
+  .container {
+    margin-top: 100px;
+    .body {
+      width: 992px;
+      .carousel {
+        .sliderCarousel {
+          width: 805px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    margin-top: 100px;
+    .body {
+      width: 736px;
+      .carousel {
+        .sliderCarousel {
+          width: 550px;
+          .slider {
+            .sliderCarousel_item {
+              width: 69px;
+              height: 69px;
+              .sliderCarousel_item_image {
+                width: 35px;
+                height: 35px;
+              }
+            }
+            span {
+                font-size: 14px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    margin-top: 80px;
+    padding: 12px 8px;
+    .body {
+      width: 100%;
+      height: auto;
+      padding: 15px 10px;
+      .carousel {
+        .btn1 {
+          .svgbtn {
+            width: 30px !important;
+            height: 30px !important;
+          }
+        }
+        .sliderCarousel {
+          width: calc(100% - 70px); 
+          gap: 5px;
+          .slider {
+            gap: 8px;
+            span {
+              font-size: 12px;
+              line-height: 1.2;
+            }
+            .sliderCarousel_item {
+              width: 50px;
+              height: 50px;
+              border-width: 1.5px;
+              .sliderCarousel_item_image {
+                width: 25px;
+                height: 25px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

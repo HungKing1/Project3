@@ -29,7 +29,7 @@ const DetailCompany = ({data}) => {
         {/* <Link> đã được thay bằng <a> với href mẫu */}
         <a href={`/cong-ty-tnhh-mau-a`} className="avata_com">
           <img
-            src={mockImageSrc} // Sử dụng ảnh mẫu
+            src="/images/candidate/applicant1.png" // Sử dụng ảnh mẫu
             alt="avatar NTD"
             loading="lazy"
             decoding="async"
@@ -40,7 +40,7 @@ const DetailCompany = ({data}) => {
               objectFit: "cover",
             }}
             onError={(e) => {
-              e.currentTarget.src = '/images/candidate/ava_default.jpg';
+              e.currentTarget.src = '/images/candidate/applicant1.png';
             }}
           />
           {/* Các thành phần 'dot_online' và 'tiaset' đã bị comment

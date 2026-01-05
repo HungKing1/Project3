@@ -1,0 +1,273 @@
+// --- Mixins ---
+
+@mixin input-styles {
+  padding: 14px 20px;
+  width: 100%;
+  border: 1px solid #e2e8f0; // Có viền theo yêu cầu mới
+  background: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    border-color: #3582cd;
+  }
+
+  &:focus-within {
+    border-color: #3582cd;
+    box-shadow: 0 0 0 3px rgba(53, 130, 205, 0.1);
+  }
+}
+
+@mixin button-styles($bg-color) {
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: $bg-color;
+  transition: all 0.3s ease;
+
+  &:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// --- Main Styles ---
+
+.body {
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  background-color: #f8fafc; // Nền body xám nhạt
+
+  .container {
+    width: 1000px;
+    padding: 32px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    .title {
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .title_1 {
+        color: #3582cd;
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .title_2 {
+        width: 50px;
+        height: 4px;
+        background: #f39623;
+        border-radius: 2px;
+      }
+    }
+
+    .degree_list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px; // Khoảng cách giữa các chứng chỉ
+    }
+
+    .degree_card {
+      background: #ffffff;
+      border: 1px solid #edf2f7;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: transform 0.2s ease;
+
+      &:hover {
+        border-color: #cbd5e0;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+      }
+
+      .degree_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 12px;
+        border-bottom: 1px dashed #e2e8f0;
+
+        .degree_number {
+          font-weight: 700;
+          color: #2d3748;
+          font-size: 16px;
+          text-transform: uppercase;
+        }
+
+        .header_actions {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .btn_save_item {
+            @include button-styles(#3582cd);
+            padding: 6px 16px;
+            height: auto;
+            font-size: 14px;
+          }
+
+          .btn_delete_text {
+            color: #e74c3c;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+
+            &:hover {
+              text-decoration: underline;
+              color: #c53030;
+            }
+          }
+        }
+      }
+    }
+
+    .form_grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; // 2 cột
+      gap: 20px;
+    }
+
+    .form_input {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #4a5568;
+      }
+
+      .form_input_div {
+        @include input-styles;
+
+        input {
+          border: none;
+          outline: none;
+          box-shadow: none;
+          background: transparent;
+          width: 100%;
+          font-size: 15px;
+          color: #2d3748;
+
+          &::placeholder {
+            color: #a0aec0;
+          }
+        }
+      }
+    }
+
+    .time_row {
+      grid-column: span 2; // Chiếm toàn bộ hàng
+      display: flex;
+      gap: 20px;
+
+      .form_input {
+        flex: 1;
+      }
+    }
+
+    // --- Ant Design Overrides ---
+    .select_wrapper {
+      padding: 0 !important;
+    }
+
+    .antd_select_custom {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: center;
+
+      :global(.ant-select-selector) {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 0 20px !important;
+        height: 100% !important;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .btn_action_group {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .btn_add {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        color: #3582cd;
+        font-weight: 700;
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: 1px solid #3582cd;
+        transition: all 0.2s;
+
+        &:hover {
+          background: #f0f7ff;
+        }
+
+        .btn_add_icon {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+// --- Responsive ---
+@media (max-width: 768px) {
+  .body .container {
+    width: 95%;
+    padding: 20px;
+
+    .form_grid {
+      grid-template-columns: 1fr !important;
+    }
+
+    .time_row {
+      flex-direction: column;
+      grid-column: span 1 !important;
+    }
+
+    .degree_card .degree_header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+
+      .header_actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  }
+}

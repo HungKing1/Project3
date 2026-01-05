@@ -1,260 +1,267 @@
-.menu-wrapper {
-    position: absolute;
-    width: 445px;
-    top: 45px;
-    right: 0px;
-    display: flex;
-    padding: 20px 15px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    border-radius: 8px;
-    background: #FFF;
-    box-shadow: 0px 2px 7px 0px rgba(0, 0, 0, 0.15);
-    z-index: 100;
+/* Định nghĩa biến màu sắc */
+:root {
+    --primary-color: #3582CD;
+    --primary-light: #eef6ff;
+    --text-color: #333;
+    --text-secondary: #666;
+    --border-radius: 12px;
+    --transition-speed: 0.2s;
 }
 
+/* Animation xuất hiện */
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
+@keyframes subMenuSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-wrapper {
+    position: absolute;
+    width: 380px; /* Giảm width một chút cho gọn */
+    top: 55px;
+    right: 0px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 8px;
+    border-radius: var(--border-radius);
+    background: #FFF;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.15); /* Bóng đổ mềm hơn */
+    z-index: 100;
+    border: 1px solid #f0f0f0;
+    animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: top right;
+}
+
+/* --- Phần Header Account --- */
 .box-account {
     display: flex;
-    height: 64px;
-    align-items: flex-start;
-    gap: 13px;
-    align-self: stretch;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 8px;
 }
 
 .box-account .box-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
-    border: 1px solid #3582cd80;
-    /* background: url('/images/header/avatar-menu.svg'), lightgray 50% / cover no-repeat; */
-    /* box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.15); */
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid transparent;
+    background: #f5f5f5;
+    transition: all var(--transition-speed);
 }
 
-.box-account .box-infor {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
+.box-account:hover .box-img {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
 }
 
-
-
-.box-account .box-infor .if-name {
-    color: #3582CD;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-.box-account .box-infor .if-detail {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    align-self: stretch;
-}
-
-.box-account .box-infor .if-detail .detail-num {
-    color: #474747;
-    font-family: Roboto;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-.box-account .box-infor .if-contact {
-    display: flex;
-    width: 272px;
-    align-items: center;
-    gap: 8px;
-}
-
-.box-account .box-infor .if-contact .img-toggle {
-    width: 28px;
-    height: 16px;
-    flex-shrink: 0;
-    fill: #3582CD;
-}
-
-.box-account .box-infor .if-contact p {
-    flex: 1 0 0;
-    color: #474747;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-
+.box-account .box-infor,
 .box-account .box-info-company {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
-    gap: 8px;
+    gap: 4px;
+    overflow: hidden;
 }
 
-.box-account .box-info-company>p {
-    color: #3582CD;
-    font-family: Roboto;
+.if-name {
+    color: var(--text-color);
     font-size: 16px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    font-weight: 700;
+    line-height: 1.4;
+    transition: color var(--transition-speed);
 }
 
-.box-account .box-info-company .info-point {
+.if-name:hover {
+    color: var(--primary-color);
+}
+
+.if-detail, .info-point {
     display: flex;
-    width: 272px;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.detail-num span {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* Toggle Switch Area */
+.if-contact {
+    display: flex;
     align-items: center;
     gap: 8px;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    width: fit-content;
 }
 
+.if-contact p {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+/* --- Menu Items --- */
 .box-content {
     display: flex;
-    padding: 10px;
+    padding: 12px;
     justify-content: space-between;
     align-items: center;
-    align-self: stretch;
-    border-radius: 4px;
-    background: rgba(55, 122, 187, 0.05);
+    border-radius: 8px;
+    background: transparent;
     cursor: pointer;
+    transition: all var(--transition-speed);
 }
 
-.box-content .content-left {
+.box-content:hover {
+    background: var(--primary-light);
+}
+
+.content-left {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 14px;
 }
 
-.box-content .content-left>svg {
-    display: flex;
-    width: 20px;
-    height: 20px;
-    justify-content: center;
-    align-items: center;
+.content-left svg {
+    width: 22px;
+    height: 22px;
+    transition: transform var(--transition-speed);
 }
 
-.box-content .content-left .item-name {
-    color: #474747;
+.box-content:hover .content-left svg {
+    transform: scale(1.1);
+}
+
+.item-name {
+    color: var(--text-color);
     font-size: 15px;
-    font-style: normal;
     font-weight: 500;
-    line-height: normal;
 }
 
-.box-content .content-left .item-name:hover,
-.box-content .content-left .item-name.active {
-    color: #3582CD;
+.item-name.active {
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
-.box-content .arrow-up {
-    width: 16px;
-    height: 16px;
+/* Mũi tên accordion */
+.arrow-up, .arrow-down {
+    transition: transform 0.3s ease;
+}
+
+.arrow-up {
     transform: rotate(180deg);
 }
 
-.box-content .arrow-down {
-    width: 16px;
-    height: 16px;
+.arrow-down {
     transform: rotate(0deg);
 }
 
+/* --- Sub Menu --- */
 .menu-item-child {
     display: flex;
-    padding-left: 36px;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    align-self: stretch;
-    background: #FBFBFB;
+    padding: 5px 0 5px 48px; /* Indent nội dung con */
+    gap: 6px;
+    animation: subMenuSlide 0.25s ease-out;
 }
 
-.menu-item-child .item-child {
+.item-child {
     display: flex;
-    align-items: flex-start;
-    gap: 5px;
-    align-self: stretch;
-    cursor: pointer;
-}
-
-.menu-item-child .item-child .item-left {
-    display: flex;
-    padding: 10px;
-    flex-direction: column;
-    align-items: flex-start;
     gap: 10px;
-    flex: 1 0 0;
 }
 
-.menu-item-child .item-child .item-right {
-    display: flex;
-    padding: 10px;
-    align-items: flex-start;
-    gap: 10px;
-    flex: 1 0 0;
-}
-
-.menu-item-child .item-child p {
-    color: #474747;
-    font-family: Roboto;
+.item-left, .item-right {
+    flex: 1;
+    padding: 8px 12px;
     font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-}
-
-.logout {
-    display: flex;
-    align-items: flex-start;
-    gap: 5px;
-    align-self: stretch;
+    color: var(--text-secondary);
+    background: #f8f9fa;
+    border-radius: 6px;
     cursor: pointer;
+    transition: all var(--transition-speed);
 }
 
-.logout .content-value {
+.item-left:hover, .item-right:hover {
+    background: #e8f0fe;
+    color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+/* --- Logout Section --- */
+.logout {
+    margin-top: 8px;
+    border-top: 1px solid #eeeeee;
+    padding-top: 8px;
+}
+
+.content-value {
     display: flex;
-    padding: 10px;
-    align-items: flex-start;
-    gap: 10px;
+    padding: 12px;
+    align-items: center;
+    gap: 14px;
+    border-radius: 8px;
+    transition: all var(--transition-speed);
 }
 
-.logout .content-value svg {
-    width: 20px;
-    height: 20px;
+.content-value:hover {
+    background: #fff0f0;
 }
 
-.logout .content-value p {
-    color: #F00;
+.content-value p {
+    color: #FF4D4F;
     font-size: 15px;
-    font-style: normal;
     font-weight: 500;
-    line-height: normal;
 }
 
-@media screen and (max-width: 430px) {
-    .menu-item-child {
-        padding-left: 0 !important;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+.content-value svg path {
+    stroke: #FF4D4F; /* Đảm bảo icon đỏ */
+}
 
-        .item-child {
-            display: flex !important;
-            flex-direction: column;
-            width: 100%;
-            gap: 16px ;
-        }
-
-        .item-left, .item-right {
-            width: 100%;
-            border-radius: 4px;
-            background: #FFE7CB;
-            color: #474747;
-            font-size: 18px;
-        }
+/* --- Responsive --- */
+@media screen and (max-width: 480px) {
+    .menu-wrapper {
+        width: 92vw;
+        right: 4vw; /* Căn giữa tương đối */
+        top: 60px;
     }
-}
+
+    .menu-item-child {
+        padding-left: 0;
+    }
+
+    .item-child {
+        flex-direction: column;
+    }
+
+    .item-left, .item-right {
+        width: 100%;
+        text-align: center;
+        background: #f0f7ff;
+    }
+}   

@@ -1,10 +1,8 @@
 package org.example.project3.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.example.project3.entity.candidate.Candidate;
 
 import java.time.LocalDate;
@@ -15,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Experience {
 
     @Id
@@ -23,7 +22,8 @@ public class Experience {
     private Long id;
 
     // Quan hệ N-1: nhiều kinh nghiệm thuộc về 1 ứng viên
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "cand_id", nullable = false)
     private Candidate candidate;
 

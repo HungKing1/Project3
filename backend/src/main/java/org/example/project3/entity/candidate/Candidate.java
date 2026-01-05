@@ -1,11 +1,15 @@
 package org.example.project3.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.project3.entity.job.Application;
 import org.example.project3.entity.job.reference.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "candidates")
@@ -27,52 +31,73 @@ public class Candidate {
     @Column(name = "phone", nullable = false, unique = true, length = 11)
     private String phone;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "name", nullable = false)
     private String name;
 
+    @OneToMany(mappedBy = "candidate")
+    private List<Application> applications;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Message> messages;
+
     // Quan hệ với City
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "city_id")
     private City city;
 
     // Quan hệ với District
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "district_id")
     private District district;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "ward_id")
     private Ward ward;
 
     // Trình độ học vấn
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "edu_level_id")
     private EducationLevel educationLevel;
 
     // Mức độ công việc
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "job_level_id")
     private JobLevel jobLevel;
 
     // Số năm kinh nghiệm
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "exp_years_id")
     private ExperienceYear experienceYear;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "work_type_id")
     private WorkType workType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "industry_id")
     private Industry industry;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "salary_id")
     private Salary salary;
+
+    @OneToOne(mappedBy = "candidate", cascade =  CascadeType.ALL)
+    @JsonIgnore
+    private DesiredJob desiredJob;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Degree> degrees;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<LanguageCertificate> languageCertificates;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)
+    private List<Experience> experiences;
+
 
     // -------- Normal attributes --------
     @Column(name = "address")

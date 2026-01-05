@@ -29,6 +29,8 @@ public class GetJobResponse {
     private String salaryName;
     private Integer gender;
 
+    private boolean isApplied;
+
     // Constructor để map từ Entity sang DTO
     public GetJobResponse(Job job) {
         this.id = job.getId();

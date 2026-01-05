@@ -1,11 +1,13 @@
 package org.example.project3.entity.job;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.project3.entity.employer.Employer;
 import org.example.project3.entity.job.reference.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "jobs")
@@ -55,6 +57,10 @@ public class Job {
     @ManyToOne
     @JoinColumn(name = "salary_id")
     private Salary salary;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "job")
+    private List<Application> applications;
 
     // -------- Normal attributes --------
     @Column(name = "title")

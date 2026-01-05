@@ -1,0 +1,226 @@
+/* sidebar.module.scss */
+
+// --- Variables ---
+$bg-color: #3582cd;
+$text-color: #fff;
+$btn-refresh-bg: #7d9ef4;
+$btn-watch-bg: #4ac68a;
+$border-color: rgba(255, 255, 255, 0.15); // Giảm độ đậm viền cho tinh tế
+
+.sidebar {
+    display: flex;
+    width: 284px;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px; // Khoảng cách các khối vừa phải
+    background: $bg-color;
+
+    // Full màn hình và cố định
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100; // Đảm bảo luôn nằm trên
+
+    // Hiệu ứng đổ bóng nhẹ tách biệt sidebar
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+    transition: width 0.3s ease;
+
+    // Tùy chỉnh thanh cuộn (Scrollbar) tinh tế hơn
+    &::-webkit-scrollbar {
+        width: 4px; // Mỏng lại
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+    }
+    &:hover::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.3); // Hiện rõ hơn khi hover vào sidebar
+    }
+
+    // Reset ảnh chung
+    img {
+        display: block;
+        max-width: 100%;
+    }
+
+    // --- Phần Logo ---
+    .box_logo {
+    width: 170px;
+    padding-top: 25px;
+    height: auto;
+    text-align: center; // 👉 Căn giữa nội dung chữ
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    h1 {
+        color: $text-color;                // 👉 Dùng màu chữ sidebar
+        font-size: 22px;                   // 👉 Cỡ chữ hợp với sidebar
+        font-weight: 700;
+        margin: 0;
+        padding: 0;
+        text-transform: uppercase;         // 👉 Cho cảm giác như logo
+        letter-spacing: 1px;               // 👉 Rộng chữ như brand
+        text-align: center;
+    }
+
+    &:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    }
+}
+
+
+    // --- Phần Thông tin User ---
+    .box_info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+
+        .box_img_ava {
+            width: 84px; // Kích thước vừa vặn
+            height: 84px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.3); // Viền bán trong suốt
+            transition: all 0.3s ease-out;
+            position: relative;
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+            // Hiệu ứng khi hover vào avatar: Glow và Zoom nhẹ
+            &:hover {
+                border-color: rgba(255, 255, 255, 0.9);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); // Hiệu ứng phát sáng
+                transform: translateY(-2px);
+
+                img {
+                    transform: scale(1.1); // Zoom ảnh bên trong
+                }
+            }
+        }
+
+        p {
+            color: $text-color;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px; // Font size vừa phải, sang trọng
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+            padding: 0 10px;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    // --- Phần Nút bấm ---
+    .option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px; // Tăng khoảng cách giữa 2 nút
+        width: 100%;
+        padding: 0 15px;
+
+        button {
+            display: flex;
+            height: 38px; // Chiều cao nút gọn gàng
+            padding: 0 15px;
+            justify-content: center;
+            align-items: center;
+            color: $text-color;
+            border-radius: 20px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: 600; // Giảm độ đậm font chút cho thanh thoát
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+
+            // Hiệu ứng Hover
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+                filter: brightness(1.08); // Sáng lên nhẹ nhàng
+            }
+
+            // Hiệu ứng Click (Active)
+            &:active {
+                transform: translateY(1px) scale(0.98); // Nhún xuống nhẹ khi click
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .refesh {
+            background: $btn-refresh-bg;
+            flex: 1.2; // Nút làm mới dài hơn chút
+        }
+
+        .watch {
+            background: $btn-watch-bg;
+            flex: 0.8;
+        }
+    }
+
+    // --- Phần Menu nội dung (Chứa component SidebarTimViec) ---
+    .sidebarContent {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        flex: 1; // Chiếm hết phần chiều cao còn lại
+        padding-top: 15px;
+        border-top: 1px solid $border-color; // Đường kẻ phân cách mờ nhẹ
+        margin-bottom: 20px;
+    }
+}
+
+// --- Media Queries ---
+
+@media (min-width: 1920px) {
+    .sidebar {
+        width: 343px;
+        gap: 35px; // Màn hình to thì giãn khoảng cách ra
+
+        .box_logo {
+            width: 200px;
+        }
+        
+        .box_info {
+            gap: 20px;
+            
+            .box_img_ava {
+                width: 100px;
+                height: 100px;
+            }
+            
+            p {
+                font-size: 22px;
+            }
+        }
+
+        .option button {
+            height: 44px;
+            font-size: 15px;
+        }
+    }
+}
+
+@media (max-width: 1366px) {
+    .sidebar {
+        display: none; // Ẩn trên màn hình nhỏ
+    }
+}

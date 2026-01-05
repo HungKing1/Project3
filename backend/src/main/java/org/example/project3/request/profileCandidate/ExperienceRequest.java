@@ -7,9 +7,9 @@ import java.time.LocalDate;
 @Data
 public class ExperienceRequest {
     private Long id;
-    private String jobTitle;
     private String companyName;
+    private String jobTitle;
     private String jobDescription;
-    private LocalDate timeStart;
-    private LocalDate timeEnd;
+    private LocalDate startDate;
+    private LocalDate endDate;
 }

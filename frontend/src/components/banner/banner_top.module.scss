@@ -1,274 +1,293 @@
-.banner-top-mobile {
+/* --- VARIABLES --- */
+$color-orange: #F8971C;
+$color-white: #FFFFFF;
+$color-blue-dark: #212F3F;
+$transition-ease: all 0.3s ease-in-out;
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseBtn {
+    0% { box-shadow: 0 0 0 0 rgba(248, 151, 28, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(248, 151, 28, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(248, 151, 28, 0); }
+}
+
+/* --- DESKTOP STYLES --- */
+.banner_top_desktop {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    display: block;
+    /* QUAN TRỌNG: Để visible để popup tìm kiếm không bị cắt nếu tràn xuống dưới */
+    overflow: visible; 
+
+    .banner_background {
+        position: absolute; /* Đổi thành absolute để nằm dưới content */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* QUAN TRỌNG: Giữ overflow hidden ở đây để ảnh zoom không bị tràn ra ngoài khung */
+        overflow: hidden; 
+        z-index: 0;
+
+        img {
+            height: 100%;
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 10s ease; 
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%);
+        }
+    }
+    
+    &:hover .banner_background img {
+        transform: scale(1.05);
+    }
+
+    .box_banner_content {
+        position: relative; /* Để z-index hoạt động */
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding-left: 10%; 
+        z-index: 2; /* Nội dung phải nằm trên ảnh nền */
+        pointer-events: none; /* Để chuột có thể tương tác với background nếu cần, reset lại ở children */
+    }
+
+    .content_wrapper {
+        max-width: 800px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        pointer-events: auto; /* Bật lại tương tác chuột cho nội dung */
+
+        & > * {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        .main_title { animation-delay: 0.1s; }
+        .sub_title { animation-delay: 0.2s; }
+        .search_container { animation-delay: 0.3s; }
+        .keyword_section { animation-delay: 0.4s; }
+        .action_btn_container { animation-delay: 0.5s; }
+    }
+
+    .main_title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 1.3;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        margin: 0;
+
+        .highlight_text { color: $color-orange; }
+        .white_text { color: $color-white; }
+    }
+
+    .sub_title {
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+        font-weight: 500;
+        color: $color-white;
+        margin: 0;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    /* --- PHẦN CHỈNH SỬA QUAN TRỌNG NHẤT --- */
+    .search_container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        position: relative; 
+        /* Đặt z-index cao nhất để popup tìm kiếm đè lên mọi thứ khác */
+        z-index: 100; 
+        filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.2));
+    }
+
+    .keyword_section {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        position: relative;
+        z-index: 10; /* Thấp hơn search container */
+
+        .keyword_label {
+            color: $color-white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .keyword_list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            .keyword_item {
+                color: $color-white;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+                padding: 6px 16px;
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                border-radius: 20px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(4px);
+                transition: $transition-ease;
+
+                &:hover {
+                    background: $color-white;
+                    color: $color-blue-dark;
+                    transform: translateY(-3px);
+                    border-color: $color-white;
+                }
+
+                &.active {
+                    background: $color-orange;
+                    border-color: $color-orange;
+                    color: $color-white;
+                    box-shadow: 0 4px 10px rgba(248, 151, 28, 0.4);
+                }
+            }
+        }
+    }
+
+    .action_btn_container {
+        margin-top: 15px;
+        position: relative;
+        z-index: 9; /* Thấp hơn search container */
+        
+        .btn_post_job {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: $color-orange;
+            color: $color-white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(248, 151, 28, 0.3);
+            transition: $transition-ease;
+            animation: pulseBtn 2s infinite;
+
+            &:hover {
+                background: darken($color-orange, 5%);
+                transform: scale(1.05);
+                box-shadow: 0 6px 20px rgba(248, 151, 28, 0.5);
+            }
+        }
+    }
+}
+
+/* --- MOBILE STYLES (Giữ nguyên) --- */
+.banner_top_mobile {
     display: none;
 }
 
-.sm_rb_animation {
-    -webkit-animation: sm_rb_fly 300ms infinite ease-in-out;
-    animation: sm_rb_fly 300ms infinite ease-in-out;
-    animation-duration: 3.5s;
-}
-
-.big_rb_animation {
-    -webkit-animation: big_rb_animation 300ms infinite ease-in-out;
-    animation: big_rb_animation 300ms infinite ease-in-out;
-    animation-duration: 3.5s;
-}
-
-@keyframes sm_rb_fly {
-    0% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(50px);
-    }
-    100% {
-        transform: translateY(0);
-    }
-}
-
-@keyframes big_rb_animation {
-    0% {
-        transform: translateY(20px);
-    }
-    50% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(20px);
-    }
-}
-
-@media screen and (max-width: 680px) {
-    .banner-top-mobile {
+@media screen and (max-width: 900px) {
+    .banner_top_desktop { display: none; }
+    
+    .banner_top_mobile {
         display: flex;
+        position: relative;
         align-items: center;
         justify-content: center;
-        background: url(/images/home/banner-top.png), lightgray -1621.566px -304.416px/344.332% 232.01% no-repeat;
-        background-size: 100% 435px;
-        background-position: center top;
+        width: 100%;
+        min-height: 450px;
+        background: url(/images/banner1.jpg) no-repeat center center;
+        background-size: cover;
 
-        .box-container {
+        .mobile_bg_overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .mobile_container {
+            position: relative;
+            z-index: 2;
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 32px;
-            gap: 16px;
-            transform: translateY(-10px);
+            justify-content: center;
+            padding: 20px;
+            width: 100%;
+            gap: 20px;
+        }
 
-            .title {
-                color: #F8971C;
-                text-align: center;
-                font-family: Roboto;
-                font-size: 26px;
-                font-style: normal;
-                font-weight: 800;
-                line-height: 145%;
+        .mobile_title {
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.4;
+            margin: 0;
 
-                &:hover {
-                    color: #F8971C;
+            .orange_text {
+                color: $color-orange;
+                display: block;
+                font-size: 28px;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+            .white_text { color: $color-white; }
+        }
+
+        .mobile_search {
+            width: 100%;
+            z-index: 100; /* Fix cho mobile luôn */
+            & > div { width: 100% !important; }
+        }
+
+        .mobile_keywords {
+            width: 100%;
+            text-align: center;
+            .key_label { color: #ddd; font-size: 13px; margin-bottom: 10px; }
+            .list_keyword {
+                display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+                .keyword_pill {
+                    background: rgba(255,255,255,0.2);
+                    border: 1px solid rgba(255,255,255,0.4);
+                    border-radius: 20px;
+                    padding: 6px 12px;
+                    p { margin: 0; color: $color-white; font-size: 13px; }
                 }
             }
+        }
 
-            .title_bot {
-                color: #FFF;
-                font-family: Roboto;
-                font-size: 26px;
-                font-style: normal;
-                font-weight: 800;
-                line-height: 145%;
-
-                &:hover {
-                    color: #FFF;
-                }
-            }
-
-            .des {
-                color: #FFF;
-                font-family: Roboto;
-                font-size: 15px;
-                font-style: normal;
-                font-weight: 500;
-                line-height: normal;
-                text-transform: capitalize;
-                text-align: center;
-                white-space: nowrap;
-            }
-
-            .search_text {
-                display: flex;
-                height: 48px;
-                padding: 0px 16px;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-                align-self: stretch;
-                border-radius: 30px;
-                background: #FFF;
-                box-shadow: 0px 4px 19px 0px rgba(0, 0, 0, 0.15);
-                margin-bottom: 16px;
-
-                input {
-                    flex: 1 0 0;
-                    border: none;
-                    outline: none;
-                    color: #999;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: normal;
-                }
-
-            }
-            
-
-            .search_select {
-                display: flex;
-                height: 48px;
-                padding: 0px 16px;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-                align-self: stretch;
-                border-radius: 30px;
-                background: #FFF;
-                box-shadow: 0px 4px 19px 0px rgba(0, 0, 0, 0.15);
-                margin-bottom: 16px;
-
-                span {
-                    border: none;
-                    color: #333;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 400;
-                    line-height: 30px;
-                }
-            }
-
-            .search_select>span {
-                flex: 1 0 0;
-                border: none;
-            }
-
-            .button_search {
-                display: flex;
-                height: 48px;
-                justify-content: center;
-                align-items: center;
-                gap: 10px;
-                align-self: stretch;
-                border-radius: 30px;
-                background: #F8971C;
+        .mobile_action {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            .btn_post_job_mobile {
+                background: $color-orange;
+                color: $color-white;
+                text-decoration: none;
+                font-weight: 700;
+                padding: 12px 0;
                 width: 100%;
-                
-
-                p {
-                    color: #FFF;
-                    text-align: center;
-                    font-family: Roboto;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: normal;
-                }
-            }
-
-            .box_keyword {
-                display: flex;
-                align-items: flex-start;
-                gap: 12px;
-                align-self: stretch;
-
-                .key {
-                    color: #FFF;
-                    font-family: Roboto;
-                    font-size: 12px;
-                    font-style: normal;
-                    font-weight: 500;
-                    line-height: normal;
-                    white-space: nowrap;
-                }
-
-                .list_keyword {
-                    display: flex;
-                    width: 251px;
-                    align-items: center;
-                    align-content: center;
-                    gap: 12px;
-                    flex-wrap: wrap;
-
-                    .keyword {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        gap: 10px;
-                        border-radius: 30px;
-                        padding: 6px 12px;
-                        border: 1px solid #FFF;
-
-                        p {
-                            color: #FFF;
-                            font-family: Roboto;
-                            font-size: 16px;
-                            font-style: normal;
-                            font-weight: 400;
-                            line-height: normal;
-                        }
-                    }
-                }
+                text-align: center;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                font-size: 16px;
             }
         }
     }
 }
-
-@media screen and (max-width: 440px) {
-
-    .box-container {
-        margin: 32px 22px !important;
-        
-        .all_job_filtered {
-            position: absolute ;
-            top: 50px;
-            width: 100%;
-            background: white;
-            border-radius: 12px;
-            z-index: 1000;
-            padding: 10px;
-            visibility: hidden;
-
-            p {
-                height: 30px;
-                font-size: 13px;
-                line-height: 15px;
-                color: #888;
-                margin-top: 4px;
-            }
-
-            ul {
-                list-style: none;
-                height: 120px;
-                overflow-y: scroll;
-
-                li {
-                    font-size: 14px;
-                    color: #4f4f4f;
-                      line-height: 1.428571429;
-                      float: left;
-                      width: 100%;
-                      margin: 10px 0;
-                }
-                
-            }
-            .job_have_close_mobile {
-                font-size: 32px;
-                color: gray;
-                z-index: 1000;
-                cursor: pointer;
-                position: absolute;
-                right: 10px;
-                top: 0;
-            }
-        }
-    }
-} 

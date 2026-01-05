@@ -1,5 +1,6 @@
 package org.example.project3.entity.candidate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.project3.entity.job.reference.EducationLevel;
@@ -20,13 +21,14 @@ public class Degree {
     @Column(name = "degree_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "cand_id", nullable = false)
     private Candidate candidate;
 
     // -------- Normal attributes --------
     // Trình độ học vấn (VD: Đại học, Thạc sĩ, Tiến sĩ)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "edu_level_id")
     private EducationLevel educationLevel;
 

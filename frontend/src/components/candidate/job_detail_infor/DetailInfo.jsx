@@ -1,6 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
-import React from 'react';
+import React, { useState } from 'react';
 import s from './styles.module.scss'; // Giả định file CSS này tồn tại
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 // --- HÀM GIẢ LẬP (Stubs) ---
 const getCapBac = (id) => "Nhân viên";
@@ -13,8 +16,33 @@ const getHanNop = (timestamp) => "Chưa cập nhật";
 const getDate = (timestamp) => new Date(timestamp * 1000).toLocaleDateString('vi-VN');
 const checkNtd = () => true; // Giả lập là UV để hiển thị nút
 // ---
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuTin, isApply, isSave }) => {
+    const candidate = JSON.parse(localStorage.getItem("candidate"));
+    const { idJob } = useParams();
+
+    const [isApplied, setIsApplied] = useState(detailInfo?.applied)
+
+    const handleUngTuyen = async () => {
+        const dataBody = {
+            candidateId: candidate?.candidateId,
+            jobId: parseInt(idJob)
+        }
+        try {
+            const {data} = await axios.post(`${API_BASE_URL}/candidate/apply-job`, dataBody, {
+                withCredentials: true
+            })
+            if(data.success) {
+                toast.success(data.message)
+                setIsApplied(true)        
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.response.data.message)            
+        }
+    }
 
     if (!detailInfo) return null; // Tránh lỗi nếu data chưa tải
 
@@ -148,7 +176,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
             </div>
                                         
             {checkNtd() && <div className={s.job_info_content_4}>
-                {!isApply ? <button className={s.button_1} onClick={handleUngTuyenNgay}>
+                {!(isApplied || detailInfo?.applied) ? <button className={s.button_1} onClick={handleUngTuyen}>
                     <div className={s.div}>
                         <div className={s.icon}>
                             <img // <Image> đã được thay bằng <img>
@@ -178,7 +206,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
 
                 {/* (Nút Chat đã bị comment trong code gốc) */}
                 
-                {!isSave ? <button className={s.button_3} onClick={handleLuuTin}>
+                {/* {!isSave ? <button className={s.button_3} onClick={handleLuuTin}>
                     <div className={s.div}>
                         <div className={s.icon}>
                             <img // <Image> đã được thay bằng <img>
@@ -204,7 +232,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                         </div>
                         <div className={s.content}>Đã lưu</div>
                     </div>
-                </div>}
+                </div>} */}
             </div>}
 
         </div>

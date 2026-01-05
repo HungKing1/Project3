@@ -3,21 +3,8 @@ import DetailCompany from './DetailCompany';
 import Pagination from './Pagination';
 import { Carousel } from 'antd';
 import axios from 'axios';
-// import dataJson from '../data.json'; // Đã thay thế bằng mockDataJson
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-// --- Dữ liệu mẫu (Mock Data) ---
-
-// Dữ liệu cho <select> (phần đang bị comment)
-const mockDataJson = {
-  city: [
-    { cit_id: 1, cit_name: 'Hà Nội' },
-    { cit_id: 45, cit_name: 'Hồ Chí Minh' },
-    { cit_id: 26, cit_name: 'Đà Nẵng' },
-    { cit_id: 13, cit_name: 'Bắc Ninh' },
-  ],
-};
 
 // Dữ liệu mẫu cho "Việc làm hấp dẫn"
 const mockViecLamHapDan = [];
