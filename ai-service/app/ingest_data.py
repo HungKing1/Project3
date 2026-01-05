@@ -4,13 +4,9 @@ from chromadb.utils import embedding_functions
 import os
 import shutil
 
-# --- CẤU HÌNH ĐƯỜNG DẪN ---
-# Giả sử file này chạy từ thư mục gốc của ai-service (python -m app.ingest_data)
 DATA_FOLDER = "data"
 PERSIST_DIRECTORY = "chroma_db"
 
-# --- CẤU HÌNH MAPPING CSV (QUAN TRỌNG: KIỂM TRA HEADER CSV CỦA BẠN) ---
-# Dựa trên danh sách file trong ảnh của bạn
 CSV_CONFIG = {
     "City.csv":           {"col_name": "cities",      "id": "_id",      "text": "_name"},
     "District.csv":       {"col_name": "districts",   "id": "_id",  "text": "_name"},
@@ -24,12 +20,11 @@ CSV_CONFIG = {
 }
 
 def ingest():
-    print("🚀 Bắt đầu quá trình nạp dữ liệu...")
+    print("Bắt đầu quá trình nạp dữ liệu...")
     
-    # 1. Reset DB (Xóa cũ đi làm lại cho sạch)
     if os.path.exists(PERSIST_DIRECTORY):
         shutil.rmtree(PERSIST_DIRECTORY)
-        print(f"🧹 Đã xóa data cũ tại {PERSIST_DIRECTORY}")
+        print(f"Đã xóa data cũ tại {PERSIST_DIRECTORY}")
 
     client = chromadb.PersistentClient(path=PERSIST_DIRECTORY)
     emb_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="paraphrase-multilingual-MiniLM-L12-v2")
@@ -38,16 +33,14 @@ def ingest():
         file_path = os.path.join(DATA_FOLDER, filename)
         
         if not os.path.exists(file_path):
-            print(f"⚠️  Không thấy file {filename}, bỏ qua.")
+            print(f"Không thấy file {filename}, bỏ qua.")
             continue
             
         try:
-            # Đọc CSV
             df = pd.read_csv(file_path)
             
-            # Kiểm tra xem cột ID và Text có tồn tại trong CSV không
             if config["id"] not in df.columns or config["text"] not in df.columns:
-                print(f"❌ Lỗi file {filename}: Không tìm thấy cột '{config['id']}' hoặc '{config['text']}'. Cột thực tế: {list(df.columns)}")
+                print(f"Lỗi file {filename}: Không tìm thấy cột '{config['id']}' hoặc '{config['text']}'. Cột thực tế: {list(df.columns)}")
                 continue
 
             collection = client.create_collection(name=config["col_name"], embedding_function=emb_fn)
@@ -57,12 +50,9 @@ def ingest():
             metadatas = []
 
             for _, row in df.iterrows():
-                # Xử lý data
                 item_id = str(row[config["id"]])
                 item_text = str(row[config["text"]])
                 
-                # Format text để vector search tốt hơn (ví dụ: thêm ngữ cảnh)
-                # Ví dụ Industry: "Ngành nghề Công nghệ thông tin"
                 full_text = item_text 
                 
                 ids.append(f"{config['col_name']}_{item_id}")
@@ -73,15 +63,14 @@ def ingest():
                     "type": config["col_name"]
                 })
 
-            # Add vào DB theo batch
             if documents:
                 collection.add(ids=ids, documents=documents, metadatas=metadatas)
-                print(f"✅ {filename}: Đã nạp {len(documents)} bản ghi vào collection '{config['col_name']}'")
+                print(f"{filename}: Đã nạp {len(documents)} bản ghi vào collection '{config['col_name']}'")
 
         except Exception as e:
-            print(f"❌ Lỗi xử lý {filename}: {e}")
+            print(f"Lỗi xử lý {filename}: {e}")
 
-    print("\n🎉 --- HOÀN TẤT NẠP DỮ LIỆU ---")
+    print("\n --- HOÀN TẤT NẠP DỮ LIỆU ---")
 
 if __name__ == "__main__":
     ingest()

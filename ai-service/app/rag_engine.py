@@ -8,28 +8,24 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 
-# 1. Cấu hình môi trường và Logging
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# --- CẤU HÌNH ---
 PERSIST_DIRECTORY = "chroma_db"
 
-# Lấy API Key và Model Name từ .env
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 if not GOOGLE_API_KEY:
-    raise ValueError("❌ Lỗi: Chưa tìm thấy GOOGLE_API_KEY trong file .env")
+    raise ValueError("Lỗi: Chưa tìm thấy GOOGLE_API_KEY trong file .env")
 
 MODEL_NAME = os.getenv("GEMINI_MODEL_NAME")
 
 class SemanticRouter:
     def __init__(self):
-        # Khởi tạo Client theo chuẩn mới của thư viện google-genai
         self.client = genai.Client(api_key=GOOGLE_API_KEY)
         self.model_name = MODEL_NAME
-        logger.info(f"⚡ [Router] Initialized with model: {self.model_name}")
+        logger.info(f"[Router] Initialized with model: {self.model_name}")
 
     def route_query(self, user_query: str):
         """
@@ -62,41 +58,38 @@ class SemanticRouter:
         
         for attempt in range(1, MAX_RETRIES + 1):
             try:
-                logger.info(f"🚀 [Router] Attempt {attempt}/{MAX_RETRIES}: Calling Gemini ({self.model_name})...")
+                logger.info(f"[Router] Attempt {attempt}/{MAX_RETRIES}: Calling Gemini ({self.model_name})...")
                 
-                # Gọi API theo cú pháp mới của google-genai
                 response = self.client.models.generate_content(
                     model=self.model_name,
                     contents=prompt,
                     config=types.GenerateContentConfig(
-                        temperature=0.1 # Giảm sáng tạo để JSON chính xác hơn
+                        temperature=0.1 
                     )
                 )
 
                 if not response.text:
-                    logger.warning(f"⚠️ [Router] Empty response from Gemini.")
+                    logger.warning(f"[Router] Empty response from Gemini.")
                     return {}
 
                 raw_text = response.text.strip()
 
-                # Làm sạch markdown (nếu có)
                 cleaned_text = raw_text.replace("```json", "").replace("```", "").strip()
 
-                # Parse JSON
                 data = json.loads(cleaned_text)
                 
-                logger.info(f"✅ [Router] Success! Extracted: {data}")
+                logger.info(f"[Router] Success! Extracted: {data}")
                 return data
 
             except json.JSONDecodeError as e:
-                logger.error(f"❌ [Router] JSON Error: {e}")
+                logger.error(f"[Router] JSON Error: {e}")
                 logger.error(f"   Raw Text: '{raw_text}'")
                 
             except Exception as e:
-                logger.error(f"🔥 [Router] Unexpected Error: {e}")
+                logger.error(f"[Router] Unexpected Error: {e}")
                 time.sleep(1) # Nghỉ 1s trước khi retry
 
-        logger.error("💀 [Router] Failed after all retries.")
+        logger.error("[Router] Failed after all retries.")
         return {}
 
 class RagEngine:
@@ -107,7 +100,7 @@ class RagEngine:
         
         self.client = chromadb.PersistentClient(path=PERSIST_DIRECTORY)
         
-        # Model Embedding (Phải khớp với model lúc ingest)
+        # Model Embedding
         self.emb_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name="paraphrase-multilingual-MiniLM-L12-v2"
         )
@@ -115,7 +108,7 @@ class RagEngine:
         # Khởi tạo Router
         self.router = SemanticRouter()
 
-        # Cấu hình ngưỡng (Threshold) - GIỮ NGUYÊN NHƯ YÊU CẦU
+        # Cấu hình ngưỡng (Threshold)
         self.collections_config = {
             "city": {"col_name": "cities", "threshold": 0.25},
             "district": {"col_name": "districts", "threshold": 0.25},
@@ -134,7 +127,6 @@ class RagEngine:
             try:
                 self.cols[key] = self.client.get_collection(col_name, embedding_function=self.emb_fn)
             except Exception:
-                # logger.warning(f"⚠️ Không load được collection: {col_name}")
                 pass
 
     def search(self, text: str):
@@ -148,7 +140,7 @@ class RagEngine:
         debug_logs = {}
 
         # B1: Gọi Gemini Router
-        print(f"🤖 Calling Gemini for: {text}") # Print để dễ nhìn trên console ngoài log
+        print(f"Calling Gemini for: {text}") 
         extracted_data = self.router.route_query(text)
         debug_logs["router_output"] = extracted_data
         

@@ -15,13 +15,9 @@ def predict_filters(query: UserQuery):
     Nhận câu text -> Trả về bộ lọc (IDs)
     """
     user_text = query.text
-    print(f"📩 Nhận query: {user_text}")
+    print(f"Nhận query: {user_text}")
     
-    # 1. Gọi RAG Engine để tìm các Entity (Thực thể)
     filters, debug_info = rag_engine.search(user_text)
-    
-    # 2. Xử lý logic bổ sung (nếu cần)
-    # Ví dụ: Nếu tìm được 'district' nhưng không tìm được 'city', có thể suy luận city
     
     return {
         "filters": filters,
