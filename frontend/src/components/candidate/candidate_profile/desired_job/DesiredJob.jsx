@@ -109,7 +109,7 @@ const DesiredJob = () => {
       if (response.data.success) {
         const d = response.data.data;
         
-        setFormFields(prev => ({ ...prev, job_name: d.jobTitle || "" }));
+        setFormFields(prev => ({ ...prev, job_name: d?.jobTitle || "" }));
         setWorkTypeId(d.workType?.id);
         setJobLevelId(d.jobLevel?.id);
         setIndustryId(d.industry?.id);

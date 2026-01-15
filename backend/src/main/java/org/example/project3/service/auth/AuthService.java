@@ -8,9 +8,7 @@ import org.example.project3.entity.job.reference.*;
 import org.example.project3.repository.candidate.CandidateRepository;
 import org.example.project3.repository.employer.EmployerRepository;
 import org.example.project3.repository.reference.*;
-import org.example.project3.request.auth.LoginRequesst;
-import org.example.project3.request.auth.RegisterCandidateRequest;
-import org.example.project3.request.auth.RegisterEmployerRequest;
+import org.example.project3.request.auth.*;
 import org.example.project3.response.ApiResponse;
 import org.example.project3.util.JwtUtil;
 import org.springframework.http.HttpHeaders;
@@ -139,11 +137,17 @@ public class AuthService implements IAuthService {
             Candidate candidate = candidateOptional.get();
             Long candidateId = candidate.getId();
             String email = candidate.getEmail();
+            String name = candidate.getName();
+            String phone =  candidate.getPhone();
+            String avatar = candidate.getAvatarUrl();
 
             Map<String, Object> data = new HashMap<>();
             data.put("accessToken", accessToken);
             data.put("candidateId", candidateId);
             data.put("email", email);
+            data.put("name", name);
+            data.put("phone", phone);
+            data.put("avatar", avatar);
 
             return new ApiResponse(true, "Đăng nhập thành công" , data);
 
@@ -169,6 +173,76 @@ public class AuthService implements IAuthService {
             return new ApiResponse(true, "Đăng xuất thành công", null);
         } catch (Exception e) {
             return new ApiResponse(false, "Đăng xuất thất bại: " + e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public ApiResponse changePasswordCandidate(ChangePasswordRequest request) {
+        try {
+            String email = JwtUtil.getUserEmail();
+            if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                return new ApiResponse(false, "Mật khẩu xác nhận không trùng khớp", null);
+            }
+
+            Optional<Candidate> candidateOptional = candidateRepository.findByEmail(email);
+            if (candidateOptional.isEmpty()) {
+                return new ApiResponse(false, "Email không tồn tại", null);
+            }
+
+            Candidate candidate = candidateOptional.get();
+
+            if (!passwordEncoder.matches(request.getOldPassword(), candidate.getPassword())) {
+                return new ApiResponse(false, "Mật khẩu hiện tại không đúng", null);
+            }
+
+            String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+            candidate.setPassword(encodedNewPassword);
+            candidate.setUpdatedAt(LocalDateTime.now());
+
+            candidateRepository.save(candidate);
+
+            return new ApiResponse(true, "Đổi mật khẩu thành công", null);
+
+        } catch (Exception e) {
+            return new ApiResponse(false, "Lỗi đổi mật khẩu: " + e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public ApiResponse deleteCandidateAccount(DeleteAccountRequest request, HttpServletResponse response) {
+        try {
+            String currentEmail = JwtUtil.getUserEmail();
+            if (currentEmail == null || currentEmail.equals("anonymousUser")) {
+                return new ApiResponse(false, "Vui lòng đăng nhập để thực hiện chức năng này", null);
+            }
+
+            Optional<Candidate> candidateOptional = candidateRepository.findByEmail(currentEmail);
+            if (candidateOptional.isEmpty()) {
+                return new ApiResponse(false, "Không tìm thấy tài khoản", null);
+            }
+
+            Candidate candidate = candidateOptional.get();
+
+            if (!passwordEncoder.matches(request.getPassword(), candidate.getPassword())) {
+                return new ApiResponse(false, "Mật khẩu không đúng, không thể xóa tài khoản", null);
+            }
+
+            candidateRepository.delete(candidate);
+
+            ResponseCookie cookie = ResponseCookie.from("access_token", "")
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(0)
+                    .sameSite("Lax")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+            return new ApiResponse(true, "Xóa tài khoản thành công", null);
+
+        } catch (Exception e) {
+            return new ApiResponse(false, "Lỗi xóa tài khoản: " + e.getMessage(), null);
         }
     }
 

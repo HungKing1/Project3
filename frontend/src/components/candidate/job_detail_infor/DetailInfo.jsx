@@ -164,7 +164,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                 </div>
             </div>
 
-            <div className={s.job_info_content_3}>
+            {/* <div className={s.job_info_content_3}>
                 <div className={s.job_info_image_2}>
                     <div className={s.image}>
                         <div className={s.background}>
@@ -173,7 +173,7 @@ const DetailInfo = ({ detailInfo, handleUngTuyenNgay, handleChatNgay, handleLuuT
                     </div>
                 </div>
                 <div className={s.job_info_detail_1}>Ngày cập nhật: {getDate(detailInfo.new_update_time)}</div>
-            </div>
+            </div> */}
                                         
             {checkNtd() && <div className={s.job_info_content_4}>
                 {!(isApplied || detailInfo?.applied) ? <button className={s.button_1} onClick={handleUngTuyen}>

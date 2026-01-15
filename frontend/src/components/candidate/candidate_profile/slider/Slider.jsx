@@ -13,7 +13,7 @@ const Slider = ({ setLink, link }) => {
     { id: 5, text: 'Bằng cấp', img: '/images/ung-vien/ho-so-xin-viec/image_5.png' },
     { id: 6, text: 'Ngôn ngữ', img: '/images/ung-vien/ho-so-xin-viec/image_6.png' },
     { id: 7, text: 'Kinh nghiệm làm việc', img: '/images/ung-vien/ho-so-xin-viec/image_7.png' },
-    { id: 8, text: 'Người tham chiếu', img: '/images/ung-vien/ho-so-xin-viec/image_8.png' },
+    // { id: 8, text: 'Người tham chiếu', img: '/images/ung-vien/ho-so-xin-viec/image_8.png' },
   ];
 
   return (

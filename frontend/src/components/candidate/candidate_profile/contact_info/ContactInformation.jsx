@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Select, Spin } from "antd"; // Bỏ message từ antd
+import { Select, Spin } from "antd"; 
 import axios from "axios";
 import toast from "react-hot-toast";
 import s from "./ContactInformation.module.scss";
@@ -61,6 +61,22 @@ const ContactInformation = () => {
 
           if (userData.avatarUrl) {
             setAvatarPreview(userData.avatarUrl);
+            if (userData.avatarUrl) {
+              setAvatarPreview(userData.avatarUrl);
+
+              const storedCandidate = localStorage.getItem('candidate');
+              if (storedCandidate) {
+                  try {
+                      const parsedCandidate = JSON.parse(storedCandidate);
+                      parsedCandidate.avatar = userData.avatarUrl; 
+                      localStorage.setItem('candidate', JSON.stringify(parsedCandidate));
+                      
+                      window.dispatchEvent(new Event("storage"));
+                  } catch (e) {
+                      console.error("Lỗi cập nhật localStorage:", e);
+                  }
+              }
+            }
           }
 
           if (userData.cityId) {

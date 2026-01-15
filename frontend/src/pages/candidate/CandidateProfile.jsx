@@ -16,7 +16,7 @@ const CandidateProfile = () => {
   const mockData = {
     percentHoSo: 75,
     thongTinLienHe: {
-      name: "Nguyễn Văn A",
+      name: "Nguyễn Văn An",
       email: "nguyenvana@gmail.com",
       phone: "0987654321",
       address: "Hà Nội, Việt Nam",

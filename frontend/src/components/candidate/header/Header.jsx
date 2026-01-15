@@ -1,25 +1,26 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuAccount from "./MenuAccount";
 import MenuSidebar from "./MenuSidebar";
 import NotificationCenter from "./notification/NotificationCenter";
 import s from "./style.module.css";
 import { useAuthContext } from "../../../context/AuthContext";
 
-// --- Dữ liệu mẫu & Hàm giả lập ---
-const mockCheckLogin = false;
-const mockCheckAccount = true; 
-const mockName = "Nguyễn Văn A";
-const mockAva = "/images/candidate/applicant.png";
+// --- Hàm tiện ích ---
 const handleImageSource = (src) => src || "/images/candidate/applicant.png";
 const isExperiment = () => false;
-const linkPageCv = () => "/mau-cv-xin-viec";
-// ---
 
 export default function Header() {
-  const [checkLogin, setCheckLogin] = useState(mockCheckLogin);
-  const {isLoggedIn, accessToken} = useAuthContext()
-  const [checkAccount, setCheckAccount] = useState(mockCheckAccount);
+  const { accessToken } = useAuthContext();
+
+  // State lưu thông tin User lấy từ Local Storage
+  const [userData, setUserData] = useState({
+    name: "Người dùng",
+    avatar: "/images/candidate/applicant.png"
+  });
+
+  // checkAccount: true = Ứng viên (Candidate), false = Nhà tuyển dụng
+  const [checkAccount, setCheckAccount] = useState(true);
 
   // State UI
   const [showModal, setShowModal] = useState(false);
@@ -31,9 +32,27 @@ export default function Header() {
 
   const toggleModal = () => setShowModal(!showModal);
   const toggleMenuSidebar = () => setMenuSidebar(!menuSidebar);
-  const toggleNotiPc = () => setShowNotiPc(!showNotiPc);
   const toggleNotiMobi = () => setShowNotiMobi(!showNotiMobi);
 
+  // --- Lấy dữ liệu từ Local Storage khi Component Mount ---
+  useEffect(() => {
+    const storedCandidate = localStorage.getItem('candidate');
+
+    if (storedCandidate) {
+      try {
+        const parsedData = JSON.parse(storedCandidate);
+        setUserData({
+          name: parsedData.name || "Ứng viên",
+          avatar: parsedData.avatar || "/images/candidate/applicant.png"
+        });
+        setCheckAccount(true);
+      } catch (error) {
+        console.error("Lỗi parse dữ liệu candidate:", error);
+      }
+    }
+  }, [accessToken]);
+
+  // Xử lý click outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (!e.target.closest("#content_menu") && !e.target.closest("#user")) setShowModal(false);
@@ -45,6 +64,7 @@ export default function Header() {
     return () => window.removeEventListener('click', handleClickOutside);
   }, []);
 
+  // Xử lý scroll
   useEffect(() => {
     const handleScroll = () => {
       if (isOutside) setShowModal(false);
@@ -59,25 +79,9 @@ export default function Header() {
       {/* --- HEADER PC --- */}
       <div className={`${s.container_header} ${s.header_pc}`}>
         <div className={s.header_left}>
-          {/* Logo */}
-          {/* <a href="/" className={s.brand_logo}>
-             <img src="/images/header/logo.jpg" alt="Logo" />
-          </a> */}
-
           {/* Navigation Menu */}
           <nav className={s.nav_menu}>
              <a className={s.nav_item} href="/">Trang chủ</a>
-            
-             {/* Link CV Xin việc */}
-             {/* {(!accessToken || checkAccount) && (
-                <a className={s.nav_item} href={linkPageCv()}>CV xin việc</a>
-             )} */}
-
-             {/* Các menu khác (giữ chỗ) */}
-             {/* <a className={s.nav_item} href="/cam-nang-tim-viec">Cẩm nang</a> */}
-             {/* {(!accessToken || !checkAccount) && (
-                <a className={s.nav_item} href="/bang-gia">Bảng giá</a>
-             )} */}
           </nav>
         </div>
 
@@ -85,22 +89,22 @@ export default function Header() {
         {!accessToken ? (
           // --- CHƯA ĐĂNG NHẬP ---
           <div className={s.header_right}>
-            <a 
-              className={`${s.btn_common} ${s.btn_outline}`} 
+            <a
+              className={`${s.btn_common} ${s.btn_outline}`}
               href={!isExperiment() ? "/dang-tin-tuyen-dung" : '/dang-tin-mien-phi'}
             >
               Đăng tin
             </a>
-            
-            <a 
-              className={`${s.btn_common} ${s.btn_primary}`} 
+
+            <a
+              className={`${s.btn_common} ${s.btn_primary}`}
               href="/dang-nhap"
             >
               Đăng nhập
             </a>
-            
-            <a 
-              className={`${s.btn_common} ${s.btn_dark}`} 
+
+            <a
+              className={`${s.btn_common} ${s.btn_dark}`}
               href="/dang-ky"
             >
               <div className={s.icon_wrapper}>
@@ -115,39 +119,30 @@ export default function Header() {
           // --- ĐÃ ĐĂNG NHẬP ---
           <div className={s.header_right}>
             {!checkAccount && (
-               <a 
-                className={`${s.btn_common} ${s.btn_outline}`} 
+               <a
+                className={`${s.btn_common} ${s.btn_outline}`}
                 href="/nha-tuyen-dung/dang-tin-moi"
               >
                 Đăng tin
               </a>
             )}
-            
-            {/* Nút Thông báo */}
-            {/* <div id="noti">
-              <button className={s.btn_icon_circle} onClick={toggleNotiPc}>
-                 <img src="/images/bell.svg" alt="Thông báo" />
-              </button>
-              {showNotiPc && <NotificationCenter setIsOutside={setIsOutsideNotiPc} />}
-            </div> */}
 
             {/* User Info */}
             <div id="user" className={s.user_container}>
               <button className={s.btn_user_profile} onClick={toggleModal}>
                 <div className={s.user_avatar}>
-                  <img 
-                    src={handleImageSource(mockAva)} 
+                  <img
+                    src={handleImageSource(userData.avatar)}
                     alt="avatar"
                     onError={(e) => { e.currentTarget.src = "/images/candidate/applicant.png"; }}
                   />
                 </div>
-                <span className={s.user_name}>{mockName}</span>
+                <span className={s.user_name}>{userData.name}</span>
                 <img className={s.icon_caret} src="/images/them.svg" alt="more" />
               </button>
               {showModal && (
                 <MenuAccount
                   checkAccount={checkAccount}
-                  setCheckLogin={setCheckLogin}
                   setIsOutside={setIsOutside}
                 />
               )}
@@ -156,34 +151,7 @@ export default function Header() {
         )}
       </div>
 
-      {/* --- HEADER MOBILE --- */}
-      <div className={`${s.container_header} ${s.header_mobile}`}>
-        <div id="menu_sidebar">
-          <button className={s.btn_icon_transparent} onClick={toggleMenuSidebar}>
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M33.4167 18.332H6.58333C5.70888 18.332 5 19.0409 5 19.9154V20.082C5 20.9565 5.70888 21.6654 6.58333 21.6654H33.4167C34.2911 21.6654 35 20.9565 35 20.082V19.9154C35 19.0409 34.2911 18.332 33.4167 18.332Z" fill="#3582CD" />
-                <path d="M33.4167 26.6655H6.58333C5.70888 26.6655 5 27.3744 5 28.2489V28.4155C5 29.29 5.70888 29.9989 6.58333 29.9989H33.4167C34.2911 29.9989 35 29.29 35 28.4155V28.2489C35 27.3744 34.2911 26.6655 33.4167 26.6655Z" fill="#3582CD" />
-                <path d="M33.4167 9.99878H6.58333C5.70888 9.99878 5 10.7077 5 11.5821V11.7488C5 12.6232 5.70888 13.3321 6.58333 13.3321H33.4167C34.2911 13.3321 35 12.6232 35 11.7488V11.5821C35 10.7077 34.2911 9.99878 33.4167 9.99878Z" fill="#3582CD" />
-            </svg>
-          </button>
-          {menuSidebar && <MenuSidebar closeMenuSidebar={() => setMenuSidebar(false)} />}
-        </div>
-
-        <a href="/" className={s.brand_logo_mobile}>
-          <img src="/images/candidate/applicant.png" alt="Logo" width={110} height={40} style={{objectFit: 'contain'}} />
-        </a>
-
-        {accessToken ? (
-           <div id="notiMobi">
-              <button className={s.btn_icon_transparent} onClick={toggleNotiMobi}>
-                 <img src="/images/bell.svg" alt="Chat" width={24} height={24} />
-              </button>
-              {showNotiMobi && <NotificationCenter />}
-           </div>
-        ) : (
-           <div style={{width: '32px'}}></div> // Spacer
-        )}
-      </div>
+      
     </>
   );
 }

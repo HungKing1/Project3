@@ -3,9 +3,7 @@ package org.example.project3.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.project3.exception.ResourceNotFoundException;
-import org.example.project3.request.auth.LoginRequesst;
-import org.example.project3.request.auth.RegisterCandidateRequest;
-import org.example.project3.request.auth.RegisterEmployerRequest;
+import org.example.project3.request.auth.*;
 import org.example.project3.response.ApiResponse;
 import org.example.project3.service.auth.IAuthService;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +67,31 @@ public class AuthController {
             return ResponseEntity.ok(apiResponse);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new org.example.project3.response.ApiResponse(false, e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/candidate/change-password")
+    public ResponseEntity<ApiResponse> changePasswordCandidate(@RequestBody ChangePasswordRequest request) {
+        try {
+            ApiResponse apiResponse = authService.changePasswordCandidate(request);
+
+            if (apiResponse.getSuccess()) {
+                return ResponseEntity.ok(apiResponse);
+            } else {
+                return ResponseEntity.badRequest().body(apiResponse);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(false, e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("candidate/delete-account")
+    public ResponseEntity<ApiResponse> deleteCandidateAccount(@RequestBody DeleteAccountRequest request, HttpServletResponse response) {
+        try {
+            ApiResponse apiResponse = authService.deleteCandidateAccount(request, response);
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(false, e.getMessage(), null));
         }
     }
 }

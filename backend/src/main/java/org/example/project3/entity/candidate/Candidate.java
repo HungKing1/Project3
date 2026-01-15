@@ -38,7 +38,7 @@ public class Candidate {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "candidate")
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Application> applications;
 
     @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL)

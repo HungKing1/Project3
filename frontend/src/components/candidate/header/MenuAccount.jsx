@@ -6,25 +6,14 @@ import toast from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// --- Mock Data & Stubs ---
 const isExperiment = false;
 const handleImageSource = (src) => src || '/images/candidate/applicant.png';
-const mockCookieId = '123456';
-const mockContext = {
-    name: "Nguyễn Văn A",
-    phone: "0912345678",
-    ava: "/images/candidate/applicant.png",
-    point: 100,
-    percentHoSo: 80,
-    candiAllowSearch_context: '1'
-};
 
-// --- Menu Data ---
 const listMenuCompany = [
-    {
-        id: 1, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 12.88V11.12C2 10.08 2.85 9.22 3.9 9.22C5.71 9.22 6.45 7.94 5.54 6.37C5.02 5.47 5.33 4.3 6.24 3.78L7.97 2.79C8.76 2.32 9.78 2.6 10.25 3.39L10.36 3.58C11.26 5.15 12.74 5.15 13.65 3.58L13.76 3.39C14.23 2.6 15.25 2.32 16.04 2.79L17.77 3.78C18.68 4.3 18.99 5.47 18.47 6.37C17.56 7.94 18.3 9.22 20.11 9.22C21.15 9.22 22.01 10.08 22.01 11.12V12.88C22.01 13.92 21.16 14.78 20.11 14.78C18.3 14.78 17.56 16.06 18.47 17.63C18.99 18.54 18.68 19.7 17.77 20.22L16.04 21.21C15.25 21.68 14.23 21.4 13.76 20.61L13.65 20.42C12.75 18.85 11.27 18.85 10.36 20.42L10.25 20.61C9.78 21.4 8.76 21.68 7.97 21.21L6.24 20.22C5.33 19.7 5.02 18.53 5.54 17.63C6.45 16.06 5.71 14.78 3.9 14.78C2.85 14.78 2 13.92 2 12.88Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-        href: '/nha-tuyen-dung/quan-ly-chung', name: 'Quản lý chung', listObjChildren: []
-    },
+    // {
+    //     id: 1, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 12.88V11.12C2 10.08 2.85 9.22 3.9 9.22C5.71 9.22 6.45 7.94 5.54 6.37C5.02 5.47 5.33 4.3 6.24 3.78L7.97 2.79C8.76 2.32 9.78 2.6 10.25 3.39L10.36 3.58C11.26 5.15 12.74 5.15 13.65 3.58L13.76 3.39C14.23 2.6 15.25 2.32 16.04 2.79L17.77 3.78C18.68 4.3 18.99 5.47 18.47 6.37C17.56 7.94 18.3 9.22 20.11 9.22C21.15 9.22 22.01 10.08 22.01 11.12V12.88C22.01 13.92 21.16 14.78 20.11 14.78C18.3 14.78 17.56 16.06 18.47 17.63C18.99 18.54 18.68 19.7 17.77 20.22L16.04 21.21C15.25 21.68 14.23 21.4 13.76 20.61L13.65 20.42C12.75 18.85 11.27 18.85 10.36 20.42L10.25 20.61C9.78 21.4 8.76 21.68 7.97 21.21L6.24 20.22C5.33 19.7 5.02 18.53 5.54 17.63C6.45 16.06 5.71 14.78 3.9 14.78C2.85 14.78 2 13.92 2 12.88Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+    //     href: '/nha-tuyen-dung/quan-ly-chung', name: 'Quản lý chung', listObjChildren: []
+    // },
     {
         id: 2, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.9V7.64C20.5 3.61 19.56 2.6 15.78 2.6H8.22C4.44 2.6 3.5 3.61 3.5 7.64V16.36C3.5 20.39 4.44 21.4 8.22 21.4H12.86" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M8 7.60001H16" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M9 11.6H15" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M18.21 15.37L14.67 18.91C14.53 19.05 14.4 19.31 14.37 19.5L14.18 20.85C14.11 21.34 14.45 21.68 14.94 21.61L16.29 21.42C16.48 21.39 16.75 21.26 16.88 21.12L20.42 17.58C21.03 16.97 21.32 16.26 20.42 15.36C19.53 14.47 18.82 14.76 18.21 15.37Z" stroke="#3582CD" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/><path d="M17.7 15.88C18 16.96 18.84 17.8 19.92 18.1" stroke="#3582CD" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round"/></svg>,
         href: '/nha-tuyen-dung/dang-tin-moi', name: 'Đăng tin', listObjChildren: []
@@ -42,18 +31,40 @@ const listMenuCompany = [
     },
 ];
 
+const deleteCookie = (name) => {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
+
 const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
-    const { name, point, phone, ava, percentHoSo } = mockContext;
-    const [candiAllowSearch, setCandiAllowSearch] = useState(mockContext.candiAllowSearch_context);
+    const [userData, setUserData] = useState({});
+    
+    useEffect(() => {
+        const storedCandidate = localStorage.getItem('candidate');
+        if (storedCandidate) {
+            try {
+                setUserData(JSON.parse(storedCandidate));
+            } catch (error) {
+                console.error("Failed to parse candidate data", error);
+            }
+        }
+    }, []);
+
+    const name = userData.name || "Người dùng";
+    const phone = userData.phone || "";
+    const ava = userData.avatar || "/images/candidate/applicant.png";
+    const point = userData.point || 0;
+    const percentHoSo = userData.percentHoSo || 0;
+    const displayId = userData.candidateId || userData.id || '---';
+
+    const [candiAllowSearch, setCandiAllowSearch] = useState(userData.candiAllowSearch_context || '1');
     const menuRef = useRef(null);
     const [expandedItems, setExpandedItems] = useState([]);
 
-    // CẬP NHẬT CÁC ĐƯỜNG DẪN (HREF) TẠI ĐÂY
     const listMenuPerson = [
-        {
-            id: 1, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 12.88V11.12C2 10.08 2.85 9.22 3.9 9.22C5.71 9.22 6.45 7.94 5.54 6.37C5.02 5.47 5.33 4.3 6.24 3.78L7.97 2.79C8.76 2.32 9.78 2.6 10.25 3.39L10.36 3.58C11.26 5.15 12.74 5.15 13.65 3.58L13.76 3.39C14.23 2.6 15.25 2.32 16.04 2.79L17.77 3.78C18.68 4.3 18.99 5.47 18.47 6.37C17.56 7.94 18.3 9.22 20.11 9.22C21.15 9.22 22.01 10.08 22.01 11.12V12.88C22.01 13.92 21.16 14.78 20.11 14.78C18.3 14.78 17.56 16.06 18.47 17.63C18.99 18.54 18.68 19.7 17.77 20.22L16.04 21.21C15.25 21.68 14.23 21.4 13.76 20.61L13.65 20.42C12.75 18.85 11.27 18.85 10.36 20.42L10.25 20.61C9.78 21.4 8.76 21.68 7.97 21.21L6.24 20.22C5.33 19.7 5.02 18.53 5.54 17.63C6.45 16.06 5.71 14.78 3.9 14.78C2.85 14.78 2 13.92 2 12.88Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
-            href: '/candidate/general-management', name: 'Quản lý chung', listObjChildren: []
-        },
+        // {
+        //     id: 1, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M2 12.88V11.12C2 10.08 2.85 9.22 3.9 9.22C5.71 9.22 6.45 7.94 5.54 6.37C5.02 5.47 5.33 4.3 6.24 3.78L7.97 2.79C8.76 2.32 9.78 2.6 10.25 3.39L10.36 3.58C11.26 5.15 12.74 5.15 13.65 3.58L13.76 3.39C14.23 2.6 15.25 2.32 16.04 2.79L17.77 3.78C18.68 4.3 18.99 5.47 18.47 6.37C17.56 7.94 18.3 9.22 20.11 9.22C21.15 9.22 22.01 10.08 22.01 11.12V12.88C22.01 13.92 21.16 14.78 20.11 14.78C18.3 14.78 17.56 16.06 18.47 17.63C18.99 18.54 18.68 19.7 17.77 20.22L16.04 21.21C15.25 21.68 14.23 21.4 13.76 20.61L13.65 20.42C12.75 18.85 11.27 18.85 10.36 20.42L10.25 20.61C9.78 21.4 8.76 21.68 7.97 21.21L6.24 20.22C5.33 19.7 5.02 18.53 5.54 17.63C6.45 16.06 5.71 14.78 3.9 14.78C2.85 14.78 2 13.92 2 12.88Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+        //     href: '/candidate/general-management', name: 'Quản lý chung', listObjChildren: []
+        // },
         {
             id: 2, icon: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.06 19.39L13.53 19.9C9.56 21.18 7.47 20.11 6.18 16.14L4.9 12.19C3.62 8.22 4.68 6.12 8.65 4.84L10.23 4.32C10.64 4.19 11.03 4.08 11.4 4.01C11.1 4.62 10.86 5.36 10.66 6.21L9.68 10.4C8.7 14.58 9.99 16.64 14.16 17.63L15.84 18.03C16.42 18.17 16.96 18.26 17.46 18.3C16.84 18.72 16.06 19.07 15.11 19.38H15.06Z" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M12.64 8.53003L17.49 9.76003" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M11.66 12.4L14.56 13.14" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.96 5.1C22.04 6.3 22.23 8.02 21.66 10.44L20.68 14.62C19.84 18.23 18.18 19.69 15.06 19.39C14.56 19.35 14.02 19.26 13.44 19.12L11.76 18.72C7.59 17.73 6.3 15.67 7.28 11.49L8.26 7.3C8.46 6.45 8.7 5.71 9 5.1C10.17 2.68 12.16 2.03 15.5 2.82L17.17 3.21" stroke="#3582CD" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
             href: '', name: 'Hồ sơ xin việc',
@@ -98,16 +109,21 @@ const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
         try {
             const { data } = await axios.post(`${API_BASE_URL}/auth/candidate/logout`, {}, { withCredentials: true });
             if (data.success) {
-                toast.success("Đăng xuất thành công")
+                toast.success("Đăng xuất thành công");
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
                 localStorage.removeItem('candidate');
-                setTimeout(() => window.location.reload(), 1000);
+                deleteCookie('access_token');
+                if (setCheckLogin) setCheckLogin(false);
+                setTimeout(() => window.location.href = '/', 500);
             } else {
                 toast.error("Đăng xuất thất bại");
             }
         } catch (error) {
-            console.error(error);
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('candidate');
+            deleteCookie('access_token');
+            window.location.href = '/';
         }
     };
 
@@ -123,7 +139,6 @@ const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [setIsOutside]);
 
-    // UI Helpers
     const renderChildItems = (listObjChildren) => {
         if (!listObjChildren || listObjChildren.length === 0) return null;
         return (
@@ -170,7 +185,7 @@ const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
                         <div className={s["if-detail"]}>
                             <p>TK: <span className={s["detail-num"]}>{phone}</span></p>
                             <span>•</span>
-                            <p>ID: <span className={s["detail-num"]}>{mockCookieId}</span></p>
+                            <p>ID: <span className={s["detail-num"]}>{displayId}</span></p>
                         </div>
                         <div className={s["if-contact"]}>
                             <svg style={{ cursor: 'pointer', width: '24px', height: '14px' }} onClick={handleClickActiveToggle} viewBox="0 0 28 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -185,7 +200,7 @@ const MenuAccount = ({ checkAccount, setCheckLogin, setIsOutside }) => {
                         <p className={s["if-name"]} onClick={() => alert(`Xem công ty: ${name}`)} style={{ cursor: 'pointer' }}>{name}</p>
                         <div className={s["info-point"]}>
                             {!isExperiment && <><p>Điểm: <span>{point}</span></p><span>•</span></>}
-                            <p>ID: <span>{mockCookieId}</span></p>
+                            <p>ID: <span>{displayId}</span></p>
                         </div>
                     </div>
                 )}

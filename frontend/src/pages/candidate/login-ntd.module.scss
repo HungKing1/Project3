@@ -1,4 +1,182 @@
-/* Thêm keyframe cho hiệu ứng xuất hiện */
+/* =========================
+   Layout
+   ========================= */
+.wrapper_layout {
+  width: 100%;
+  height: 100vh;
+  background: #70ace6;
+}
+
+.wrapper_body {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.wrapper_content {
+  width: 100%;
+  max-width: 520px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.container_right {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   Title
+   ========================= */
+.title_right {
+  text-align: center;
+  color: #3582cd;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+/* =========================
+   Input Group
+   ========================= */
+.form_reg {
+  position: relative;
+  margin-bottom: 22px;
+
+  &:focus-within {
+    .prev_icon {
+      color: #3582cd;
+    }
+  }
+}
+
+.prev_icon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #2268a7;
+  pointer-events: none;
+}
+
+.form_control {
+  width: 100%;
+  height: 48px;
+  border-radius: 6px;
+  border: 1px solid #dad8d3;
+  padding: 0 46px;
+  font-size: 15px;
+
+  &:focus {
+    outline: none;
+    border-color: #3582cd;
+    box-shadow: 0 0 0 3px rgba(53, 130, 205, 0.2);
+  }
+}
+
+/* Eye icon */
+.icon_wrapper {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  color: #777;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-50%) scale(1.15);
+    color: #3582cd;
+  }
+}
+
+/* =========================
+   Error
+   ========================= */
+.text_error {
+  display: block;
+  margin-top: -12px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  color: rgb(236, 93, 93);
+  font-style: italic;
+
+  &::before {
+    content: '⚠ ';
+  }
+}
+
+/* =========================
+   Bottom Section
+   ========================= */
+.box_confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.forgot_pass {
+  text-align: right;
+  font-size: 14px;
+
+  a {
+    color: #f8971c;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.btn_confirm {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  background: #f8971c;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    background: #d67e12;
+    transform: translateY(-2px);
+  }
+}
+
+.btn_content {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  font-size: 15px;
+
+  a {
+    color: #3582cd;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* =========================
+   Animation
+   ========================= */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -7,264 +185,5 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-.wrapper_layout {
-  background: #70ACE6;
-  width: 100%;
-  height: 100vh;
-
-  .wrapper_body {
-    // background-image: url("/images/authorization/bg-regis-1920.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: relative;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center; // Căn giữa theo chiều dọc
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    .wrapper_content {
-      width: 100%;
-      max-width: 600px; // Giới hạn chiều rộng của box đăng nhập
-      height: fit-content;
-      margin: 0 auto;
-      
-      /* Thêm hiệu ứng xuất hiện và hover cho card */
-      animation: fadeInUp 0.6s ease-out forwards;
-      transition: all 0.3s ease-in-out;
-
-      &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-      }
-
-      .container_right {
-        display: flex;
-        padding: 40px 30px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
-        border-radius: 20px;
-        background: #FFF;
-        box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-
-        .title_right {
-          text-align: center;
-          width: 100%;
-          color: #3582CD;
-          font-family: Roboto;
-          font-size: 24px;
-          font-weight: 700;
-          line-height: 1.3;
-          margin-bottom: 5px;
-        }
-
-        .box_top_info {
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          align-items: flex-start;
-
-          .form_gr {
-            width: 100%;
-            
-            .form_reg {
-              width: 100%;
-              margin-bottom: 20px;
-              position: relative;
-              
-              /* Thêm hiệu ứng cho icon khi focus vào input */
-              &:focus-within {
-                .prev_icon {
-                  transform: scale(1.1);
-                  path {
-                    fill: #3582CD; // Đổi icon sang màu xanh
-                  }
-                }
-              }
-
-              .prev_icon {
-                position: absolute;
-                left: 12px;
-                top: 12px;
-                z-index: 1;
-                transition: all 0.2s ease;
-                path {
-                   transition: fill 0.2s ease;
-                }
-              }
-
-              // Input styles
-              .form_control {
-                width: 100%;
-                height: 45px; // Tăng chiều cao input
-                border-radius: 6px;
-                border: 1px solid #dad8d3;
-                padding-left: 45px;
-                padding-right: 45px; // Để tránh đè icon show pass
-                font-size: 15px;
-                box-sizing: border-box;
-                /* Thêm transition cho focus */
-                transition: all 0.2s ease, box-shadow 0.2s ease;
-
-                &:focus {
-                  border-color: #3582CD;
-                  outline: none;
-                  /* Thêm hiệu ứng "glow" */
-                  box-shadow: 0 0 0 3px rgba(53, 130, 205, 0.2);
-                }
-              }
-
-              // Show/Hide Password Icon Wrapper
-              .icon_wrapper {
-                position: absolute;
-                top: 12px;
-                right: 12px;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                transition: transform 0.2s ease;
-                
-                &:hover {
-                    transform: scale(1.1);
-                }
-              }
-            }
-            
-            .text_error {
-              font-size: 13px;
-              color: rgb(236, 93, 93);
-              font-style: italic;
-              margin-top: -15px;
-              margin-bottom: 15px;
-              padding-left: 5px;
-              
-              &::before {
-                content: '⚠ ';
-              }
-            }
-          }
-        }
-
-        .box_confirm {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 100%;
-          gap: 15px;
-
-          .forgot_pass {
-            width: 100%;
-            text-align: right;
-            font-family: Roboto;
-            font-size: 14px;
-            margin-bottom: 5px;
-            a {
-              text-decoration: none;
-              transition: all 0.2s ease;
-              &:hover {
-                text-decoration: underline;
-                color: #d67e12; // Đổi màu cam đậm hơn
-              }
-            }
-          }
-
-          .btn_confirm {
-            display: flex;
-            width: 100%;
-            padding: 12px 0;
-            justify-content: center;
-            align-items: center;
-            color: #FFF;
-            font-family: Roboto;
-            font-size: 18px;
-            font-weight: 700;
-            border-radius: 6px;
-            background: #F8971C;
-            outline: none;
-            border: none;
-            cursor: pointer;
-            /* Thêm hiệu ứng cho nút */
-            transition: background 0.3s, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(248, 151, 28, 0.2);
-
-            &:hover {
-              background: #d67e12;
-              transform: translateY(-3px); /* Nâng nút lên */
-              box-shadow: 0 8px 20px rgba(248, 151, 28, 0.4); /* Bóng đổ đậm hơn */
-            }
-            
-            &:active {
-                transform: translateY(0px); /* Nhấn nút xuống */
-                box-shadow: 0 4px 10px rgba(248, 151, 28, 0.3);
-            }
-          }
-
-          .btn_content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 10px;
-
-            p {
-              color: #000;
-              font-family: Roboto;
-              font-size: 15px;
-            }
-
-            a {
-              color: #3582CD;
-              font-family: Roboto;
-              font-size: 15px;
-              font-weight: 600;
-              text-decoration: none;
-              transition: all 0.2s ease;
-              
-              &:hover {
-                text-decoration: underline;
-                color: #2868a8; /* Xanh đậm hơn */
-                letter-spacing: 0.5px; /* Giãn chữ nhẹ */
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-// Responsive (Giữ nguyên)
-@media (min-width: 1600px) {
-  .wrapper_layout .wrapper_body {
-    background-image: url("/images/authorization/bg-regis-1920.png");
-  }
-}
-@media (max-width: 1365px) {
-  .wrapper_layout .wrapper_body {
-    background-image: url("/images/authorization/bg-regis-1336.png");
-  }
-}
-@media (max-width: 768px) {
-  .wrapper_layout .wrapper_body {
-    background-image: url("/images/authorization/bg-regis-768.png");
-    padding: 15px;
-    .wrapper_content .container_right {
-      padding: 30px 20px;
-      .title_right {
-        font-size: 20px;
-      }
-    }
-  }
-}
-@media (max-width: 430px) {
-  .wrapper_layout .wrapper_body .wrapper_content .container_right .title_right {
-    font-size: 18px;
   }
 }
