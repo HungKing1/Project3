@@ -119,6 +119,7 @@ const Jobs = ({
                       {item?.districtName && <span className={s.tag_item}>{item?.districtName}</span>}
                       {item?.experienceYearName && <span className={s.tag_item}>{item?.experienceYearName}</span>}
                       {item?.workTypeName && <span className={s.tag_item}>{item?.workTypeName}</span>}
+                      {item?.jobLevelName && <span className={s.tag_item}>{item?.jobLevelName}</span>}
                     </div>
                   </div>
                 </div>

@@ -96,7 +96,7 @@ class RagEngine:
     def __init__(self):
         # Khởi tạo client kết nối ChromaDB
         if not os.path.exists(PERSIST_DIRECTORY):
-            logger.warning(f"⚠️ Cảnh báo: Chưa tìm thấy folder {PERSIST_DIRECTORY}. Hãy chạy script ingest_data.py trước!")
+            logger.warning(f"Chưa tìm thấy folder {PERSIST_DIRECTORY}. Hãy chạy script ingest_data.py trước!")
         
         self.client = chromadb.PersistentClient(path=PERSIST_DIRECTORY)
         
@@ -131,7 +131,7 @@ class RagEngine:
 
     def search(self, text: str):
         """
-        Logic Search Level 5:
+        Logic Search:
         1. Gọi Router lấy JSON.
         2. Dùng Value trong JSON search vào Collection tương ứng.
         3. Áp dụng Threshold đã cấu hình.
@@ -165,7 +165,7 @@ class RagEngine:
             # 3. Lấy threshold quy định
             current_threshold = config["threshold"]
 
-            # 4. QUERY VECTOR (Dùng extracted_value để search)
+            # 4. QUERY VECTOR 
             res = col.query(query_texts=[extracted_value], n_results=1)
             
             if res['ids'] and res['distances']:
@@ -184,7 +184,6 @@ class RagEngine:
                         "status": "ACCEPTED"
                     }
                 else:
-                    # Log lại nếu bị reject (để debug)
                     debug_logs[key] = {
                         "extracted_from_gemini": extracted_value,
                         "matched_in_db": matched_item['original_text'],
@@ -195,5 +194,5 @@ class RagEngine:
 
         return results, debug_logs
 
-# Tạo singleton để dùng chung
+# singleton
 rag_engine = RagEngine()

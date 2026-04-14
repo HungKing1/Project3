@@ -6,7 +6,6 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Dữ liệu mẫu cho "Việc làm hấp dẫn"
 const mockViecLamHapDan = [];
 for (let i = 1; i <= 20; i++) {
   mockViecLamHapDan.push({
@@ -25,13 +24,10 @@ for (let i = 1; i <= 20; i++) {
 const mockData = {
   ViecLamHapDan: mockViecLamHapDan,
 };
-// --- Kết thúc Dữ liệu mẫu ---
 
 const JobListing = () => {
-  // Sử dụng dữ liệu mẫu thay vì props
   const data = mockData;
 
-  // Logic UI (tính toán số trang)
   const totalItem = Math.ceil(data?.ViecLamHapDan.length / 18);
   const divArray = Array.from({ length: totalItem }, (_, index) => index);
 
@@ -40,7 +36,6 @@ const JobListing = () => {
   const [pageSize, setPageSize] = useState(18);
   const [totalPage, setTotalPage] = useState();
   
-  // Dữ liệu mẫu cho tags (đang bị comment)
   const tags = [
     { label: 'Ngẫu nhiên', id: 0 },
     { label: 'Hà Nội', id: 1 },
@@ -53,7 +48,6 @@ const JobListing = () => {
     console.log('click change', index);
   };
   
-  // Logic điều khiển UI Carousel (Giữ lại để UI hoạt động)
   const ref = useRef(null);
   const handleNextClick = () => {
     ref.current.next();
@@ -65,7 +59,6 @@ const JobListing = () => {
     ref.current.goTo(slideNumber - 1);
   };
 
-  // Logic nghiệp vụ (handleSearchFollowAdress) đã bị loại bỏ
 
   const getViecLamHapDan = async () => {
     try {
